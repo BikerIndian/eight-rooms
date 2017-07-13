@@ -13,7 +13,7 @@ if($ENABLE_PDF_EXPORT)
 	@$bookmark_attr=($_POST['bookmark_attr'])?$_POST['bookmark_attr']:(($_GET['bookmark_attr'])?$_GET['bookmark_attr']:current(array_keys($BOOKMARK_NAMES)));
 
 	$html.=PDF::get_pdf_head();
-
+	
 	$html.="
 	<table cellpadding='0' border='0' cellspacing='0' class='staff'>
 	";
@@ -26,8 +26,10 @@ if($ENABLE_PDF_EXPORT)
 	else
 		$DisplayName=$LDAP_NAME_FIELD;	
 		
-	$Staff=$ldap->getArray($OU, "(&".$CompanyNameLdapFilter."(".$LDAP_CN_FIELD."=*)".$DIS_USERS_COND.")", array($DisplayName, $LDAP_MAIL_FIELD, $LDAP_INTERNAL_PHONE_FIELD, $LDAP_CITY_PHONE_FIELD, $LDAP_TITLE_FIELD, $LDAP_DEPARTMENT_FIELD, $LDAP_CELL_PHONE_FIELD, $LDAP_MANAGER_FIELD), array($LDAP_DEPARTMENT_FIELD, $DEP_SORT_ORDER, $LDAP_TITLE_FIELD, $STAFF_SORT_ORDER, $DisplayName));
-
+	//old $Staff=$ldap->getArray($OU, "(&".$CompanyNameLdapFilter."(".$LDAP_CN_FIELD."=*)".$DIS_USERS_COND.")", array($DisplayName, $LDAP_MAIL_FIELD, $LDAP_INTERNAL_PHONE_FIELD, $LDAP_CITY_PHONE_FIELD, $LDAP_TITLE_FIELD, $LDAP_DEPARTMENT_FIELD, $LDAP_CELL_PHONE_FIELD, $LDAP_MANAGER_FIELD), array($LDAP_DEPARTMENT_FIELD, $DEP_SORT_ORDER, $LDAP_TITLE_FIELD, $STAFF_SORT_ORDER, $DisplayName));
+	//$zapros = "(&(objectCategory=person)(objectClass=user)$DIS_USERS_COND)";
+	$zapros = "(&(objectCategory=person)$DIS_USERS_COND)";
+	$Staff=$ldap->getArray($OU, $zapros, array($DisplayName, $LDAP_MAIL_FIELD, $LDAP_INTERNAL_PHONE_FIELD, $LDAP_CITY_PHONE_FIELD, $LDAP_TITLE_FIELD, $LDAP_DEPARTMENT_FIELD, $LDAP_CELL_PHONE_FIELD, $LDAP_MANAGER_FIELD), array($LDAP_DEPARTMENT_FIELD, $DEP_SORT_ORDER, $LDAP_TITLE_FIELD, $STAFF_SORT_ORDER, $DisplayName));
 	if(is_array($Staff))
 		{
 		$SizeOf=sizeof($Staff[$DisplayName]);	

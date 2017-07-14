@@ -28,8 +28,10 @@ if($ENABLE_PDF_EXPORT)
 	else
 		$DisplayName=$LDAP_NAME_FIELD;	
 
-	$Staff=$ldap->getArray($OU, "(&".$CompanyNameLdapFilter."(".$LDAP_CN_FIELD."=*)".$DIS_USERS_COND.")", array($DisplayName, $LDAP_MAIL_FIELD, $LDAP_INTERNAL_PHONE_FIELD, $LDAP_CITY_PHONE_FIELD, $LDAP_TITLE_FIELD, $LDAP_DEPARTMENT_FIELD, $LDAP_CELL_PHONE_FIELD), array($DisplayName, array('ad_def_full_name')));
-
+	//old $Staff=$ldap->getArray($OU, "(&".$CompanyNameLdapFilter."(".$LDAP_CN_FIELD."=*)".$DIS_USERS_COND.")", array($DisplayName, $LDAP_MAIL_FIELD, $LDAP_INTERNAL_PHONE_FIELD, $LDAP_CITY_PHONE_FIELD, $LDAP_TITLE_FIELD, $LDAP_DEPARTMENT_FIELD, $LDAP_CELL_PHONE_FIELD), array($DisplayName, array('ad_def_full_name')));
+	// Vladimir Svishch 22.05.2017
+	$zapros = "(&(objectCategory=person)(objectClass=user)$DIS_USERS_COND)";
+	$Staff=$ldap->getArray($OU, $zapros, array($DisplayName, $LDAP_MAIL_FIELD, $LDAP_INTERNAL_PHONE_FIELD, $LDAP_CITY_PHONE_FIELD, $LDAP_TITLE_FIELD, $LDAP_DEPARTMENT_FIELD, $LDAP_CELL_PHONE_FIELD), array($DisplayName, array('ad_def_full_name')));
 	if(is_array($Staff))
 		{
 		$sizeof=sizeof($Staff[$DisplayName]);

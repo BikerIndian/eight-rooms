@@ -1,0 +1,4 @@
+# English strings go here for Rails i18n
+total_visits: "Total visits"
+per_day: "Total per day"
+today_uniques: "Unique for the day"

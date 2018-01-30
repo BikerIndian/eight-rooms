@@ -1,5 +1,10 @@
 <?php
-require_once('../libs/MPDF54/mpdf.php');
+use ru860e\rest\Application;
+use ru860e\rest\LDAP;
+use ru860e\rest\Staff;
+
+
+require_once('../libs/MPDF60/mpdf.php');
 require_once('../config.php');
 require_once("../libs/forms.php");
 require_once("../libs/staff.php");
@@ -14,7 +19,7 @@ if($ENABLE_PDF_EXPORT)
 	@$BOOKMARK_NAME=($_POST['bookmark_name'])?$_POST['bookmark_name']:(($_GET['bookmark_name'])?$_GET['bookmark_name']:current(array_keys($BOOKMARK_NAMES[current(array_keys($BOOKMARK_NAMES))])) );
 	@$bookmark_attr=($_POST['bookmark_attr'])?$_POST['bookmark_attr']:(($_GET['bookmark_attr'])?$_GET['bookmark_attr']:current(array_keys($BOOKMARK_NAMES)));
 
-
+	$html ="";
 	$html.=PDF::get_pdf_head();
 	$html.="
 	<table cellpadding='0' border='0' cellspacing='0' class='staff'>
@@ -30,15 +35,19 @@ if($ENABLE_PDF_EXPORT)
 
 	//old $Staff=$ldap->getArray($OU, "(&".$CompanyNameLdapFilter."(".$LDAP_CN_FIELD."=*)".$DIS_USERS_COND.")", array($DisplayName, $LDAP_MAIL_FIELD, $LDAP_INTERNAL_PHONE_FIELD, $LDAP_CITY_PHONE_FIELD, $LDAP_TITLE_FIELD, $LDAP_DEPARTMENT_FIELD, $LDAP_CELL_PHONE_FIELD), array($DisplayName, array('ad_def_full_name')));
 	// Vladimir Svishch 22.05.2017
-	$zapros = "(&(objectCategory=person)(objectClass=user)$DIS_USERS_COND)";
-	$Staff=$ldap->getArray($OU, $zapros, array($DisplayName, $LDAP_MAIL_FIELD, $LDAP_INTERNAL_PHONE_FIELD, $LDAP_CITY_PHONE_FIELD, $LDAP_TITLE_FIELD, $LDAP_DEPARTMENT_FIELD, $LDAP_CELL_PHONE_FIELD), array($DisplayName, array('ad_def_full_name')));
+    $request = "(&(objectCategory=person)(objectClass=user)$DIS_USERS_COND)";
+	$Staff=$ldap->getArray($OU, $request, array($DisplayName, $LDAP_MAIL_FIELD, $LDAP_INTERNAL_PHONE_FIELD, $LDAP_CITY_PHONE_FIELD, $LDAP_TITLE_FIELD, $LDAP_DEPARTMENT_FIELD, $LDAP_CELL_PHONE_FIELD), array($DisplayName, array('ad_def_full_name')));
 	if(is_array($Staff))
 		{
+            $PrevFirstLetter = '';
 		$sizeof=sizeof($Staff[$DisplayName]);
 		for($i=0; $i<$sizeof; $i++)
 			{
-			if(!($PDF_HIDE_STAFF_WITHOUT_PHONES&&(!$Staff[$LDAP_INTERNAL_PHONE_FIELD][$i])&&(!$Staff[$HIDE_CITY_PHONE_FIELD][$i])&&(!$Staff[$LDAP_CELL_PHONE_FIELD][$i])))
-				{
+                if (!($PDF_HIDE_STAFF_WITHOUT_PHONES &&
+                    (!isset($Staff[$LDAP_INTERNAL_PHONE_FIELD][$i])) &&
+                    (!isset($Staff[$HIDE_CITY_PHONE_FIELD][$i])) &&
+                    (!isset($Staff[$LDAP_CELL_PHONE_FIELD][$i]))))
+                {
 				$FIO=explode(" ", $Staff[$DisplayName][$i]);	
 				
 				$Surname=$Staff[$DisplayName][$i];
@@ -64,12 +73,13 @@ if($ENABLE_PDF_EXPORT)
 
 				if($PrevFirstLetter!=$FirstLetter)
 					{
-					$html.="<tr><td colspan=\"".$colspan."\" class=\"department\"><div>".$FirstLetter."</div><img src=\"../skins/".$CURRENT_SKIN."/images/pdf/pixel_black.png\" vspace=\"1\" width=\"100%\" height=\"1px\"></td></tr>";		
-					$PrevFirstLetter=$FirstLetter;
+					//$html.="<tr><td colspan=\"".$colspan."\" class=\"department\"><div>".$FirstLetter. "></td></tr>";
+                    $html.="<tr><td colspan=\"".$colspan."\" class=\"department\"><div>".$FirstLetter."</div><img src=\"../skins/".$CURRENT_SKIN."/images/pdf/pixel_black.png\" vspace=\"1\" width=\"100%\" height=\"1px\"></td></tr>";
+
+                        $PrevFirstLetter=$FirstLetter;
 					}
 				else
-					$html.="<tr><td colspan=\"".$colspan."\"><img src=\"../skins/".$CURRENT_SKIN."/images/pdf/divider.gif\" vspace=\"0\" width=\"100%\" height=\"1\"></td></tr>";			
-
+					$html.="<tr><td colspan=\"".$colspan."\"><img src=\"../skins/".$CURRENT_SKIN."/images/pdf/divider.gif\" vspace=\"0\" width=\"100%\" height=\"1\"></td></tr>";
 				$html.="<tr>
 				<td class=\"name\"><span class=\"surname\">".$Surname."</span><br><span class=\"patronymic\">".$Name." ".$Patronymic."</span></td>";
 				if(!$HIDE_CELL_PHONE_FIELD)	
@@ -87,16 +97,15 @@ if($ENABLE_PDF_EXPORT)
 				}
 
 			}
-		}
+        }
 
-	$html.="</table>";
+        $html.="</table>";
 
-	$mpdf=new mPDF(false, $PDF_LANDSCAPE?"A4-L":"A4", false, 'Arial', $PDF_MARGIN_LEFT, $PDF_MARGIN_RIGHT, $PDF_MARGIN_TOP, $PDF_MARGIN_BOTTOM);
+        $mpdf=new mPDF(false, $PDF_LANDSCAPE?"A4-L":"A4", false, 'Arial', $PDF_MARGIN_LEFT, $PDF_MARGIN_RIGHT, $PDF_MARGIN_TOP, $PDF_MARGIN_BOTTOM);
+        $stylesheet = file_get_contents("../skins/".$CURRENT_SKIN."/css/pdf.css");
+        $mpdf->WriteHTML($stylesheet, 1);
+        $mpdf->WriteHTML($html);
+        $mpdf->Output('pdf_alphabet.pdf', 'I');
 
-	$stylesheet = file_get_contents("../skins/".$CURRENT_SKIN."/css/pdf.css");
-	$mpdf->WriteHTML($stylesheet, 1);
-
-	$mpdf->WriteHTML($html, 2);
-	$mpdf->Output('pdf_alphabet.pdf', 'I');
-	}
+    }
 ?>

@@ -1,0 +1,7 @@
+Options -Indexes
+<FilesMatch ".(htaccess|htpasswd)$">
+ Order Allow,Deny
+ Deny from all
+ </FilesMatch>
+
+

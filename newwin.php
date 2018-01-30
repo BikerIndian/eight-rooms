@@ -7,7 +7,14 @@ require_once("./libs/time.php");
 require_once("./libs/localization.php");
 require_once("./libs/spyc.php");
 
+use ru860e\rest\Application;
+use ru860e\rest\LDAP;
+use ru860e\rest\Localization;
+
+
 Application::makeLdapConfigAttrLowercase();
+
+
 $L=new Localization("./config/locales/".$LOCALIZATION.".yml");
 
 //Database

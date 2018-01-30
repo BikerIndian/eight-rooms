@@ -109,7 +109,8 @@ function phoneBlocks($number, $blocklen)
                 $add = $number[0];
                 $number = substr($number, 1, strlen($number)-1);
         }
-        return $add.strrev(implode("-", str_split(strrev($number), $blocklen)));
+//        return $add.strrev(implode("+", str_split(strrev($number), $blocklen)));
+        return $add.strrev(implode("", str_split(strrev($number), $blocklen)));
 }
 //------------------------------------------------------------------------
 ?>

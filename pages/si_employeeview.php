@@ -1,4 +1,11 @@
 <?php
+
+use ru860e\rest\LDAP;
+use ru860e\rest\Staff;
+use ru860e\rest\LDAPTable;
+
+
+
 $dn=($_GET['dn'])?$_GET['dn']:$_POST['dn'];
 @$fio=($_GET['fio'])?$_GET['fio']:$_POST['fio'];
 
@@ -11,19 +18,22 @@ if($fio)
 	$dn=$ldap->getValue($OU, $LDAP_DISTINGUISHEDNAME_FIELD, "cn=".$fio);
 
 
-if($DIRECT_PHOTO) 
-	$Image=$ldap->getImage($dn, $GLOBALS['LDAP_PHOTO_FIELD']);
+if($DIRECT_PHOTO) {
+    $Image = $ldap->getImage($dn, $GLOBALS['LDAP_PHOTO_FIELD']);
+}
 else
 	{
+
 	$Image=$GLOBALS['PHOTO_DIR']."/".md5($dn).".jpg";
 	$Image=$ldap->getImage($dn, $GLOBALS['LDAP_PHOTO_FIELD'], $Image);
 	}
 
 echo"<table class=\"user\">";
 echo"<tr>";
-echo"<td width=\"1%\">";
+echo"<td width=\"3%\">";
+
 if($Image)
-	echo"<div class=\"photo\"><img src=\"".$Image."\"></div>";	
+	echo"<div class=\"photo\"><img src=\"".$Image."\" height=\"$PHOTO_MAX_HEIGHT\" width=\"$PHOTO_MAX_WIDTH\"></div>";	
 else
 	echo"<div class=\"photo\"><img src=\"./skins/".$CURRENT_SKIN."/images/ldap/user.png\"></div>";
 echo"</td>";
@@ -48,7 +58,8 @@ if($SHOW_EVALUATION_PERIOD_MESSAGE && $LDAP_CREATED_DATE_FIELD)
 	$Created=$ldap->getValue($dn, $LDAP_CREATED_DATE_FIELD);	
 	$CreatedUnixTime=Time::getTimeOfDMYHI($Created, $LDAP_CREATED_DATE_FORMAT);
 	$NumWorkDays=round((Time::getOnlyDatePartFromTime(time())-Time::getOnlyDatePartFromTime($CreatedUnixTime))/(24*60*60));
-	if($NumWorkDays<=$EVALUATION_PERIOD)
+	//if($NumWorkDays<=$EVALUATION_PERIOD)
+	if(false)
 		echo "<h6 class=\"alarm\">Новый сотрудник</h6> &mdash; <small>работает в компании <big>".$L->ending($NumWorkDays, 'день', 'дня', 'дней')."</big></small>";
 	}
 

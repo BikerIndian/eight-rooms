@@ -32,4 +32,5 @@ xmpp_message_has_been_sent: "Message has been sent"
 start_of_xmpp_sign: "Best regards,"
 locked_date: "Date of dismissal"
 room_number: "Room number"
+pc: "PC"
 

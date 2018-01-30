@@ -32,3 +32,4 @@ xmpp_message_has_been_sent: "Ваше сообщение было отправл
 start_of_xmpp_sign: "С уважением,"
 locked_date: "Дата увольнения"
 room_number: "Кабинет"
+pc: "Компьютер"

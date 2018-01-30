@@ -1,5 +1,5 @@
 <?php
-if($_COOKIE['dn'])
+if(isset($_COOKIE['dn']))
 	{
 	if($WhoAreYou!==false)
 		{

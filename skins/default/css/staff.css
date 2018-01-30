@@ -266,7 +266,13 @@ div.export
 	background-position: 3px 3px;
 	padding-left: 22px;
 	}
-	
+#exp_exl_sep_dep
+	{
+	background-image: url('../images/excel.png');
+	background-repeat: no-repeat;
+	background-position: 3px 3px;
+	padding-left: 22px;
+	}
 #show_all_birth
 	{
 	font-size: 17pt;

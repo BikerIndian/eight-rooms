@@ -11,7 +11,7 @@ Eight-rooms
 
 ## Настройка
 
-* Разрешения на запись к папкам temp
+* **Разрешения на запись к папкам temp**
 ```
 Файл: .\eight-rooms\set_chmod
 ```
@@ -26,10 +26,14 @@ Eight-rooms
 Файл: .\eight-rooms\config\company\default_company\config_ldap.php
 ```
 
-Для домена " ad.loc "
+Пример для домена **" ad.loc "**
+
 $LDAPServer='ххх.ххх.ххх.ххх';	// Адрес сервера LDAP (Контроллер домена).
+
 $LDAPUser='sprav@ad.loc'; // Учетная запись c правом чтения из LDAP. Можно писать в формате user_for_reading_ldap@YOUR_DOMAIN
+
 $LDAPPassword='pass'; // Пароль для учетной записи, указанной в переменной $LDAPUser
+
 $OU="DC=ad,DC=loc";
 
 // Администраторы

@@ -11,15 +11,20 @@ Eight-rooms
 
 ## Настройка
 
-* **set_chmod**
+* Разрешения на запись к папкам temp
+```
+Файл: .\eight-rooms\set_chmod
+```
 В корне лежит файл **set_chmod**. 
 Его нужно запустить. Он даёт разрешения на запись к папкам temp.
 После запуска можно удалить.
 
 
-* Конфигурирование
+* **Конфигурирование**
 
+```
 Файл: .\eight-rooms\config\company\default_company\config_ldap.php
+```
 
 Для домена " ad.loc "
 $LDAPServer='ххх.ххх.ххх.ххх';	// Адрес сервера LDAP (Контроллер домена).
@@ -40,17 +45,26 @@ $LDAP_NoSHOW_GROOP = 'TelNoShow'; // Группа пользователей, к
 * Спраночник по отделам
 ![Спраночник по отделам](https://raw.githubusercontent.com/BikerIndian/eight-rooms/master/temp/img/1.png)
 
+
+
 * Спраночник по алфавиту
 ![Спраночник по алфавиту](https://raw.githubusercontent.com/BikerIndian/eight-rooms/master/temp/img/2.png)
+
+
 
 * Подробно по пользователю
 ![Подробно по пользователю](https://raw.githubusercontent.com/BikerIndian/eight-rooms/master/temp/img/3.png)
 
+
+
 * Спраночник по отделам
 ![PDF по отделам](https://raw.githubusercontent.com/BikerIndian/eight-rooms/master/temp/img/5.png)
 
+
+
 * PDF - Спраночник по алфавиту
 ![PDF по алфавиту](https://raw.githubusercontent.com/BikerIndian/eight-rooms/master/temp/img/4.png)
+
 
 * EXEL - Справочник
 ![EXEL](https://raw.githubusercontent.com/BikerIndian/eight-rooms/master/temp/img/6.png)

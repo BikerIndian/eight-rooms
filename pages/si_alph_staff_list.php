@@ -86,7 +86,7 @@ if (is_array($Staff)) {
     if (empty($_COOKIE['dn']) && $ENABLE_DANGEROUS_AUTH)
         echo Application::getCollTitle();
     //-------------------------------------------------------------------------------------------------------------
-    $FavouriteDNs = [];
+    $FavouriteDNs = array();
     if (isset($_COOKIE['dn'])) {
         $FavouriteDNs = $ldap->getAttrValue($_COOKIE['dn'], $LDAP_FAVOURITE_USER_FIELD);
     }

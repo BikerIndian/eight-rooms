@@ -161,7 +161,7 @@ class LDAP
 
     public function getEntriesWithoutSizeLimit($BaseDN, $Filter, $Attributes, $WithoutSizeLimit = false)
     {
-        $Entries = [];
+        $Entries = array();
         $count = "";
 
         if ($this->SizeLimitCompatibility && !$WithoutSizeLimit) {
@@ -197,7 +197,7 @@ class LDAP
 
     function getArray($BaseDN, $Filter = false, $ADAttributes, $Sort = array('name'), $SortType = "ASC", $WithoutSizeLimit = false)
     {
-        $LastVal = [];
+        $LastVal = array();
         if (!$Filter)
             $Filter = self::getEmptyFilter();
 

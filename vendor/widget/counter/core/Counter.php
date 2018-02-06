@@ -16,8 +16,8 @@ class Counter extends Content
 {
     private $countFileName;
     private $ip = "";
-    private $counts = [];
-    private $contentIsFileArr = [];
+    private $counts = array();
+    private $contentIsFileArr = array();
     private $temp;
     private $localization="ru";
 

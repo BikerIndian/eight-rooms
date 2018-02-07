@@ -16,7 +16,7 @@ if (@$_SERVER['REMOTE_USER']) //Если есть прозрачно аутен�
         $Valid = false;
     }
 } else {
-    $Login=[];
+    $Login = array();
     if (isset($_COOKIE['dn'])) {
         $Login = $ldap->getValue($_COOKIE['dn'], $LDAP_USERPRINCIPALNAME_FIELD);
     };

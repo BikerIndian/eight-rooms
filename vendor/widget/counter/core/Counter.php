@@ -125,7 +125,8 @@ class Counter extends Content
     {
         // Блокируем файл
         $fd = fopen("$this->countFileName", "a");
-        $locked = flock($fd, 2);
+        //$locked = flock($fd, 2);
+        $locked = true;
 
         // Запись в файл
         if ($locked) {

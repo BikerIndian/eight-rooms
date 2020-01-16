@@ -3,6 +3,12 @@ Eight-rooms
 
 Телефонная книга  LDAP(Active Directory)
 
+## Разработка и тестирование
+OS: 14.04.1-Ubuntu
+
+PHP: 5.5.9-1ubuntu4.21 (cli) (built: Feb  9 2017 20:54:58)
+
+
 ## Установка 
 * git clone https://github.com/BikerIndian/eight-rooms.git
 
@@ -44,6 +50,7 @@ $LDAP_NoSHOW_GROOP = 'TelNoShow'; // Группа пользователей, к
 
 Дополнительные настройки в 
 .\eight-rooms\config\company\default_company\config.php
+
 
 ## Screenshots
 * Спраночник по отделам

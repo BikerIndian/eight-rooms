@@ -128,8 +128,9 @@ abstract class Application
     {
         foreach($GLOBALS AS $key => $value)
         {
-            if(preg_match("/^LDAP_[A-Z_]{1,}_FIELD$/", $key))
-                $GLOBALS[$key]=mb_strtolower($value);
+            if(preg_match("/^LDAP_[A-Z_]{1,}_FIELD$/", $key)){
+            mb_convert_case($value , MB_CASE_LOWER);
+            }
         }
     }
 

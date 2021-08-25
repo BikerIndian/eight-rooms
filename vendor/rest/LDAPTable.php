@@ -60,7 +60,9 @@ class LDAPTable
     {
 
         if ((is_array(@$this->Attributes['title'])) ? (!in_array($Title, @$this->Attributes['title'])) : true) {
-            $j = sizeof(@$this->Attributes[name]);
+
+            $arr = @$this->Attributes[name];
+            $j = (is_iterable($arr)) ? sizeof($arr) : 0;
 
             $this->Attributes['title'][$j] = $Title;
             $this->Attributes['sort'][$j] = $Sort;
@@ -79,7 +81,9 @@ class LDAPTable
 
     function addPregReplace($Pattern, $Replacement, $Title, $Limit = "-1", $Conditions = false)
     {
-        $j = sizeof(@$this->PregReplace[$Title][pattern]);
+        $arr = @$this->PregReplace[$Title][pattern];
+        $j = (is_iterable($arr)) ? sizeof($arr) : 0;
+
 
         $this->PregReplace[$Title]['pattern'][$j] = $Pattern;
         $this->PregReplace[$Title]['replacement'][$j] = $Replacement;

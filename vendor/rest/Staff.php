@@ -414,9 +414,9 @@ abstract class Staff
 		else
 			echo "<td>".self::highlightSearchResult(self::makeMailUrl($Staff[$GLOBALS['LDAP_MAIL_FIELD']][$key]), $Vars['search_str'])."</td>"; 
 
-		if(!$GLOBALS['HIDE_ROOM_NUMBER'])
+		if(!$GLOBALS['HIDE_ROOM_NUMBER'] && isset($Staff[$GLOBALS['LDAP_ROOM_NUMBER_FIELD']][$key]))
 			{
-			if(empty($Vars['search_str'])) //Если не велся поиск, то не подсвечивавем результаты	
+			if(empty($Vars['search_str'])) //Если не велся поиск, то не подсвечивавем результаты
 				echo "<td>".self::makePlainText($Staff[$GLOBALS['LDAP_ROOM_NUMBER_FIELD']][$key])."</td>"; //Выводим сотовый
 			else
 				echo "<td>".self::highlightSearchResult(self::makePlainText($Staff[$GLOBALS['LDAP_ROOM_NUMBER_FIELD']][$key]), $Vars['search_str'])."</td>"; //Делаем ссылку на полную информацию о сотруднике

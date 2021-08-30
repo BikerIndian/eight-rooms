@@ -46,7 +46,7 @@ $OU="DC=ad,DC=loc";
 //----------------------------------------------------------------------------
 $ADMIN_LOGINS[]='admin@ad.loc';
 
-$LDAP_NoSHOW_GROOP = 'TelNoShow'; // Группа пользователей, которую не отображает справочник
+$LDAP_NoSHOW_GROOP = 'TelNoShow,CN=Users,DC=ad,DC=loc'; // Группа пользователей, которую не отображает справочник
 
 Дополнительные настройки в 
 .\eight-rooms\config\company\default_company\config.php

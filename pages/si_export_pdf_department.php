@@ -3,7 +3,7 @@ use ru860e\rest\Application;
 use ru860e\rest\LDAP;
 use ru860e\rest\Staff;
 
-require_once('../libs/mpdf/mpdf_7.0.3/vendor/autoload.php');
+require_once('../libs/vendor/autoload.php');
 require_once('../config.php');
 require_once("../libs/forms.php");
 require_once("../libs/staff.php");
@@ -127,7 +127,8 @@ try {
     'setAutoBottomMargin' => 'stretch'
   ]);
 
-$fileStyle1 = __DIR__ . "/../skins/".$CURRENT_SKIN."/css/pdf.css";
+$fileStyle1 = __DIR__ . "../../../skins/".$CURRENT_SKIN."/css/pdf.css";
+
 $fileStyle = "../skins/".$CURRENT_SKIN."/css/pdf.css";
 print ">>>>> dir = " .  $fileStyle1;
           $stylesheet = file_get_contents($fileStyle1);

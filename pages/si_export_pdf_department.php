@@ -3,12 +3,13 @@ use ru860e\rest\Application;
 use ru860e\rest\LDAP;
 use ru860e\rest\Staff;
 
-require_once('../libs/vendor/autoload.php');
+require_once('./pdf_configure.php');
 require_once('../config.php');
 require_once("../libs/forms.php");
 require_once("../libs/staff.php");
 require_once("../libs/phones.php");
 require_once("../libs/pdf.php");
+
 if($ENABLE_PDF_EXPORT)
 	{
 	Application::makeLdapConfigAttrLowercase();
@@ -103,60 +104,8 @@ if($ENABLE_PDF_EXPORT)
 				}
 			}
 		}
-
 	$html.="</table>";
 
-
-
-try {
-
-  $tempDir = '../temp/default/pdf';
-  print ">>>>> dir1 = " . $tempDir;
-  $mpdf = new \Mpdf\Mpdf([
-    'mode' => false,
-    'format' => $PDF_LANDSCAPE?"A4-L":"A4",
-	'default_font_size' => false,
-	'default_font' => 'Arial',
-	'margin_left' => $PDF_MARGIN_LEFT,
-	'margin_right' => $PDF_MARGIN_RIGHT,
-	'margin_top' => $PDF_MARGIN_TOP,
-	'margin_bottom' => $PDF_MARGIN_BOTTOM,
-
-    'tempDir' => $tempDir,
-    'setAutoTopMargin' => 'stretch',
-    'setAutoBottomMargin' => 'stretch'
-  ]);
-
-$fileStyle1 = __DIR__ . "../../../skins/".$CURRENT_SKIN."/css/pdf.css";
-
-$fileStyle = "../skins/".$CURRENT_SKIN."/css/pdf.css";
-print ">>>>> dir = " .  $fileStyle1;
-          $stylesheet = file_get_contents($fileStyle1);
-
-          $mpdf->WriteHTML($stylesheet, 1);
-          $mpdf->WriteHTML($html,2);
-          $mpdf->Output('pdf_departments.pdf', 'I');
-          $mpdf->Output();
-
-} catch (\Mpdf\MpdfException $e) {
-    print "Creating an mPDF object failed with" . $e->getMessage();
-}
-
-/*
-$mpdf->WriteHTML('<h1>Hello world!</h1>');
-$mpdf->Output();
-
-$mpdf = new \Mpdf\Mpdf();
-$mpdf->WriteHTML($html);
-$mpdf->Output('pdf_departments.pdf', 'I');
-$mpdf->Output();
-*/
-
-       // $mpdf=new mPDF(false, $PDF_LANDSCAPE?"A4-L":"A4", false, 'Arial', $PDF_MARGIN_LEFT, $PDF_MARGIN_RIGHT, $PDF_MARGIN_TOP, $PDF_MARGIN_BOTTOM);
-//        $mpdf=new \Mpdf\Mpdf()(false, $PDF_LANDSCAPE?"A4-L":"A4", false, 'Arial', $PDF_MARGIN_LEFT, $PDF_MARGIN_RIGHT, $PDF_MARGIN_TOP, $PDF_MARGIN_BOTTOM);
-
-
-        exit;
-
+    printPdf($html);
 	}
 ?>

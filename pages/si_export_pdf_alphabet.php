@@ -3,8 +3,7 @@ use ru860e\rest\Application;
 use ru860e\rest\LDAP;
 use ru860e\rest\Staff;
 
-
-require_once('../libs/MPDF60/mpdf.php');
+require_once('./pdf_configure.php');
 require_once('../config.php');
 require_once("../libs/forms.php");
 require_once("../libs/staff.php");
@@ -98,14 +97,8 @@ if($ENABLE_PDF_EXPORT)
 
 			}
         }
-
         $html.="</table>";
 
-        $mpdf=new mPDF(false, $PDF_LANDSCAPE?"A4-L":"A4", false, 'Arial', $PDF_MARGIN_LEFT, $PDF_MARGIN_RIGHT, $PDF_MARGIN_TOP, $PDF_MARGIN_BOTTOM);
-        $stylesheet = file_get_contents("../skins/".$CURRENT_SKIN."/css/pdf.css");
-        $mpdf->WriteHTML($stylesheet, 1);
-        $mpdf->WriteHTML($html);
-        $mpdf->Output('pdf_alphabet.pdf', 'I');
-
+        printPdf($html);
     }
 ?>

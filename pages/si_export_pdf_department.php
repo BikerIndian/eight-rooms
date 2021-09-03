@@ -82,7 +82,7 @@ if($ENABLE_PDF_EXPORT)
 							$css="division";
 							$InclusionDep=$Department;
 							}
-					$html.="<tr><td colspan=\"".$colspan."\" class=\"department\"><div class=\"".$css."\">".Staff::makeDepartment($Department)."</div><img src=\"../skins/".$CURRENT_SKIN."/images/pdf/pixel_black.png\" vspace=\"1\" width=\"100%\" height=\"1px\"></td></tr>";
+					$html.="<tr><td colspan=\"".$colspan."\" class=\"department\"><br><div class=\"".$css."\">".Staff::makeDepartment($Department)."</div><img src=\"../skins/".$CURRENT_SKIN."/images/pdf/pixel_black.png\" vspace=\"1\" width=\"100%\" height=\"1px\"></td></tr>";
 					$PrevDepartment=$Department;
 					}
 				else

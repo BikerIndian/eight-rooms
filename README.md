@@ -1,7 +1,10 @@
 Eight-rooms
 =====
 
-Телефонная книга  LDAP(Active Directory)
+Телефонная книга LDAP (Active Directory)
+
+## Системные требования 
+PHP: ^7.0
 
 ## Разработка и тестирование
 Ubuntu 18.04.4 LTS

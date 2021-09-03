@@ -1,3 +1,4 @@
-chmod 777 ./libs/MPDF60/ttfontdata
 chmod 777 ./temp
 chmod -R 777 ./temp/*
+chmod 666 ./temp/counter.dat
+

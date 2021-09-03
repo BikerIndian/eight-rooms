@@ -3,6 +3,8 @@ require_once('../libs/vendor/autoload.php');
 
 function printPdf($html){
 
+        $fileStyle = __DIR__ . "../../../skins/".$CURRENT_SKIN."/css/pdf.css";
+
     try {
 
       $tempDir = '../temp/default/pdf';
@@ -22,11 +24,7 @@ function printPdf($html){
         'setAutoBottomMargin' => 'stretch'
       ]);
 
-        $fileStyle1 = __DIR__ . "../../../skins/".$CURRENT_SKIN."/css/pdf.css";
-
-        $fileStyle = "../skins/".$CURRENT_SKIN."/css/pdf.css";
-
-              $stylesheet = file_get_contents($fileStyle1);
+              $stylesheet = file_get_contents($fileStyle);
 
               $mpdf->WriteHTML($stylesheet, 1);
               $mpdf->WriteHTML($html,2);

@@ -13,8 +13,7 @@
     ],
     "require": {
         "mpdf/mpdf": "^7.1",
-        "fabiang/xmpp": "^0.7.0",
-        "phpoffice/phpexcel": "1.8.2"
+        "phpoffice/phpspreadsheet": "1.18.0"
     },
     "config": {
         "vendor-dir": "./libs/vendor"

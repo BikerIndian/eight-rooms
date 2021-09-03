@@ -48,7 +48,7 @@ $LDAP_ST_DATE_VACATION_FIELD="extensionattribute13";	// Атрибут LDAP, в 
 $LDAP_END_DATE_VACATION_FIELD="extensionattribute14";	// Атрибут LDAP, в котором должна храниться дата окончания отпуска сотрудника.
 $LDAP_AVATAR_FIELD="thumbnailphoto"; //Атрибут LDAP в котором будет хранится аватарка пользователя в бинарном виде
 $LDAP_PHOTO_FIELD="jpegphoto"; //Атрибут LDAP в котором будет хранится полное фото пользователя бинарном виде
-$LDAP_ROOM_NUMBER_FIELD="physicalDeliveryOfficeName"; //Атрибут LDAP в котором будет хранится номер кабинета
+$LDAP_ROOM_NUMBER_FIELD="physicaldeliveryofficename"; //Атрибут LDAP в котором будет хранится номер кабинета
 //----------------------------------------------------------------------------
 
 // Дни рождений

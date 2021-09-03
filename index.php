@@ -13,11 +13,6 @@ require_once("./libs/localization.php");
 require_once("./libs/spyc.php");
 require_once("./vendor/controllers/SiteController.php");
 
-
-
-
-
-
 $Controller = new controllers\SiteController();
 $L = new Localization("./config/locales/" . $LOCALIZATION . ".yml");
 
@@ -231,9 +226,6 @@ if ($ALARM_MESSAGE) {
 
     <tr class="copyright" align="center">
         <td><?php
-            //echo $COPY_RIGHT;
-            //include "counter.php";
-            //include "footer.php";
             $Controller->actionFoter();
             ?></td>
     </tr>

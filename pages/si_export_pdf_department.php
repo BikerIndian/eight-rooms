@@ -3,13 +3,13 @@ use ru860e\rest\Application;
 use ru860e\rest\LDAP;
 use ru860e\rest\Staff;
 
-
-require_once('../libs/MPDF60/mpdf.php');
+require_once('./pdf_configure.php');
 require_once('../config.php');
 require_once("../libs/forms.php");
 require_once("../libs/staff.php");
 require_once("../libs/phones.php");
 require_once("../libs/pdf.php");
+
 if($ENABLE_PDF_EXPORT)
 	{
 	Application::makeLdapConfigAttrLowercase();
@@ -82,7 +82,7 @@ if($ENABLE_PDF_EXPORT)
 							$css="division";
 							$InclusionDep=$Department;
 							}
-					$html.="<tr><td colspan=\"".$colspan."\" class=\"department\"><div class=\"".$css."\">".Staff::makeDepartment($Department)."</div><img src=\"../skins/".$CURRENT_SKIN."/images/pdf/pixel_black.png\" vspace=\"1\" width=\"100%\" height=\"1px\"></td></tr>";
+					$html.="<tr><td colspan=\"".$colspan."\" class=\"department\"><br><div class=\"".$css."\">".Staff::makeDepartment($Department)."</div><img src=\"../skins/".$CURRENT_SKIN."/images/pdf/pixel_black.png\" vspace=\"1\" width=\"100%\" height=\"1px\"></td></tr>";
 					$PrevDepartment=$Department;
 					}
 				else
@@ -104,16 +104,8 @@ if($ENABLE_PDF_EXPORT)
 				}
 			}
 		}
-
 	$html.="</table>";
 
-        $mpdf=new mPDF(false, $PDF_LANDSCAPE?"A4-L":"A4", false, 'Arial', $PDF_MARGIN_LEFT, $PDF_MARGIN_RIGHT, $PDF_MARGIN_TOP, $PDF_MARGIN_BOTTOM);
-        $stylesheet = file_get_contents("../skins/".$CURRENT_SKIN."/css/pdf.css");
-        $mpdf->WriteHTML($stylesheet, 1);
-        $mpdf->WriteHTML($html);
-        $mpdf->Output('pdf_departments.pdf', 'I');
-        $mpdf->Output();
-        exit;
-
+    printPdf($html);
 	}
 ?>

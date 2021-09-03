@@ -11,17 +11,6 @@ abstract class Staff
 		else {return false;}
 		}
 
-	/*public static function makeUserLinkByLogin($Login)
-		{
-		if($GLOBALS['USE_DISPLAY_NAME'])
-			$Attrs=array($GLOBALS['LDAP_DISTINGUISHEDNAME_FIELD'], $GLOBALS['DISPLAY_NAME_FIELD']);
-		else
-			$Attrs=array($GLOBALS['LDAP_DISTINGUISHEDNAME_FIELD']);
-		$Dn_and_name=$GLOBALS['ldap']->getArray($GLOBALS['OU'], "(&(".$GLOBALS['LDAP_USERPRINCIPALNAME_FIELD']."=".$Login."))", $Attrs);
-
-		return self::makeNameUrlFromDn($Dn_and_name[$GLOBALS['LDAP_DISTINGUISHEDNAME_FIELD']][0], $Dn_and_name[$GLOBALS['DISPLAY_NAME_FIELD']][0]);
-		}*/
-
 	public static function getSurname($value)
 		{
 		if($GLOBALS['USE_DISPLAY_NAME'])
@@ -414,9 +403,9 @@ abstract class Staff
 		else
 			echo "<td>".self::highlightSearchResult(self::makeMailUrl($Staff[$GLOBALS['LDAP_MAIL_FIELD']][$key]), $Vars['search_str'])."</td>"; 
 
-		if(!$GLOBALS['HIDE_ROOM_NUMBER'])
+		if(!$GLOBALS['HIDE_ROOM_NUMBER'] && isset($Staff[$GLOBALS['LDAP_ROOM_NUMBER_FIELD']][$key]))
 			{
-			if(empty($Vars['search_str'])) //Если не велся поиск, то не подсвечивавем результаты	
+			if(empty($Vars['search_str'])) //Если не велся поиск, то не подсвечивавем результаты
 				echo "<td>".self::makePlainText($Staff[$GLOBALS['LDAP_ROOM_NUMBER_FIELD']][$key])."</td>"; //Выводим сотовый
 			else
 				echo "<td>".self::highlightSearchResult(self::makePlainText($Staff[$GLOBALS['LDAP_ROOM_NUMBER_FIELD']][$key]), $Vars['search_str'])."</td>"; //Делаем ссылку на полную информацию о сотруднике

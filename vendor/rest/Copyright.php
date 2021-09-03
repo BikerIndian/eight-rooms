@@ -13,7 +13,7 @@ namespace ru860e\rest;
 class Copyright extends Content
 {
 
-    private $content = 'VmxhZGltaXIgU3Zpc2hjaCwgMjAxNyAtIDIwMTgsIG1haWw6ICA8YSBocmVmPSJtYWlsdG86NTY5MzAzMUBnbWFpbC5jb20iIGNsYXNzPSJpbl9saW5rIj41NjkzMDMxQGdtYWlsLmNvbTwvYT4sR2l0OiA8YSBocmVmPSJodHRwczovL2dpdGh1Yi5jb20vQmlrZXJJbmRpYW4vZWlnaHQtcm9vbXMiPlJlbGVhc2UuPC9hPg0KPGJyPiYgVmxhZGltaXIgUGl0aW4sIDIwMTIgIA0KDQo=';
+    private $content = 'VmxhZGltaXIgU3Zpc2hjaCwgMjAxNyAtIDIwMjEsIG1haWw6ICA8YSBocmVmPSJtYWlsdG86NTY5MzAzMUBnbWFpbC5jb20iIGNsYXNzPSJpbl9saW5rIj41NjkzMDMxQGdtYWlsLmNvbTwvYT4sR2l0OiA8YSBocmVmPSJodHRwczovL2dpdGh1Yi5jb20vQmlrZXJJbmRpYW4vZWlnaHQtcm9vbXMiPlJlbGVhc2UuPC9hPgo8YnI+JiBWbGFkaW1pciBQaXRpbiwgMjAxMiAg';
 
     public function printHtml()
     {

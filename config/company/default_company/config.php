@@ -11,7 +11,7 @@ require_once(dirname(__FILE__)."/config_ldap.php");
 $COMPANY_DIR = "default"; // Каталог для фоток ./temp/[$COMPANY_DIR]
 
 //LDAP
-$DIS_USERS_COND="(!(useraccountcontrol:1.2.840.113556.1.4.803:=2))(!(useraccountcontrol:1.2.840.113556.1.4.803:=16))(!(memberOf=CN=".$LDAP_NoSHOW_GROOP.",CN=Users,".$OU."))"; // Условие фильтра LDAP, которое должно препятствовать выводу заблокированных и отключенных в Active Directory пользователей. По умолчанию используется значение «(!(useraccountcontrol:1.2.840.113556.1.4.803:=2))(!(useraccountcontrol:1.2.840.113556.1.4.803:=16))»
+$DIS_USERS_COND="(!(useraccountcontrol:1.2.840.113556.1.4.803:=2))(!(useraccountcontrol:1.2.840.113556.1.4.803:=16))(!(memberOf=".$LDAP_NoSHOW_GROOP."))"; // Условие фильтра LDAP, которое должно препятствовать выводу заблокированных и отключенных в Active Directory пользователей. По умолчанию используется значение «(!(useraccountcontrol:1.2.840.113556.1.4.803:=2))(!(useraccountcontrol:1.2.840.113556.1.4.803:=16))»
 $LDAP_SIZE_LIMIT_COMPATIBILITY=false; //Сделать возможным выбирать большее количество сотрудников чем указано в SIZE LIMIT сервера? См. также $LDAP_SIZE_LIMIT_PAGE_DIVIDER_FIELD
 //----------------------------------------------------------------------------
 
@@ -48,7 +48,7 @@ $LDAP_ST_DATE_VACATION_FIELD="extensionattribute13";	// Атрибут LDAP, в 
 $LDAP_END_DATE_VACATION_FIELD="extensionattribute14";	// Атрибут LDAP, в котором должна храниться дата окончания отпуска сотрудника.
 $LDAP_AVATAR_FIELD="thumbnailphoto"; //Атрибут LDAP в котором будет хранится аватарка пользователя в бинарном виде
 $LDAP_PHOTO_FIELD="jpegphoto"; //Атрибут LDAP в котором будет хранится полное фото пользователя бинарном виде
-$LDAP_ROOM_NUMBER_FIELD="physicalDeliveryOfficeName"; //Атрибут LDAP в котором будет хранится номер кабинета
+$LDAP_ROOM_NUMBER_FIELD="physicaldeliveryofficename"; //Атрибут LDAP в котором будет хранится номер кабинета
 //----------------------------------------------------------------------------
 
 // Дни рождений
@@ -140,7 +140,7 @@ $PDF_MARGIN_TOP=5; //Отступ сверху
 $PDF_MARGIN_RIGHT=5; //Отступ справа
 $PDF_MARGIN_BOTTOM=5; //Отступ снизу
 $PDF_LANDSCAPE=false; // Если параметр равен «true», то при экспорте в PDF будет использоваться альбомная ориентация, если «false» — то нет. По умолчанию используется значение «false».
-$PDF_LOGO="../temp/".$COMPANY_DIR."/pdf/logo.png";
+$PDF_LOGO="../temp/".$COMPANY_DIR."/logo/logo.png";
 $PDF_WIDTH_LOGO="100";  //Ширина логотипа в пикселях (Vladimir Svishch)
 $PDF_HEIGHT_LOGO=""; //Высота фото в пикселях	(Vladimir Svishch)
 
@@ -261,7 +261,7 @@ $HIDE_STAFF_WITHOUT_PHONES=false; // То же что $PDF_HIDE_STAFF_WITHOUT_PH
 $ALPH_ITEM_IN_LINE=35; // Количество букв в одной строке в блоке быстрого перехода, на странице с разбивкой сотрудников по первым буквам фамилии. По умолчанию значение равно «35»
 $DEP_ITEM_IN_COL=3; // Количество отделов в одном столбце в блоке быстрого перехода, на странице с разбивкой сотрудников по отделам. По умолчанию значение равно «3»
 //$COPY_RIGHT="<a href=\"http://www.pitin.su\" target=\"NewWindow\">© V. Pitin, 2012 </a>"; // :-)
-$COPY_RIGHT="© Vladimir Svishch, 2018, mail:  <a href=\"mailto:5693031@gmail.com\" class=\"in_link\">5693031@gmail.com</a> & Vladimir Pitin, 2012";
+$COPY_RIGHT="© Vladimir Svishch, 2021, mail:  <a href=\"mailto:5693031@gmail.com\" class=\"in_link\">5693031@gmail.com</a> & Vladimir Pitin, 2012";
 
 /* 
 $DEP_ADD - Этот атрибут позволяет добавить дополнительную строку в конце названия отдела на странице с разбивкой сотрудников по отделам.

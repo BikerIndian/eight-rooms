@@ -11,9 +11,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 */
 
-
-
-
+require_once('../libs/vendor/autoload.php');
 require_once('../config.php');
 require_once("../libs/forms.php");
 require_once("../libs/staff.php");
@@ -28,7 +26,7 @@ if (PHP_SAPI == 'cli')
     die('This example should only be run from a Web Browser');
 
 /** Подключаем PHPExcel */
-require_once dirname(__FILE__) . '/../libs/PHPExcel/PHPExcel.php';
+//require_once dirname(__FILE__) . '/../libs/PHPExcel/PHPExcel.php';
 
 
 // Создаем новый PHPExcel object
@@ -109,7 +107,25 @@ if ($ENABLE_EXEL_EXPORT) {
 
 
     $request = "(&(objectCategory=person)$DIS_USERS_COND)";
-    $Staff = $ldap->getArray($OU, $request, array($DisplayName, $LDAP_MAIL_FIELD, $LDAP_INTERNAL_PHONE_FIELD, $LDAP_CITY_PHONE_FIELD, $LDAP_TITLE_FIELD, $LDAP_DEPARTMENT_FIELD, $LDAP_CELL_PHONE_FIELD, $LDAP_MANAGER_FIELD, $LDAP_ROOM_NUMBER_FIELD), array($LDAP_DEPARTMENT_FIELD, $DEP_SORT_ORDER, $LDAP_TITLE_FIELD, $STAFF_SORT_ORDER, $DisplayName));
+    $ldapListAttrs = array(
+                        $DisplayName,
+                        $LDAP_MAIL_FIELD,
+                        $LDAP_INTERNAL_PHONE_FIELD,
+                        $LDAP_CITY_PHONE_FIELD,
+                        $LDAP_TITLE_FIELD,
+                        $LDAP_DEPARTMENT_FIELD,
+                        $LDAP_CELL_PHONE_FIELD,
+                        $LDAP_MANAGER_FIELD,
+                        $LDAP_ROOM_NUMBER_FIELD);
+
+    $sortArr = array($LDAP_DEPARTMENT_FIELD, $DEP_SORT_ORDER, $LDAP_TITLE_FIELD, $STAFF_SORT_ORDER, $DisplayName);
+
+    $Staff = $ldap->getArray(
+                    $OU,
+                    $request,
+                    $ldapListAttrs,
+                    $sortArr);
+
     if (is_array($Staff)) {
         $SizeOf = sizeof($Staff[$DisplayName]);
 
@@ -158,9 +174,8 @@ if ($ENABLE_EXEL_EXPORT) {
 
                 $cellPhone = $Staff[$LDAP_CELL_PHONE_FIELD][$i];
 
-                $roomNuber = $Staff[$GLOBALS['LDAP_ROOM_NUMBER_FIELD']][$i];
+                $roomNuber = isset($Staff[$LDAP_ROOM_NUMBER_FIELD][$i]) ? $Staff[$LDAP_ROOM_NUMBER_FIELD][$i] : "";
                 $mail = $Staff[$LDAP_MAIL_FIELD][$i];
-
                 $html.=
                         $i .
                         $Departam . // Отдел
@@ -201,29 +216,23 @@ if ($ENABLE_EXEL_EXPORT) {
         }
     }
 
-
 }
-
-
 
 $objPHPExcel->setActiveSheetIndex(0);
 
-
-
-// Redirect output to a client’s web browser (Excel2007)
-header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-header('Content-Disposition: attachment;filename=' . $fileNnameEXEL);
+header('Content-Type: application/vnd.ms-excel');
+header('Content-Disposition: attachment;filename='.$fileNnameEXEL);
 header('Cache-Control: max-age=0');
 // If you're serving to IE 9, then the following may be needed
 header('Cache-Control: max-age=1');
 
 // If you're serving to IE over SSL, then the following may be needed
-header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
-header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT'); // always modified
-header('Cache-Control: cache, must-revalidate'); // HTTP/1.1
-header('Pragma: public'); // HTTP/1.0
+header ('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // Date in the past
+header ('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT'); // always modified
+header ('Cache-Control: cache, must-revalidate'); // HTTP/1.1
+header ('Pragma: public'); // HTTP/1.0
 
-$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+$objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
 $objWriter->save('php://output');
 exit;
 

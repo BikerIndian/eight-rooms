@@ -4,9 +4,9 @@ Eight-rooms
 Телефонная книга  LDAP(Active Directory)
 
 ## Разработка и тестирование
-OS: 14.04.1-Ubuntu
+Ubuntu 18.04.4 LTS
 
-PHP: 5.5.9-1ubuntu4.21 (cli) (built: Feb  9 2017 20:54:58)
+PHP 7.2.24-0ubuntu0.18.04.8 (cli) (built: Jul  5 2021 17:41:32) ( NTS )
 
 
 ## Установка 
@@ -46,7 +46,7 @@ $OU="DC=ad,DC=loc";
 //----------------------------------------------------------------------------
 $ADMIN_LOGINS[]='admin@ad.loc';
 
-$LDAP_NoSHOW_GROOP = 'TelNoShow,CN=Users,DC=ad,DC=loc'; // Группа пользователей, которую не отображает справочник
+$LDAP_NoSHOW_GROOP = 'CN=TelNoShow,CN=Users,DC=ad,DC=loc'; // Группа пользователей, которую не отображает справочник. Путь указать полностью. 
 
 Дополнительные настройки в 
 .\eight-rooms\config\company\default_company\config.php

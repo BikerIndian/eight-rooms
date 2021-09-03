@@ -11,7 +11,7 @@ require_once(dirname(__FILE__)."/config_ldap.php");
 $COMPANY_DIR = "default"; // Каталог для фоток ./temp/[$COMPANY_DIR]
 
 //LDAP
-$DIS_USERS_COND="(!(useraccountcontrol:1.2.840.113556.1.4.803:=2))(!(useraccountcontrol:1.2.840.113556.1.4.803:=16))(!(memberOf=CN=".$LDAP_NoSHOW_GROOP."))"; // Условие фильтра LDAP, которое должно препятствовать выводу заблокированных и отключенных в Active Directory пользователей. По умолчанию используется значение «(!(useraccountcontrol:1.2.840.113556.1.4.803:=2))(!(useraccountcontrol:1.2.840.113556.1.4.803:=16))»
+$DIS_USERS_COND="(!(useraccountcontrol:1.2.840.113556.1.4.803:=2))(!(useraccountcontrol:1.2.840.113556.1.4.803:=16))(!(memberOf=".$LDAP_NoSHOW_GROOP."))"; // Условие фильтра LDAP, которое должно препятствовать выводу заблокированных и отключенных в Active Directory пользователей. По умолчанию используется значение «(!(useraccountcontrol:1.2.840.113556.1.4.803:=2))(!(useraccountcontrol:1.2.840.113556.1.4.803:=16))»
 $LDAP_SIZE_LIMIT_COMPATIBILITY=false; //Сделать возможным выбирать большее количество сотрудников чем указано в SIZE LIMIT сервера? См. также $LDAP_SIZE_LIMIT_PAGE_DIVIDER_FIELD
 //----------------------------------------------------------------------------
 

@@ -11,6 +11,8 @@
             "role": "developer"
         }
     ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "require": {
         "mpdf/mpdf": "^7.1",
         "phpoffice/phpspreadsheet": "1.18.0"

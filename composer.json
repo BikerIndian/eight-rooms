@@ -1,9 +1,9 @@
 {
     "name": "biker-idian/eight-rooms",
-    "description": "Phone book for LDAP(Active Directory)",
+    "description": "Phone book for LDAP (Active Directory)",
     "license": "BSD-3-Clause",
     "homepage": "https://github.com/BikerIndian/eight-rooms",
-    "keywords": ["eight-rooms"],
+    "keywords": ["php", "LDAP", "telephone book","eight-rooms"],
     "authors": [
         {
             "name": "Vladimir Svishch",
@@ -11,9 +11,11 @@
             "role": "developer"
         }
     ],
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true,
+    "version": "dev-main"
     "require": {
+        "php": ">=7.1",
         "mpdf/mpdf": "^7.1",
         "phpoffice/phpspreadsheet": "1.18.0"
     },

@@ -11,7 +11,7 @@
             "role": "developer"
         }
     ],
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
         "mpdf/mpdf": "^7.1",

@@ -3,6 +3,9 @@ Eight-rooms
 
 Телефонная книга LDAP (Active Directory)
 
+## Контакты
+Если возникли вопросы пишите лучше в телегу >>> https://t.me/eight_rooms
+
 ## Системные требования 
 PHP: ^7.0
 

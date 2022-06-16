@@ -129,7 +129,7 @@ $Birth=$ldap->getValue($dn, $LDAP_BIRTH_FIELD);
 //-----------------------------------------------------------------------------
 if($Birth)
 {
-	switch($BIRTH_DATE_FORMAT)
+	switch($BIRTHDAYS['BIRTH_DATE_FORMAT'])
 	{
 		case 'yyyy-mm-dd':
 		{
@@ -144,7 +144,7 @@ if($Birth)
 	}
 
 	$Jubilee="";
-	if($SHOW_JUBILEE_INFO)
+	if($BIRTHDAYS['SHOW_JUBILEE_INFO'])
 		{	
 		if(!((date("Y")-$Date[2])%5)) $Jubilee="<div>".$L->l('round_date')."</div>";
 		if(!((date("Y")-$Date[2])%10)) $Jubilee="<div>".$L->l('jubilee')."</div>";

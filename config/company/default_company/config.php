@@ -19,7 +19,6 @@ $LDAP_SIZE_LIMIT_COMPATIBILITY=false; //Сделать возможным выб
 //----------------------------------------------------------------------------
 $LDAP_DISTINGUISHEDNAME_FIELD="distinguishedname";
 $LDAP_USERPRINCIPALNAME_FIELD="userprincipalname";
-$LDAP_COMPANY_FIELD="company"; //Атрибут LDAP в котором будет хранится название компании сотрудника
 $LDAP_NAME_FIELD="name";
 $LDAP_OBJECTCLASS_FIELD="objectclass";
 $LDAP_CN_FIELD="cn";
@@ -53,11 +52,12 @@ $LDAP_ROOM_NUMBER_FIELD="physicaldeliveryofficename"; //Атрибут LDAP в �
 
 // Дни рождений
 //----------------------------------------------------------------------------
-$NUM_ALARM_DAYES=14; //Количество дней, за которое необходимо предупреждать о днях рождениях.
-$NEAR_BIRTHDAYS=true; //Выводить ближайшее дни рождения (true) или нет (false)?
-$BIRTH_DATE_FORMAT="dd.mm.yyyy"; // Формат хранения даты рождения в атрибуте LDAP. Доступные значения: «yyyy-mm-dd» и «dd.mm.yyyy»
-$BIRTH_VIS_ROW_NUM=3; // Количество видимых предупреждений о ближайших днях рождения. Остальные скрываются под стрелочку.
-$SHOW_JUBILEE_INFO=true;
+$BIRTHDAYS['NUM_ALARM_DAYES']               = 14;           //Количество дней, за которое необходимо предупреждать о днях рождениях.
+$BIRTHDAYS['$NEAR_BIRTHDAYS']               = true;         //Выводить ближайшее дни рождения (true) или нет (false)?
+$BIRTHDAYS['BIRTH_DATE_FORMAT']             = "dd.mm.yyyy"; // Формат хранения даты рождения в атрибуте LDAP. Доступные значения: «yyyy-mm-dd» и «dd.mm.yyyy»
+$BIRTHDAYS['BIRTH_VIS_ROW_NUM']             = 3;            // Количество видимых предупреждений о ближайших днях рождения. Остальные скрываются под стрелочку.
+$BIRTHDAYS['SHOW_JUBILEE_INFO']             = true;
+
 //----------------------------------------------------------------------------
 
 // Различные данные о пользователе
@@ -246,14 +246,17 @@ BLOCK_VIS - Данный параметр позволяет управлять 
 $BLOCK_VIS['si_dep_staff_list']['search']=false;
 $BLOCK_VIS['si_alph_staff_list']['search']=false;
 $BLOCK_VIS['si_stafflist']['search']=true;
+
 //Блок, выводящий информацию об аутентифицированном сотруднике
 $BLOCK_VIS['si_dep_staff_list']['profile']=true; // Показывает меню администратора // по умалчанию false
 $BLOCK_VIS['si_alph_staff_list']['profile']=true;  // по умалчанию false
 $BLOCK_VIS['si_stafflist']['profile']=true;
+
 //Блок ближайших дней рождений
-$BLOCK_VIS['si_dep_staff_list']['birthdays']=false;
-$BLOCK_VIS['si_alph_staff_list']['birthdays']=false;
+$BLOCK_VIS['si_dep_staff_list']['birthdays']=true;
+$BLOCK_VIS['si_alph_staff_list']['birthdays']=true;
 $BLOCK_VIS['si_stafflist']['birthdays']=true;
+
 //Блок быстрого перехода на букву или на отдел
 $BLOCK_VIS['si_dep_staff_list']['fast_move']=true;
 $BLOCK_VIS['si_alph_staff_list']['fast_move']=true;
@@ -360,4 +363,5 @@ $CALL_VIA_IP_PRIORITY = "1";
 $CALL_VIA_IP_MAX_RETRY = "0";
 //----------------------------------------------------------------------------
 
+require_once(dirname(__FILE__)."/configGlobal.php");
 ?>

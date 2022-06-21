@@ -4,8 +4,9 @@ use ru860e\rest\LDAP;
 use ru860e\rest\Application;
 
 //Выввод ближайших дней рождений
+$CONFIG_LDAP = $CONFIG['CONFIG_LDAP'];
 
-if($BIRTHDAYS['$NEAR_BIRTHDAYS']) {
+if($BIRTHDAYS['NEAR_BIRTHDAYS']) {
 
     $ldapListAttrs = array(
                     $CONFIG_LDAP_ATTRIBUTE['LDAP_NAME_FIELD'],
@@ -16,23 +17,23 @@ if($BIRTHDAYS['$NEAR_BIRTHDAYS']) {
     $filterBirth = getFilterBirth(
                 $CONFIG_LDAP_ATTRIBUTE,
                 $BIRTHDAYS,
-                $DIS_USERS_COND,
+                $CONFIG_LDAP['DIS_USERS_COND'],
                 time()
                 );
 
-    $userList = getUserList($ldap,$OU,$filterBirth,$ldapListAttrs);
+    $userList = getUserList($ldap,$LDAP_USER['OU_USER_READ'] ,$filterBirth,$ldapListAttrs);
 
-    printBirth($L,$CONFIG_LDAP_ATTRIBUTE,$BIRTHDAYS,$userList);
+    printBirth($localization,$CONFIG_LDAP_ATTRIBUTE,$BIRTHDAYS,$userList);
 
 }
 
-    function printBirth($L,$CONFIG_LDAP_ATTRIBUTE,$BIRTHDAYS,$userList)
+    function printBirth($localization,$CONFIG_LDAP_ATTRIBUTE,$BIRTHDAYS,$userList)
 	{
 
     //echo print_r($userList);
         echo"<div class=\"heads\">
             <fieldset class=\"birthdays\">
-            <legend>".$L->l('nearest')." ".$BIRTHDAYS['NUM_ALARM_DAYES']." ".$L->l('they_have_birthdays').":</legend>";
+            <legend>".$localization->get('nearest')." ".$BIRTHDAYS['NUM_ALARM_DAYES']." ".$localization->get('they_have_birthdays').":</legend>";
         echo "<table class='sqltable' cellpadding='4'>";
 
 	    if (is_array($userList)) {
@@ -44,7 +45,7 @@ if($BIRTHDAYS['$NEAR_BIRTHDAYS']) {
 
                     $link = getName($name,$ou);
                     $birth =  $userList[$CONFIG_LDAP_ATTRIBUTE['LDAP_BIRTH_FIELD']][$key];
-                    $birth =  formatDate($BIRTHDAYS['BIRTH_DATE_FORMAT'],$birth);
+                    $birth =  formatDate($BIRTHDAYS['BIRTH_DATE_FORMAT'],$birth,$localization);
                     echo "<tr class='" . getClassRow($row) . "'>";
                     echo "<td>$link</td><td>$birth</td></tr>";
                 }
@@ -112,7 +113,7 @@ if($BIRTHDAYS['$NEAR_BIRTHDAYS']) {
         return $ldapTable;
 	}
 
-	function formatDate($format,$dateIn){
+	function formatDate($format,$dateIn,$localization){
 	    $dateOut="";
 	    switch($format)
         {
@@ -127,5 +128,5 @@ if($BIRTHDAYS['$NEAR_BIRTHDAYS']) {
         }
 
         // 	Вывод в формаете "17 Июня"
-        return $dateArr[1]." ".$GLOBALS['MONTHS'][(int) $dateArr[2]];
+        return $dateArr[1]." ". $localization->getArr('months')[(int) $dateArr[2]];
 	}

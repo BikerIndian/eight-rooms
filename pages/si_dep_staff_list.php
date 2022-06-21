@@ -23,9 +23,9 @@ if($BLOCK_VIS[$menu_marker]['profile'])
 if($BLOCK_VIS[$menu_marker]['fast_move'])
 {
 	echo "<br/>
-	<span id=\"ALPH_ITEM_IN_LINE\" class=\"h\">".$DEP_ITEM_IN_COL."</span>
+	<span id=\"ALPH_ITEM_IN_LINE\" class=\"h\">".$CONFIG_APP['DEP_ITEM_IN_COL']."</span>
 	<fieldset id=\"move_to_dep\">
-		<legend>".$L->l('fast_move_to_department')."</legend>
+		<legend>".$localization->get('fast_move_to_department')."</legend>
 	</fieldset>
 	";
 }
@@ -33,69 +33,76 @@ if($BLOCK_VIS[$menu_marker]['fast_move'])
 </form>
 <?php
 //=================================================================================================================
-$ldap=new LDAP($LDAPServer, $LDAPUser, $LDAPPassword); //Соединяемся с сервером
 // Делаем фильтр для выборки сотрудников нужных компаний
 //-------------------------------------------------------------------------------------------------------------
-$CompanyNameLdapFilter=Application::getCompanyNameLdapFilter();
+$CompanyNameLdapFilter=$application->getCompanyNameLdapFilter();
 //-------------------------------------------------------------------------------------------------------------
 // Определяем какой атрибут будем использовать в качестве формирования ФИО сотрудника
 //-------------------------------------------------------------------------------------------------------------
-if($USE_DISPLAY_NAME)
-	$DisplayName=$DISPLAY_NAME_FIELD;
+if($CONFIG_APP['USE_DISPLAY_NAME'])
+	$DisplayName=$CONFIG_LDAP_ATTRIBUTE['DISPLAY_NAME_FIELD']  ;
 else
-	$DisplayName=$LDAP_NAME_FIELD;
+	$DisplayName=$CONFIG_LDAP_ATTRIBUTE['LDAP_NAME_FIELD'];
 //-------------------------------------------------------------------------------------------------------------
-$LdapListAttrs = array($LDAP_DISTINGUISHEDNAME_FIELD, $DisplayName,
-  		$LDAP_MAIL_FIELD, 
-  		$LDAP_INTERNAL_PHONE_FIELD,
-  		$LDAP_CITY_PHONE_FIELD,
-  		$LDAP_ST_DATE_VACATION_FIELD,
-  		$LDAP_END_DATE_VACATION_FIELD,
-  		$LDAP_TITLE_FIELD,
-  		$LDAP_DEPARTMENT_FIELD,
-  		$LDAP_CELL_PHONE_FIELD,
-  		$LDAP_MANAGER_FIELD,
-  		$LDAP_COMPUTER_FIELD,
-  		$LDAP_DEPUTY_FIELD,
-  		$LDAP_GUID_FIELD,
-  		$LDAP_USERPRINCIPALNAME_FIELD,
-  		$LDAP_ROOM_NUMBER_FIELD);
+$LdapListAttrs = array(
+        $CONFIG_LDAP_ATTRIBUTE['LDAP_DISTINGUISHEDNAME_FIELD'],
+        $DisplayName,
+  		$CONFIG_LDAP_ATTRIBUTE['LDAP_MAIL_FIELD'],
+  		$CONFIG_LDAP_ATTRIBUTE['LDAP_INTERNAL_PHONE_FIELD'],
+  		$CONFIG_LDAP_ATTRIBUTE['LDAP_CITY_PHONE_FIELD'],
+  		$CONFIG_LDAP_ATTRIBUTE['LDAP_ST_DATE_VACATION_FIELD'],
+  		$CONFIG_LDAP_ATTRIBUTE['LDAP_END_DATE_VACATION_FIELD'],
+  		$CONFIG_LDAP_ATTRIBUTE['LDAP_TITLE_FIELD'],
+  		$CONFIG_LDAP_ATTRIBUTE['LDAP_DEPARTMENT_FIELD'],
+  		$CONFIG_LDAP_ATTRIBUTE['LDAP_CELL_PHONE_FIELD'],
+  		$CONFIG_LDAP_ATTRIBUTE['LDAP_MANAGER_FIELD'],
+  		$CONFIG_LDAP_ATTRIBUTE['LDAP_COMPUTER_FIELD'],
+  		$CONFIG_LDAP_ATTRIBUTE['LDAP_DEPUTY_FIELD'],
+  		$CONFIG_LDAP_ATTRIBUTE['LDAP_GUID_FIELD'],
+  		$CONFIG_LDAP_ATTRIBUTE['LDAP_USERPRINCIPALNAME_FIELD'],
+  		$CONFIG_LDAP_ATTRIBUTE['LDAP_ROOM_NUMBER_FIELD']);
 //Получаем правильно отсортированных сотрудников с необходимыми атрибутами LDAP, учитывая настроки сортировки из конфига
 
-$inquiry = "(&(objectCategory=person)$DIS_USERS_COND)";
+$inquiry = "(&(objectCategory=person)".$CONFIG_LDAP['DIS_USERS_COND'].")";
 
-$Staff=$ldap->getArray($OU,
+$staffUserList=$ldap->getArray(
+    $LDAP_USER['OU_USER_READ'],
 	$inquiry,
 	$LdapListAttrs,
-  	array($LDAP_DEPARTMENT_FIELD, $DEP_SORT_ORDER, $LDAP_TITLE_FIELD, $STAFF_SORT_ORDER, $DisplayName));
+  	array(
+  	    $CONFIG_LDAP_ATTRIBUTE['LDAP_DEPARTMENT_FIELD'],
+  	    $CONFIG['DEP_SORT_ORDER'],
+  	    $CONFIG_LDAP_ATTRIBUTE['LDAP_TITLE_FIELD'],
+  	    $CONFIG['STAFF_SORT_ORDER'],
+  	    $DisplayName));
 
 
-if(is_array($Staff))
+if(is_array($staffUserList))
 {
 	// Шапка таблицы
 	//-------------------------------------------------------------------------------------------------------------
 	echo "
 		<table class=\"sqltable\" cellpadding=\"4\">
-		<th><div>".$L->l('full_name')."</div></th>
-		<th><div>".$L->l('position')."</div></th>
-		<th><div>".$L->l('email')."</div></th>";
-	if(!$HIDE_ROOM_NUMBER)
-		echo "<th><div>".$L->l('room_number')."</div></th>";
+		<th><div>".$localization->get('full_name')."</div></th>
+		<th><div>".$localization->get('position')."</div></th>
+		<th><div>".$localization->get('email')."</div></th>";
+	if(!$CONFIG_APP['HIDE_ROOM_NUMBER'])
+		echo "<th><div>".$localization->get('room_number')."</div></th>";
 	echo"
-		<th><div>".$L->l('intrenal_phone')."</div></th>
+		<th><div>".$localization->get('intrenal_phone')."</div></th>
 		";
-	if(!$HIDE_CITY_PHONE_FIELD)
-		echo "<th><div>".$L->l('city_phone')."</div></th>";	
-	if(!$HIDE_CELL_PHONE_FIELD)
-		echo "<th><div>".$L->l('cell_phone')."</div></th>";
-	if(Staff::showComputerName($Login)) //Если сотрудник является администратором справочника
-		echo "<th><div>".$L->l('pc')."</div></th>";
-	if($GLOBALS['XMPP_ENABLE'] && $GLOBALS['XMPP_MESSAGE_LISTS_ENABLE'] && !empty($_COOKIE['dn']))	
+	if(!$CONFIG_PHONE['HIDE_CITY_PHONE_FIELD'])
+		echo "<th><div>".$localization->get('city_phone')."</div></th>";
+	if(!$CONFIG_PHONE['HIDE_CELL_PHONE_FIELD'])
+		echo "<th><div>".$localization->get('cell_phone')."</div></th>";
+	if($staff->showComputerName($Login)) //Если сотрудник является администратором справочника
+		echo "<th><div>".$localization->get('pc')."</div></th>";
+	if($CONFIG_XMPP['XMPP_ENABLE'] && $CONFIG_XMPP['XMPP_MESSAGE_LISTS_ENABLE'] && !empty($_COOKIE['dn']))
 		echo "<th><div></div></th>";	
-	if($FAVOURITE_CONTACTS && isset($_COOKIE['dn']))
+	if($CONFIG_APP['FAVOURITE_CONTACTS'] && isset($_COOKIE['dn']))
 		echo "<th><div></div></th>";
-	if(empty($_COOKIE['dn']) && $ENABLE_DANGEROUS_AUTH)
-		echo Application::getCollTitle();
+	if(empty($_COOKIE['dn']) && $CONFIG_APP['ENABLE_DANGEROUS_AUTH'])
+		echo $application->getCollTitle();
 	//-------------------------------------------------------------------------------------------------------------
     $FavouriteDNs=[];
     if(isset($_COOKIE['dn'])){
@@ -104,15 +111,15 @@ if(is_array($Staff))
 
 
 	//Выводим пользователей, которые есть в избраном
-	if($GLOBALS['FAVOURITE_CONTACTS'] && is_array($FavouriteDNs))
+	if($CONFIG_APP['FAVOURITE_CONTACTS'] && is_array($FavouriteDNs))
 		{
-		$Filter="(&(".$LDAP_CN_FIELD."=*)".$DIS_USERS_COND."(|(".$LDAP_DISTINGUISHEDNAME_FIELD."=".implode(")(".$LDAP_DISTINGUISHEDNAME_FIELD."=", LDAP::escapeFilterValue($FavouriteDNs)).")))";
+		$Filter="(&(".$CONFIG_LDAP_ATTRIBUTE['LDAP_CN_FIELD']."=*)".$CONFIG_LDAP['DIS_USERS_COND']."(|(".$CONFIG_LDAP_ATTRIBUTE['LDAP_DISTINGUISHEDNAME_FIELD']."=".implode(")(".$CONFIG_LDAP_ATTRIBUTE['LDAP_DISTINGUISHEDNAME_FIELD']."=", $ldap->escapeFilterValue($FavouriteDNs)).")))";
 		//echo "$Filtersaasdas";
-		$Favourites=$ldap->getArray($OU, $Filter, $LdapListAttrs);
+		$Favourites=$ldap->getArray($LDAP_USER['OU_USER_READ'], $Filter, $LdapListAttrs);
 		if(is_array($Favourites))
 			{
 			$row=0;
-			foreach($Favourites[$LDAP_DISTINGUISHEDNAME_FIELD] AS $key=>$value)
+			foreach($Favourites[$CONFIG_LDAP_ATTRIBUTE['LDAP_DISTINGUISHEDNAME_FIELD']] AS $key=>$value)
 				{	
 				$Vars['row_css']=($row%2) ? "even favourite" : "odd favourite";
 				$Vars['current_login']=$Login;
@@ -121,32 +128,32 @@ if(is_array($Staff))
 				$Vars['favourite_dns']=$FavouriteDNs;
 				$Vars['data_parent_id']=true;
 				$Vars['id']=false;
-				Staff::printUserTableRow($Favourites, $key, $Vars);
+				$staff->printUserTableRow($Favourites, $key, $Vars);
 				$row++;
 				}
 			}
 		}
 	$row=0;	// переменная, используемая для нумерации строк таблицы
-	foreach($Staff[$LDAP_DISTINGUISHEDNAME_FIELD] AS $key=>$value)
+	foreach($staffUserList[$CONFIG_LDAP_ATTRIBUTE['LDAP_DISTINGUISHEDNAME_FIELD']] AS $key=>$value)
 	{
-		if($Staff[$LDAP_DEPARTMENT_FIELD][$key]!=@$prevDEP) //Если отдел текущего сотрудника аналогичен отделу предыдущего
+		if($staffUserList[$CONFIG_LDAP_ATTRIBUTE['LDAP_DEPARTMENT_FIELD']][$key]!=@$prevDEP) //Если отдел текущего сотрудника аналогичен отделу предыдущего
 		{
-			if(strpos($Staff[$LDAP_DEPARTMENT_FIELD][$key], @$inclusionDEP)===0) //Если предыдущий отдел начинается с нового отдела (т.е. новый подстрока предыдущего)
+			if(strpos($staffUserList[$CONFIG_LDAP_ATTRIBUTE['LDAP_DEPARTMENT_FIELD']][$key], @$inclusionDEP)===0) //Если предыдущий отдел начинается с нового отдела (т.е. новый подстрока предыдущего)
 			{
 				$depCSS="department";
 			}
 			else
 			{
 				$depCSS="division";
-				$inclusionDEP=($Staff[$LDAP_DEPARTMENT_FIELD][$key])?$Staff[$LDAP_DEPARTMENT_FIELD][$key]:' ';
+				$inclusionDEP=($staffUserList[$CONFIG_LDAP_ATTRIBUTE['LDAP_DEPARTMENT_FIELD']][$key])?$staffUserList[$CONFIG_LDAP_ATTRIBUTE['LDAP_DEPARTMENT_FIELD']][$key]:' ';
 			}
-			$prevDEP=$Staff[$LDAP_DEPARTMENT_FIELD][$key];
+			$prevDEP=$staffUserList[$CONFIG_LDAP_ATTRIBUTE['LDAP_DEPARTMENT_FIELD']][$key];
 			echo "
 			<tr>
-				<td colspan=\"".Staff::getNumStaffTableColls()."\">
+				<td colspan=\"".$staff->getNumStaffTableColls()."\">
 					<div class=\"department_title ".$depCSS."\">
 						<a href=\"#move_to_dep\" class=\"in_link uarr\" >&uarr;</a>
-						<span id=\"dep_".$row."\">".Staff::makeDepartment($Staff[$LDAP_DEPARTMENT_FIELD][$key], true)."</span>
+						<span id=\"dep_".$row."\">".$staff->makeDepartment($staffUserList[$CONFIG_LDAP_ATTRIBUTE['LDAP_DEPARTMENT_FIELD']][$key], true)."</span>
 					</div>
 				</td>
 			</tr>
@@ -160,7 +167,7 @@ if(is_array($Staff))
 		$Vars['favourite_dns']=$FavouriteDNs;
 		$Vars['data_parent_id']=false;
 		$Vars['id']=true;
-		Staff::printUserTableRow($Staff, $key, $Vars);
+		$staff->printUserTableRow($staffUserList, $key, $Vars);
 		$row++;
 	}
 	echo"</table>";	

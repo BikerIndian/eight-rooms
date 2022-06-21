@@ -86,7 +86,7 @@ $objSheetPHPExcel->getRowDimension('1')->setRowHeight(30);
 
 
 if ($ENABLE_EXEL_EXPORT) {
-    Application::makeLdapConfigAttrLowercase();
+    $application->makeLdapConfigAttrLowercase();
     $menu_marker = "si_export_pdf_department";
     @$BOOKMARK_NAME = ($_POST['bookmark_name']) ? $_POST['bookmark_name'] : (($_GET['bookmark_name']) ? $_GET['bookmark_name'] : current(array_keys($BOOKMARK_NAMES[current(array_keys($BOOKMARK_NAMES))])) );
     @$bookmark_attr = ($_POST['bookmark_attr']) ? $_POST['bookmark_attr'] : (($_GET['bookmark_attr']) ? $_GET['bookmark_attr'] : current(array_keys($BOOKMARK_NAMES)));
@@ -98,7 +98,7 @@ if ($ENABLE_EXEL_EXPORT) {
 	";
 
     $ldap = new LDAP($LDAPServer, $LDAPUser, $LDAPPassword);
-    $CompanyNameLdapFilter = Application::getCompanyNameLdapFilter();
+    $CompanyNameLdapFilter = $application->getCompanyNameLdapFilter();
 
     if ($USE_DISPLAY_NAME)
         $DisplayName = $DISPLAY_NAME_FIELD;
@@ -155,22 +155,22 @@ if ($ENABLE_EXEL_EXPORT) {
                 }
 
                 $Department = $Staff[$LDAP_DEPARTMENT_FIELD][$i];
-                $colspan = Staff::getNumStaffTableColls();
+                $colspan = $staff->getNumStaffTableColls();
 
-                $Departam = Staff::makeDepartment($Department);
+                $Departam = $staff->makeDepartment($Department);
                 if ($Departam == '') {
                     continue;
                 }
 
                 if (!$HIDE_CELL_PHONE_FIELD)
-                    $cellPhone = Staff::makeCellPhone($Staff[$LDAP_CELL_PHONE_FIELD][$i], false);
+                    $cellPhone = $staff->makeCellPhone($Staff[$LDAP_CELL_PHONE_FIELD][$i], false);
                 // Городской телефон
                 if (!$HIDE_CITY_PHONE_FIELD)
-                    $cityPhone = Staff::makeCityPhone($Staff[$LDAP_CITY_PHONE_FIELD][$i], false);
+                    $cityPhone = $staff->makeCityPhone($Staff[$LDAP_CITY_PHONE_FIELD][$i], false);
 
 
                 $internapPhone = $Staff[$LDAP_INTERNAL_PHONE_FIELD][$i];
-                $post = Staff::makeTitle($Staff[$LDAP_TITLE_FIELD][$i]);
+                $post = $staff->makeTitle($Staff[$LDAP_TITLE_FIELD][$i]);
 
                 $cellPhone = $Staff[$LDAP_CELL_PHONE_FIELD][$i];
 

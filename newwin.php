@@ -12,7 +12,7 @@ use ru860e\rest\LDAP;
 use ru860e\rest\Localization;
 
 
-Application::makeLdapConfigAttrLowercase();
+$application->makeLdapConfigAttrLowercase();
 
 
 $L=new Localization("./config/locales/".$LOCALIZATION.".yml");

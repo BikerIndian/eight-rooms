@@ -14,11 +14,11 @@ else
 
 // Делаем фильтр для выборки сотрудников нужных компаний
 //-------------------------------------------------------------------------------------------------------------
-$CompanyNameLdapFilter=Application::getCompanyNameLdapFilter();
+$CompanyNameLdapFilter=$application->getCompanyNameLdapFilter();
 //-------------------------------------------------------------------------------------------------------------
 
 
-$LdapListAttrs = array($LDAP_DISTINGUISHEDNAME_FIELD, $DisplayName,
+$LdapListAttrs = array($CONFIG_LDAP_ATTRIBUTE['LDAP_DISTINGUISHEDNAME_FIELD'], $DisplayName,
   		$LDAP_MAIL_FIELD, 
   		$LDAP_INTERNAL_PHONE_FIELD,
   		$LDAP_CITY_PHONE_FIELD,
@@ -36,12 +36,12 @@ $LdapListAttrs = array($LDAP_DISTINGUISHEDNAME_FIELD, $DisplayName,
         $LDAP_ROOM_NUMBER_FIELD);
 
 //Получаем правильно отсортированных сотрудников с необходимыми атрибутами LDAP
-$Staff=$ldap->getArray($OU,
+$staffArr=$ldap->getArray($OU,
  "(&".$CompanyNameLdapFilter."(".$LDAP_CREATED_DATE_FIELD.">=".date('Ymd', time()-$NEW_USERS_NUM_DAYS*24*60*60)."000000.0Z)(".$LDAP_CN_FIELD."=*)".$DIS_USERS_COND.")",
  $LdapListAttrs,
  array($LDAP_CREATED_DATE_FIELD), 'DESC');
 
-if(is_array($Staff))
+if(is_array($staffArr))
 	{
 	// Шапка таблицы
 	//-------------------------------------------------------------------------------------------------------------
@@ -52,13 +52,13 @@ if(is_array($Staff))
 		<th><div>E-mail</div></th>
 		";
 	if(!$HIDE_ROOM_NUMBER)
-		echo "<th><div>".$L->l('room_number')."</div></th>";
-	echo "<th><div>".$L->l('intrenal_phone')."</div></th>";	
+		echo "<th><div>".$localization->get('room_number')."</div></th>";
+	echo "<th><div>".$localization->get('intrenal_phone')."</div></th>";
 	if(!$HIDE_CITY_PHONE_FIELD)
-		echo "<th><div>".$L->l('city_phone')."</div></th>";	
+		echo "<th><div>".$localization->get('city_phone')."</div></th>";
 	if(!$HIDE_CELL_PHONE_FIELD)
-		echo "<th><div>".$L->l('cell_phone')."</div></th>";
-	if(Staff::showComputerName($Login)) //Если сотрудник является администратором справочника
+		echo "<th><div>".$localization->get('cell_phone')."</div></th>";
+	if($staff->showComputerName($Login)) //Если сотрудник является администратором справочника
 		echo "<th><div>Компьютер</div></th>";
     if($GLOBALS['XMPP_ENABLE'] && $GLOBALS['XMPP_MESSAGE_LISTS_ENABLE'] && !empty($_COOKIE['dn']))  
         echo "<th><div></div></th>";            
@@ -66,7 +66,7 @@ if(is_array($Staff))
 		echo "<th><div></div></th>";	
 	echo "<th><div></div></th>";
 	if(empty($_COOKIE['dn']) && $ENABLE_DANGEROUS_AUTH)
-		echo Application::getCollTitle();		
+		echo $application->getCollTitle();
 	//-------------------------------------------------------------------------------------------------------------
 	
 	$FavouriteDNs=$ldap->getAttrValue($_COOKIE['dn'], $LDAP_FAVOURITE_USER_FIELD);
@@ -75,7 +75,7 @@ if(is_array($Staff))
 	$row=0;	// переменная, используемая для нумерации строк таблицы
 
 	//Перебираем всех выбраных пользователей
-	foreach($Staff[$LDAP_DISTINGUISHEDNAME_FIELD] AS $key=>$value)
+	foreach($Staff[$CONFIG_LDAP_ATTRIBUTE['LDAP_DISTINGUISHEDNAME_FIELD']] AS $key=>$value)
 	{			
 		
 		$Vars['row_css']=($row%2) ? "even" : "odd";
@@ -85,7 +85,7 @@ if(is_array($Staff))
 		$Vars['favourite_dns']=$FavouriteDNs;
 		$Vars['data_parent_id']=false;
 		$Vars['id']=true;
-		Staff::printUserTableRow($Staff, $key, $Vars);
+		$staff->printUserTableRow($Staff, $key, $Vars);
 
 		$row++;
 	}

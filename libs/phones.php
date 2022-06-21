@@ -1,13 +1,13 @@
 <?php
-if(is_file("./config/provider_desc.php"))
+if(is_file("./config/phone/provider_desc.php"))
     {
-    require_once ("./config/provider_desc.php");
-    require_once ("./config/phone_codes.php");
+    require_once ("./config/phone/provider_desc.php");
+    require_once ("./config/phone/phone_codes.php");
     }
 else
     {
-    require_once ("../config/provider_desc.php");
-    require_once ("../config/phone_codes.php");
+    require_once ("../config/phone/provider_desc.php");
+    require_once ("../config/phone/phone_codes.php");
     }
 
 function get_phone_attr($phone = '', $convert = true, $trim = true)
@@ -80,7 +80,7 @@ function get_phone_attr($phone = '', $convert = true, $trim = true)
             }
 
             // возвращаем результат
-            $PhoneAttr['format_phone']=($plus ? "+" : "").$countryCode.'('.$cityCode.')'.phoneBlocks($phone, $GLOBALS['FORMAT_PHONE_BLOCKLEN']);
+            $PhoneAttr['format_phone']=($plus ? "+" : "").$countryCode.'('.$cityCode.')'.phoneBlocks($phone, $CONFIG['CONFIG_PHONE']['FORMAT_PHONE_BLOCKLEN']);
             $PhoneAttr['clear_phone']=($plus ? "+" : "").$countryCode.$cityCode.$phone;
 			$PhoneAttr['original_phone']=$OriginalPhone;
 			if ( array_key_exists($countryCode, $GLOBALS['PROVIDER_DESC']) AND array_key_exists($cityCode, $GLOBALS['PROVIDER_DESC'][$countryCode]) )
@@ -91,7 +91,7 @@ function get_phone_attr($phone = '', $convert = true, $trim = true)
         }
     }
     // возвращаем результат без кода страны и города
-    $PhoneAttr['format_phone']=($plus ? "+" : "").phoneBlocks($phone, $GLOBALS['FORMAT_PHONE_BLOCKLEN']);
+    $PhoneAttr['format_phone']=($plus ? "+" : "").phoneBlocks($phone, $CONFIG['CONFIG_PHONE']['FORMAT_PHONE_BLOCKLEN']);
     $PhoneAttr['clear_phone']=($plus ? "+" : "").$phone;
     //$PhoneAttr['phone_for_call_via_ip']=str_replace ("+7" , $GLOBALS['CALL_VIA_IP_CHANGE_PLUS_AND_SEVEN'], $PhoneAttr['clear_phone'])
     $PhoneAttr['original_phone']=($OriginalPhone != NULL) ? $OriginalPhone : "";

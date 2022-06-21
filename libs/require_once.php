@@ -11,7 +11,7 @@ require_once("../libs/localization.php");
 require_once("../libs/spyc.php");
 require_once('../libs/XMPPHP/XMPP.php');
 
-Application::makeLdapConfigAttrLowercase();
+$application->makeLdapConfigAttrLowercase();
 $L=new Localization("../config/locales/".$LOCALIZATION.".yml");
 
 //Database

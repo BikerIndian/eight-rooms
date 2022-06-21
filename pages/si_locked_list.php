@@ -35,7 +35,7 @@ if($BLOCK_VIS[$menu_marker]['profile'])
 
 <?php
 
-$LdapListAttrs = array($LDAP_DISTINGUISHEDNAME_FIELD, $DisplayName,
+$LdapListAttrs = array($CONFIG_LDAP_ATTRIBUTE['LDAP_DISTINGUISHEDNAME_FIELD'], $DisplayName,
   		$LDAP_MAIL_FIELD, 
   		$LDAP_INTERNAL_PHONE_FIELD,
   		$LDAP_CITY_PHONE_FIELD,
@@ -55,9 +55,9 @@ $LdapListAttrs = array($LDAP_DISTINGUISHEDNAME_FIELD, $DisplayName,
 
 // Делаем фильтр для выборки сотрудников
 //-------------------------------------------------------------------------------------------------------------
-$CompanyNameLdapFilter=Application::getCompanyNameLdapFilter();
+$CompanyNameLdapFilter=$application->getCompanyNameLdapFilter();
 if(! empty($Name))
-	$SearchFilter=Application::getSearchFilter($Name, $LdapListAttrs);
+	$SearchFilter=$application->getSearchFilter($Name, $LdapListAttrs);
 
 //-------------------------------------------------------------------------------------------------------------	
 //Получаем правильно отсортированных сотрудников с необходимыми атрибутами LDAP, учитывая настроки сортировки из конфига
@@ -75,7 +75,7 @@ if(is_array($Staff))
 
 	$url_vars=array('name' => $Name, 'only_bookmark' => $only_bookmark, 'bookmark_attr' => $bookmark_attr, 'bookmark_name' => $bookmark_name);
 
-	echo Application::getCollTitle($L->l('full_name'), 
+	echo $application->getCollTitle($localization->get('full_name'),
 									array(
 										'sort' => array(
 													    'field' => $DisplayName,
@@ -84,7 +84,7 @@ if(is_array($Staff))
 													    'url_vars' => $url_vars
 													    ),
 										 ) );
-	echo Application::getCollTitle($L->l('position'), 
+	echo $application->getCollTitle($localization->get('position'),
 									array(
 										'sort' => array(
 													    'field' => $LDAP_TITLE_FIELD,
@@ -93,7 +93,7 @@ if(is_array($Staff))
 													    'url_vars' => $url_vars
 													    ),
 										 ) );
-	echo Application::getCollTitle($L->l('locked_date'), 
+	echo $application->getCollTitle($localization->get('locked_date'),
 									array(
 										'sort' => array(
 													    'field' => $LDAP_CHANGED_DATE_FIELD,
@@ -102,7 +102,7 @@ if(is_array($Staff))
 													    'url_vars' => $url_vars
 													    ),
 										 ));
-	echo Application::getCollTitle($L->l('email'), 
+	echo $application->getCollTitle($localization->get('email'),
 									array(
 										'sort' => array(
 													    'field' => $LDAP_MAIL_FIELD,
@@ -112,7 +112,7 @@ if(is_array($Staff))
 													    ),
 										 ) );	
 
-	echo Application::getCollTitle($L->l('room_number'), 
+	echo $application->getCollTitle($localization->get('room_number'),
 									array(
 										'sort' => array(
 													    'field' => $LDAP_ROOM_NUMBER_FIELD,
@@ -121,7 +121,7 @@ if(is_array($Staff))
 													    'url_vars' => $url_vars
 													    ),
 										 ) );
-	echo Application::getCollTitle($L->l('intrenal_phone'), 
+	echo $application->getCollTitle($localization->get('intrenal_phone'),
 									array(
 										'sort' => array(
 													    'field' => $LDAP_INTERNAL_PHONE_FIELD,
@@ -132,7 +132,7 @@ if(is_array($Staff))
 										 ) );	
 
 	if(!$HIDE_CITY_PHONE_FIELD)
-		echo Application::getCollTitle($L->l('city_phone'), 
+		echo $application->getCollTitle($localization->get('city_phone'),
 										array(
 											'sort' => array(
 														    'field' => $LDAP_CITY_PHONE_FIELD,
@@ -142,7 +142,7 @@ if(is_array($Staff))
 														    ),
 											 ) );
 	if(!$HIDE_CELL_PHONE_FIELD)
-		echo Application::getCollTitle($L->l('cell_phone'), 
+		echo $application->getCollTitle($localization->get('cell_phone'),
 										array(
 											'sort' => array(
 														    'field' => $LDAP_CELL_PHONE_FIELD,
@@ -152,8 +152,8 @@ if(is_array($Staff))
 														    ),
 											 ) );											 		
 
-	if(Staff::showComputerName($Login)) //Если сотрудник является администратором справочника
-		echo Application::getCollTitle("Компьютер", 
+	if($staff->showComputerName($Login)) //Если сотрудник является администратором справочника
+		echo $application->getCollTitle("Компьютер",
 										array(
 											'sort' => array(
 														    'field' => $LDAP_COMPUTER_FIELD,
@@ -163,18 +163,18 @@ if(is_array($Staff))
 														    ),
 											 ) );
 	if($GLOBALS['XMPP_ENABLE'] && $GLOBALS['XMPP_MESSAGE_LISTS_ENABLE'] && !empty($_COOKIE['dn']))	
-		echo Application::getCollTitle("");
+		echo $application->getCollTitle("");
 	if($FAVOURITE_CONTACTS && $_COOKIE['dn'])
-		echo Application::getCollTitle("");
+		echo $application->getCollTitle("");
 
 	if(empty($_COOKIE['dn']) && $ENABLE_DANGEROUS_AUTH)
-		echo Application::getCollTitle();
+		echo $application->getCollTitle();
 	//-------------------------------------------------------------------------------------------------------------
 	
 
 
 	$row=0;	// переменная, используемая для нумерации строк таблицы
-	foreach($Staff[$LDAP_DISTINGUISHEDNAME_FIELD] AS $key=>$value)
+	foreach($Staff[$CONFIG_LDAP_ATTRIBUTE['LDAP_DISTINGUISHEDNAME_FIELD']] AS $key=>$value)
 	{
 				
 		$Vars['row_css']=($row%2) ? "even" : "odd";
@@ -186,7 +186,7 @@ if(is_array($Staff))
 		$Vars['locked_date']=true;
 		if($Name!='*')
 			$Vars['search_str']=$Name;
-		Staff::printUserTableRow($Staff, $key, $Vars);
+		$staff->printUserTableRow($Staff, $key, $Vars);
 
 		$row++;
 	}

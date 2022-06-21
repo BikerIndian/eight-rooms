@@ -9,16 +9,16 @@
 
 namespace ru860e\rest;
 
-abstract class Alphabet
+class Alphabet
 {
-    public static function printGeneralLetters()
+    public function printGeneralLetters($localization,$CONFIG_APP)
     {
         echo "<fieldset id=\"move_to_letter\">
-		<legend>".$GLOBALS['L']->l('fast_move_by_first_letter_of_name')."</legend>";
+		<legend>".$localization->get('fast_move_by_first_letter_of_name')."</legend>";
         $i=0;
-        foreach($GLOBALS['Alphabet'] AS $key=>$value)
+        foreach($localization->getArr('alphabet') AS $key=>$value)
         {
-            if(!($i%$GLOBALS['ALPH_ITEM_IN_LINE'])&&($i!=0))
+            if(!($i%$CONFIG_APP['ALPH_ITEM_IN_LINE'])&&($i!=0))
                 echo"<br>";
             echo"<a href=\"#\" class=\"letter in_link\">".mb_strtoupper($value)."</a>";
             $i++;

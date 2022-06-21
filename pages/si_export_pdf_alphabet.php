@@ -12,7 +12,7 @@ require_once("../libs/pdf.php");
 
 if($ENABLE_PDF_EXPORT)
 	{
-	Application::makeLdapConfigAttrLowercase();
+	$application->makeLdapConfigAttrLowercase();
 	$menu_marker="si_export_pdf_alphabet";
 
 	@$BOOKMARK_NAME=($_POST['bookmark_name'])?$_POST['bookmark_name']:(($_GET['bookmark_name'])?$_GET['bookmark_name']:current(array_keys($BOOKMARK_NAMES[current(array_keys($BOOKMARK_NAMES))])) );
@@ -25,7 +25,7 @@ if($ENABLE_PDF_EXPORT)
 	";
 
 	$ldap=new LDAP($LDAPServer, $LDAPUser, $LDAPPassword);
-	$CompanyNameLdapFilter=Application::getCompanyNameLdapFilter();
+	$CompanyNameLdapFilter=$application->getCompanyNameLdapFilter();
 
 	if($USE_DISPLAY_NAME)
 		$DisplayName=$DISPLAY_NAME_FIELD;
@@ -68,7 +68,7 @@ if($ENABLE_PDF_EXPORT)
 
 				$FirstLetter=mb_substr($Surname, 0, 1, 'UTF-8');
 					
-				$colspan=Staff::getNumStaffTableColls();
+				$colspan=$staff->getNumStaffTableColls();
 
 				if($PrevFirstLetter!=$FirstLetter)
 					{
@@ -82,15 +82,15 @@ if($ENABLE_PDF_EXPORT)
 				$html.="<tr>
 				<td class=\"name\"><span class=\"surname\">".$Surname."</span><br><span class=\"patronymic\">".$Name." ".$Patronymic."</span></td>";
 				if(!$HIDE_CELL_PHONE_FIELD)	
-					$html.="<td class=\"cell_phone\">".Staff::makeCellPhone($Staff[$LDAP_CELL_PHONE_FIELD][$i], false)."</td>";
+					$html.="<td class=\"cell_phone\">".$staff->makeCellPhone($Staff[$LDAP_CELL_PHONE_FIELD][$i], false)."</td>";
 
 				if(!$HIDE_CITY_PHONE_FIELD)		
-					$html.="<td class=\"city_phone\">".Staff::makeCityPhone($Staff[$LDAP_CITY_PHONE_FIELD][$i], false)."</td>";
+					$html.="<td class=\"city_phone\">".$staff->makeCityPhone($Staff[$LDAP_CITY_PHONE_FIELD][$i], false)."</td>";
 				
 				$html.="
-				<td class=\"internal_phone\">".Staff::makeInternalPhone($Staff[$LDAP_INTERNAL_PHONE_FIELD][$i], false)."</td>
+				<td class=\"internal_phone\">".$staff->makeInternalPhone($Staff[$LDAP_INTERNAL_PHONE_FIELD][$i], false)."</td>
 				<td class=\"mail\">".$Staff[$LDAP_MAIL_FIELD][$i]."</td>
-				<td class=\"position\">".Staff::makeTitle($Staff[$LDAP_TITLE_FIELD][$i])."</td>
+				<td class=\"position\">".$staff->makeTitle($Staff[$LDAP_TITLE_FIELD][$i])."</td>
 				</tr>
 				";		
 				}

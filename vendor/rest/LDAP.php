@@ -12,16 +12,22 @@ namespace ru860e\rest;
 class LDAP
 {
     private $LC;
+    private $CONFIG_LDAP_ATTRIBUTE;
+    private $CONFIG_LDAP;
+    private $CONFIG_APP;
 
-    function __construct($Server, $User, $Password, $Port = "389")
+    function __construct($Server, $User, $Password,$CONFIG,$Port = "389")
     {
         $this->LC = ldap_connect($Server);
         ldap_set_option($this->LC, LDAP_OPT_PROTOCOL_VERSION, 3);
         ldap_set_option($this->LC, LDAP_OPT_REFERRALS, 0);
 
-        $this->alphabet = $GLOBALS['Alphabet'];
-        $this->SizePageDividerAttr = $GLOBALS['LDAP_SIZE_LIMIT_PAGE_DIVIDER_FIELD'];
-        $this->SizeLimitCompatibility = $GLOBALS['LDAP_SIZE_LIMIT_COMPATIBILITY'];
+        $this->CONFIG_LDAP = $CONFIG['CONFIG_LDAP'];
+        $this->CONFIG_LDAP_ATTRIBUTE = $CONFIG['LDAP_ATTRIBUTE'];
+        $this->CONFIG_APP = $CONFIG['CONFIG_APP'];
+
+        $this->SizePageDividerAttr      = $this->CONFIG_LDAP_ATTRIBUTE['LDAP_SIZE_LIMIT_PAGE_DIVIDER_FIELD'];
+        $this->SizeLimitCompatibility   = $this->CONFIG_LDAP['LDAP_SIZE_LIMIT_COMPATIBILITY'] ;
 
         $LB = ldap_bind($this->LC, $User, $Password);
     }
@@ -30,7 +36,7 @@ class LDAP
     {
         if (is_array($WhatChange)) {
 
-            $DN = iconv($GLOBALS['CHARSET_APP'], $GLOBALS['CHARSET_DATA'], $DN);
+            $DN = iconv($this->CONFIG_APP['CHARSET_APP'], $this->CONFIG_APP['CHARSET_DATA'], $DN);
 
             foreach ($WhatChange as $key => $value) {
                 if (is_array($value)) {
@@ -42,7 +48,7 @@ class LDAP
                             if ($NotRecode)
                                 $WhatChange[$key][$key1] = $value1;
                             else
-                                $WhatChange[$key][$key1] = iconv($GLOBALS['CHARSET_APP'], $GLOBALS['CHARSET_DATA'], $value1);
+                                $WhatChange[$key][$key1] = iconv($this->CONFIG_APP['CHARSET_APP'], $this->CONFIG_APP['CHARSET_DATA'], $value1);
                         }
                     }
                 } else {
@@ -53,7 +59,7 @@ class LDAP
                         if ($NotRecode)
                             $WhatChange[$key] = $value;
                         else
-                            $WhatChange[$key] = iconv($GLOBALS['CHARSET_APP'], $GLOBALS['CHARSET_DATA'], $value);
+                            $WhatChange[$key] = iconv($this->CONFIG_APP['CHARSET_APP'], $this->CONFIG_APP['CHARSET_DATA'], $value);
                     }
                 }
 
@@ -105,11 +111,11 @@ class LDAP
         $Attributes = array($Attribute);
         $Attributes = $this->arrtolower($Attributes);
 
-        $DN = iconv($GLOBALS['CHARSET_APP'], $GLOBALS['CHARSET_DATA'], $DN);
-        $Filter = iconv($GLOBALS['CHARSET_APP'], $GLOBALS['CHARSET_DATA'], $Filter);
+        $DN = iconv($this->CONFIG_APP['CHARSET_APP'], $this->CONFIG_APP['CHARSET_DATA'], $DN);
+        $Filter = iconv($this->CONFIG_APP['CHARSET_APP'], $this->CONFIG_APP['CHARSET_DATA'], $Filter);
 
         if (!$Filter) {
-            $Filter = $GLOBALS['LDAP_CN_FIELD'] . "=*";
+            $Filter = $this->CONFIG_LDAP_ATTRIBUTE['LDAP_CN_FIELD'] . "=*";
         }
 
         if (@$LS = ldap_search($this->LC, $DN, $Filter, $Attributes)) {
@@ -117,7 +123,7 @@ class LDAP
             if ($Entries = ldap_get_entries($this->LC, $LS)) {
 
                 if (!$NotRecode)
-                    return @iconv($GLOBALS['CHARSET_DATA'], $GLOBALS['CHARSET_APP'], $Entries[0][$Attribute][0]);
+                    return @iconv($this->CONFIG_APP['CHARSET_DATA'], $this->CONFIG_APP['CHARSET_APP'], $Entries[0][$Attribute][0]);
                 else
                     return $Entries[0][$Attribute][0];
             } else {
@@ -132,7 +138,7 @@ class LDAP
     {
         $Attributes = array($Attribute);
         $Attributes = $this->arrtolower($Attributes);
-        $DN = iconv($GLOBALS['CHARSET_APP'], $GLOBALS['CHARSET_DATA'], $DN);
+        $DN = iconv($this->CONFIG_APP['CHARSET_APP'], $this->CONFIG_APP['CHARSET_DATA'], $DN);
         $LS = ldap_search($this->LC, $DN, "name=*", $Attributes);
 
         if ($Entries = ldap_get_entries($this->LC, $LS)) {
@@ -232,27 +238,17 @@ class LDAP
                                     switch ($val1) {
                                         case 'ad_def_full_name':
                                             $LastVal[$key - 1] = preg_replace("/([ёA-zА-я-]+[\s]{1}[ёA-zА-я]{1}.)[\s]{1}([ёA-zА-я-]+)/u", "\\2 \\1", $LastVal[$key - 1]);
-
                                             break;
-
                                         case 'order_replace':
-                                            //$d.=" ";
-                                            //$LastVal[$key-1]=str_replace($key1, $d, $LastVal[$key-1]); //!!!! Возможно деяние должно быть другим
-
-
                                             $LastVal[$key - 1] = " " . str_replace($key1, "", $LastVal[$key - 1]);
-
-
                                             break;
-                                        /*default:
-                                            $LastVal[$key-1]=iconv($GLOBALS['CHARSET_DATA'], $GLOBALS['CHARSET_APP'], $LastVal[$key-1]);*/
                                     }
                                 };
                             }
                         } else
 
                             if (isset($Entries[$i][$val][0])) {
-                                $LastVal[$key] = iconv($GLOBALS['CHARSET_DATA'], $GLOBALS['CHARSET_APP'], $Entries[$i][$val][0]);
+                                $LastVal[$key] = iconv($this->CONFIG_APP['CHARSET_DATA'], $this->CONFIG_APP['CHARSET_APP'], $Entries[$i][$val][0]);
                             }
 
                         if ($key > 0)
@@ -260,7 +256,6 @@ class LDAP
                     }
                     if (!is_array($val))
                         @$ArrSorted[$i] .= " " . $LastVal[$key];
-                    //echo $ArrSorted[$i]."<br>";
                 }
 
 
@@ -282,10 +277,10 @@ class LDAP
             for ($i = 0; $i < @$Entries[count]; $i++) {
                 for ($j = 0; $j < $SizeOf; $j++) {
                     if (is_array($Sort)) {
-                        @$Value = iconv($GLOBALS['CHARSET_DATA'], $GLOBALS['CHARSET_APP'], $Entries[$AS[$i]][$ADAttributes[$j]][0]);
+                        @$Value = iconv($this->CONFIG_APP['CHARSET_DATA'], $this->CONFIG_APP['CHARSET_APP'], $Entries[$AS[$i]][$ADAttributes[$j]][0]);
                         //echo $Value."<br>";
                     } else
-                        $Value = iconv($GLOBALS['CHARSET_DATA'], $GLOBALS['CHARSET_APP'], $Entries[$i][$ADAttributes[$j]][0]);
+                        $Value = iconv($this->CONFIG_APP['CHARSET_DATA'], $this->CONFIG_APP['CHARSET_APP'], $Entries[$i][$ADAttributes[$j]][0]);
 
                     $RA[$ADAttributes[$j]][$i] = $Value;
                 }
@@ -316,7 +311,7 @@ class LDAP
         //$Entries=ldap_get_entries($this->LC, $LS);
     }
 
-    static function escapeFilterValue($Value)
+    function escapeFilterValue($Value)
     {
         if (is_array($Value)) {
             foreach ($Value AS $key => $val) {

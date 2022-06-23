@@ -68,17 +68,31 @@ $staff = new Staff($CONFIG,$application,$phones);
 
 setlocale(LC_CTYPE, "ru_RU." . $CONFIG_APP['CHARSET_APP']);
 
-@$menu_marker = ($_POST['menu_marker']) ? $_POST['menu_marker'] : (($_GET['menu_marker']) ? $_GET['menu_marker'] : $DEFAULT_PAGE);
+// Определяем вывод страницы
+$menu_marker = isset($_POST['menu_marker']) ? $_POST['menu_marker'] :
+               isset($_GET['menu_marker']) ? $_GET['menu_marker'] :
+               $CONFIG_APP['DEFAULT_PAGE'];
+
+
+
 // выводим по отделам
 //$menu_marker="si_dep_staff_list";
-@$only_bookmark = ($_POST['only_bookmark']) ? $_POST['only_bookmark'] : $_GET['only_bookmark'];
-@$BOOKMARK_NAME = ($_POST['bookmark_name']) ? $_POST['bookmark_name'] : (($_GET['bookmark_name']) ? $_GET['bookmark_name'] : current(array_keys($BOOKMARK_NAMES[current(array_keys($BOOKMARK_NAMES))])));
+$only_bookmark = isset($_POST['only_bookmark']) ? $_POST['only_bookmark'] :
+                 isset($_GET['only_bookmark']);
+
+$BOOKMARK_NAME = isset($_POST['bookmark_name']) ? $_POST['bookmark_name'] :
+                 isset($_GET['bookmark_name']) ? $_GET['bookmark_name'] :
+                 current(array_keys($BOOKMARK_NAMES[current(array_keys($BOOKMARK_NAMES))]));
 
 
-if ((@$_POST['form_sent']) && (@!$GLOBALS['only_bookmark'])) //Если отправлена форма поиска и флажок "только во вкладке не был установлен"
-    @$BOOKMARK_NAME = "";
+if (isset($_POST['form_sent']) && !isset($GLOBALS['only_bookmark'])) //Если отправлена форма поиска и флажок "только во вкладке не был установлен"
+
+// !!!
+$BOOKMARK_NAME = "";
 $bookmark_name = $BOOKMARK_NAME;
-@$bookmark_attr = ($_POST['bookmark_attr']) ? $_POST['bookmark_attr'] : (($_GET['bookmark_attr']) ? $_GET['bookmark_attr'] : current(array_keys($BOOKMARK_NAMES)));
+$bookmark_attr = isset($_POST['bookmark_attr']) ? $_POST['bookmark_attr'] :
+                 isset($_GET['bookmark_attr']) ? $_GET['bookmark_attr'] :
+                 current(array_keys($BOOKMARK_NAMES));
 
 
 //Записываем переменные в массив. Массив используется для формирование скрытых полей форм и url-ов.
@@ -232,13 +246,18 @@ if ($CONFIG['ALARM_MESSAGE']) {
 
                 if ($CONFIG_PDF['ENABLE_PDF_EXPORT']) {
                     ?>
-                    <div class="tab export"><a id="exp_pdf_sep_dep"
-                                               href="./pages/si_export_pdf_department.php?bookmark_name=<?php echo $BOOKMARK_NAME; ?>&bookmark_attr=<?php echo $bookmark_attr; ?>"
-                                               target="_blank" class="in_link"><?php echo $localization->get('by_department'); ?></a>
+                    <div class="tab export">
+                     <a id="exp_pdf_sep_dep"
+                       href="./pages/si_export_pdf_department.php?bookmark_name=<?php echo $BOOKMARK_NAME; ?>&bookmark_attr=<?php echo $bookmark_attr; ?>"
+                       target="_blank" class="in_link"><?php echo $localization->get('by_department'); ?>
+                      </a>
                     </div>
-                    <div class="tab export"><a id="exp_pdf_sep_alph"
-                                               href="./pages/si_export_pdf_alphabet.php?bookmark_name=<?php echo $BOOKMARK_NAME; ?>&bookmark_attr=<?php echo $bookmark_attr; ?>"
-                                               target="_blank" class="in_link"><?php echo $localization->get('by_alphabet'); ?></a>
+
+                    <div class="tab export">
+                      <a id="exp_pdf_sep_alph"
+                       href="./pages/si_export_pdf_alphabet.php?bookmark_name=<?php echo $BOOKMARK_NAME; ?>&bookmark_attr=<?php echo $bookmark_attr; ?>"
+                       target="_blank" class="in_link"><?php echo $localization->get('by_alphabet'); ?>
+                      </a>
                     </div>
                 <?php } ?>
 

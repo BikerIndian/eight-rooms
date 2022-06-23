@@ -36,33 +36,40 @@ $CompanyNameLdapFilter = $application->getCompanyNameLdapFilter();
 //-------------------------------------------------------------------------------------------------------------
 // Определяем какой атрибут будем использовать в качестве формирования ФИО сотрудника
 //-------------------------------------------------------------------------------------------------------------
-if ($USE_DISPLAY_NAME)
-    $DisplayName = $DISPLAY_NAME_FIELD;
+if ($CONFIG_APP['USE_DISPLAY_NAME'])
+    $DisplayName = $CONFIG_LDAP_ATTRIBUTE['DISPLAY_NAME_FIELD'];
 else
-    $DisplayName = $LDAP_NAME_FIELD;
+    $DisplayName = $CONFIG_LDAP_ATTRIBUTE['LDAP_NAME_FIELD'];
 //-------------------------------------------------------------------------------------------------------------
-$LdapListAttrs = array($CONFIG_LDAP_ATTRIBUTE['LDAP_DISTINGUISHEDNAME_FIELD'], $DisplayName,
-    $LDAP_MAIL_FIELD,
-    $LDAP_INTERNAL_PHONE_FIELD,
-    $LDAP_CITY_PHONE_FIELD,
-    $LDAP_ST_DATE_VACATION_FIELD,
-    $LDAP_END_DATE_VACATION_FIELD,
-    $LDAP_TITLE_FIELD,
-    $LDAP_DEPARTMENT_FIELD,
-    $LDAP_CELL_PHONE_FIELD,
-    $LDAP_MANAGER_FIELD,
-    $LDAP_COMPUTER_FIELD,
-    $LDAP_DEPUTY_FIELD,
-    $LDAP_GUID_FIELD,
-    $LDAP_USERPRINCIPALNAME_FIELD,
-    $LDAP_ROOM_NUMBER_FIELD);
+$LdapListAttrs = array(
+        $CONFIG_LDAP_ATTRIBUTE['LDAP_DISTINGUISHEDNAME_FIELD'],
+        $DisplayName,
+  		$CONFIG_LDAP_ATTRIBUTE['LDAP_MAIL_FIELD'],
+  		$CONFIG_LDAP_ATTRIBUTE['LDAP_INTERNAL_PHONE_FIELD'],
+  		$CONFIG_LDAP_ATTRIBUTE['LDAP_CITY_PHONE_FIELD'],
+  		$CONFIG_LDAP_ATTRIBUTE['LDAP_ST_DATE_VACATION_FIELD'],
+  		$CONFIG_LDAP_ATTRIBUTE['LDAP_END_DATE_VACATION_FIELD'],
+  		$CONFIG_LDAP_ATTRIBUTE['LDAP_TITLE_FIELD'],
+  		$CONFIG_LDAP_ATTRIBUTE['LDAP_DEPARTMENT_FIELD'],
+  		$CONFIG_LDAP_ATTRIBUTE['LDAP_CELL_PHONE_FIELD'],
+  		$CONFIG_LDAP_ATTRIBUTE['LDAP_MANAGER_FIELD'],
+  		$CONFIG_LDAP_ATTRIBUTE['LDAP_COMPUTER_FIELD'],
+  		$CONFIG_LDAP_ATTRIBUTE['LDAP_DEPUTY_FIELD'],
+  		$CONFIG_LDAP_ATTRIBUTE['LDAP_GUID_FIELD'],
+  		$CONFIG_LDAP_ATTRIBUTE['LDAP_USERPRINCIPALNAME_FIELD'],
+  		$CONFIG_LDAP_ATTRIBUTE['LDAP_ROOM_NUMBER_FIELD']);
+
 //Получаем правильно отсортированных сотрудников с необходимыми атрибутами LDAP
 
 $Staff = $ldap->getArray(
     $LDAP_USER['OU_USER_READ'],
-    "(&(objectCategory=person)(objectClass=user)$DIS_USERS_COND)",
+    "(&(objectCategory=person)(objectClass=user)".$CONFIG_LDAP['DIS_USERS_COND'].")",
     $LdapListAttrs,
-    array($DisplayName, array('ad_def_full_name')));
+    array(
+          $DisplayName,
+          array('ad_def_full_name')
+          )
+    );
 
 
 if (is_array($Staff)) {
@@ -73,33 +80,33 @@ if (is_array($Staff)) {
 		<th><div>" . $localization->get('full_name') . "</div></th>
 		<th><div>" . $localization->get('position') . "</div></th>
 		<th><div>" . $localization->get('email') . "</div></th>";
-    if (!$HIDE_ROOM_NUMBER)
+    if (!$CONFIG_APP['HIDE_ROOM_NUMBER'])
         echo "<th><div>" . $localization->get('room_number') . "</div></th>";
     echo "
 		<th><div>" . $localization->get('intrenal_phone') . "</div></th>
 		";
-    if (!$HIDE_CITY_PHONE_FIELD)
+    if (!$CONFIG_PHONE['HIDE_CITY_PHONE_FIELD'])
         echo "<th><div>" . $localization->get('city_phone') . "</div></th>";
-    if (!$HIDE_CELL_PHONE_FIELD)
+    if (!$CONFIG_PHONE['HIDE_CELL_PHONE_FIELD'])
         echo "<th><div>" . $localization->get('cell_phone') . "</div></th>";
     if ($staff->showComputerName($Login)) //Если сотрудник является администратором справочника
         echo "<th><div>Компьютер</div></th>";
-    if ($GLOBALS['XMPP_ENABLE'] && $GLOBALS['XMPP_MESSAGE_LISTS_ENABLE'] && !empty($_COOKIE['dn']))
+    if ($CONFIG_XMPP['XMPP_ENABLE'] && $CONFIG_XMPP['$XMPP_MESSAGE_LISTS_ENABLE'] && !empty($_COOKIE['dn']))
         echo "<th><div></div></th>";
-    if ($FAVOURITE_CONTACTS && isset($_COOKIE['dn']))
+    if ($CONFIG_APP['FAVOURITE_CONTACTS'] && isset($_COOKIE['dn']))
         echo "<th><div></div></th>";
-    if (empty($_COOKIE['dn']) && $ENABLE_DANGEROUS_AUTH)
+    if (empty($_COOKIE['dn']) && $CONFIG_APP['ENABLE_DANGEROUS_AUTH'])
         echo $application->getCollTitle();
     //-------------------------------------------------------------------------------------------------------------
     $FavouriteDNs = array();
     if (isset($_COOKIE['dn'])) {
-        $FavouriteDNs = $ldap->getAttrValue($_COOKIE['dn'], $LDAP_FAVOURITE_USER_FIELD);
+        $FavouriteDNs = $ldap->getAttrValue($_COOKIE['dn'], $CONFIG_LDAP_ATTRIBUTE['LDAP_FAVOURITE_USER_FIELD']);
     }
     //Выводим пользователей, которые есть в избраном
-    if ($GLOBALS['FAVOURITE_CONTACTS'] && is_array($FavouriteDNs)) {
-        $Filter = "(&(" . $LDAP_CN_FIELD . "=*)" . $DIS_USERS_COND . "(|(" . $CONFIG_LDAP_ATTRIBUTE['LDAP_DISTINGUISHEDNAME_FIELD'] . "=" . implode(")(" . $CONFIG_LDAP_ATTRIBUTE['LDAP_DISTINGUISHEDNAME_FIELD'] . "=", $ldap->escapeFilterValue($FavouriteDNs)) . ")))";
+    if ($CONFIG_APP['FAVOURITE_CONTACTS'] && is_array($FavouriteDNs)) {
+        $Filter = "(&(" . $CONFIG_LDAP_ATTRIBUTE['LDAP_CN_FIELD']  . "=*)" . $CONFIG_LDAP['DIS_USERS_COND'] . "(|(" . $CONFIG_LDAP_ATTRIBUTE['LDAP_DISTINGUISHEDNAME_FIELD'] . "=" . implode(")(" . $CONFIG_LDAP_ATTRIBUTE['LDAP_DISTINGUISHEDNAME_FIELD'] . "=", $ldap->escapeFilterValue($FavouriteDNs)) . ")))";
 
-        $Favourites = $ldap->getArray($OU, $Filter, $LdapListAttrs);
+        $Favourites = $ldap->getArray($LDAP_USER['OU_USER_READ'], $Filter, $LdapListAttrs);
         if (is_array($Favourites)) {
             $row = 0;
             foreach ($Favourites[$CONFIG_LDAP_ATTRIBUTE['LDAP_DISTINGUISHEDNAME_FIELD']] AS $key => $value) {

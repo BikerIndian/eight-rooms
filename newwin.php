@@ -1,5 +1,10 @@
 <?php
-require_once("./config.php");
+
+ini_set('error_reporting', E_ALL);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+
+//require_once("./config.php");
 require_once("./libs/forms.php");
 require_once("./libs/staff.php");
 require_once("./libs/phones.php");
@@ -9,26 +14,40 @@ require_once("./libs/spyc.php");
 
 use ru860e\rest\Application;
 use ru860e\rest\LDAP;
+use ru860e\rest\LdapAssistant;
 use ru860e\rest\Localization;
+use ru860e\rest\ConfigHandler;
+use ru860e\rest\Auth;
 
 
-$application->makeLdapConfigAttrLowercase();
-
-
-$L=new Localization("./config/locales/".$LOCALIZATION.".yml");
+$configHandler = new ConfigHandler();
+$CONFIG = $configHandler->getConfig();
+$LDAP_USER = $CONFIG['LDAP_USER'];
+$CONFIG_APP = $CONFIG['CONFIG_APP'];
 
 //Database
 //----------------------------------------
-$ldap=new LDAP($LDAPServer, $LDAPUser, $LDAPPassword);
-//----------------------------------------	
+$ldap = new LDAP($LDAP_USER['SERVER_LDAP'], $LDAP_USER['USER_READ'], $LDAP_USER['PASSWORD_USER_READ'],$CONFIG); //Соединяемся с сервером
+$ldapAssistant = new LdapAssistant($ldap,$CONFIG);
+//----------------------------------------
 
-setlocale(LC_CTYPE, "ru_RU.".$GLOBALS['CHARSET_APP']); 
+$application = new Application($ldap,$CONFIG['BOOKMARK']);
+$application->makeLdapConfigAttrLowercase(); //Преобразуем все атрибуты LDAP в нижний регистр.
 
-@$menu_marker=($_POST['menu_marker'])?$_POST['menu_marker']:$_GET['menu_marker'];
+$localization = new Localization("./config/locales/" . $CONFIG_APP['LOCALIZATION'] . ".yml");
+
+
+$auth = new Auth($ldap, $CONFIG);
+
+setlocale(LC_CTYPE, "ru_RU." .
+          $CONFIG_APP['CHARSET_APP']);
+
+$menu_marker= isset($_POST['menu_marker']) ? $_POST['menu_marker'] :
+              $_GET['menu_marker'];
 
 //Basic Auth
 //----------------------------------------	
-include_once("auth.php");
+//include_once("auth.php");
 //----------------------------------------	
 ?>
 <html>
@@ -48,7 +67,10 @@ include_once("auth.php");
 
 	<body>
 		<?php	
-		if(is_file($PHPPath."/".$menu_marker.".php")) {include($PHPPath."/".$menu_marker.".php");}
+        // Вывод справочника
+        if (is_file($CONFIG_APP['PHPPath']. "/" . $menu_marker . ".php")) {
+            include($CONFIG_APP['PHPPath']. "/" . $menu_marker . ".php");
+        }
 		?>
 	</body>
 

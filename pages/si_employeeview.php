@@ -5,26 +5,40 @@ use ru860e\rest\Staff;
 use ru860e\rest\LDAPTable;
 
 
+$fio = isset($_POST['fio']) ? $_POST['fio'] :
+       isset($_GET['fio']) ? $_GET['fio'] :
+       "";
 
-$dn=($_GET['dn'])?$_GET['dn']:$_POST['dn'];
-@$fio=($_GET['fio'])?$_GET['fio']:$_POST['fio'];
+$dn = isset($_POST['dn']) ? $_POST['dn'] :
+       isset($_GET['dn']) ? $_GET['dn'] :
+       "";
 
-@$_GET['sortcolumn']=($_GET['sortcolumn'])?$_GET['sortcolumn']:"ФИО";
-@$_GET['sorttype']=($_GET['sorttype'])?$_GET['sorttype']:"ASC";
+$sortcolumn = isset($_POST['sortcolumn']) ? $_POST['sortcolumn'] :
+       isset($_GET['sortcolumn']) ? $_GET['sortcolumn'] :
+       "ФИО";
 
-$ldap=new LDAP($LDAPServer, $LDAPUser, $LDAPPassword);
+$sorttype = isset($_POST['sorttype']) ? $_POST['sorttype'] :
+       isset($_GET['sorttype']) ? $_GET['sorttype'] :
+       "ASC";
+
+
+
+$OU = $LDAP_USER['OU_USER_READ'];
 
 if($fio)
 	$dn=$ldap->getValue($OU, $CONFIG_LDAP_ATTRIBUTE['LDAP_DISTINGUISHEDNAME_FIELD'], "cn=".$fio);
 
+$DIRECT_PHOTO = $CONFIG['CONFIG_PHOTO']['DIRECT_PHOTO'];
+$PHOTO_DIR = $CONFIG['CONFIG_PHOTO']['PHOTO_DIR'];
+$LDAP_PHOTO_FIELD = $CONFIG['CONFIG_LDAP_ATTRIBUTE']['LDAP_PHOTO_FIELD'];
 
 if($DIRECT_PHOTO) {
-    $Image = $ldap->getImage($dn, $GLOBALS['LDAP_PHOTO_FIELD']);
+    $Image = $ldap->getImage($dn, $LDAP_PHOTO_FIELD);
 }
 else
 	{
 
-	$Image=$GLOBALS['PHOTO_DIR']."/".md5($dn).".jpg";
+	$Image=$PHOTO_DIR."/".md5($dn).".jpg";
 	$Image=$ldap->getImage($dn, $GLOBALS['LDAP_PHOTO_FIELD'], $Image);
 	}
 

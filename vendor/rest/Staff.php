@@ -16,7 +16,7 @@ class Staff
 
     function __construct($CONFIG, $application, $phones)
         {
-        $this->CONFIG_LDAP_ATTRIBUTE = $CONFIG['LDAP_ATTRIBUTE'];
+        $this->CONFIG_LDAP_ATTRIBUTE = $CONFIG['CONFIG_LDAP_ATTRIBUTE'];
         $this->CONFIG_PHOTO = $CONFIG['CONFIG_PHOTO'];
         $this->CONFIG_APP = $CONFIG['CONFIG_APP'];
         $this->CONFIG_PHONE = $CONFIG['CONFIG_PHONE'];

@@ -18,7 +18,8 @@ use ru860e\rest\LdapAssistant;
 use ru860e\rest\Localization;
 use ru860e\rest\ConfigHandler;
 use ru860e\rest\Auth;
-
+use ru860e\rest\Staff;
+use ru860e\rest\Phones;
 
 $configHandler = new ConfigHandler();
 $CONFIG = $configHandler->getConfig();
@@ -35,7 +36,8 @@ $application = new Application($ldap,$CONFIG['BOOKMARK']);
 $application->makeLdapConfigAttrLowercase(); //Преобразуем все атрибуты LDAP в нижний регистр.
 
 $localization = new Localization("./config/locales/" . $CONFIG_APP['LOCALIZATION'] . ".yml");
-
+$phones = new Phones($configHandler->getConfigPhone(),$CONFIG);
+$staff = new Staff($CONFIG,$application,$phones);
 
 $auth = new Auth($ldap, $CONFIG);
 

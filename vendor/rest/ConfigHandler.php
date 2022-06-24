@@ -12,11 +12,15 @@ class ConfigHandler
 {
 
     public function getConfig(){
-      $conf[0] = "default_company";
-      require_once(dirname(__FILE__)."/../../config/company/".$conf[0]."/config.php");
+    $conf[0] = "default_company";
+    $path_config = dirname(__FILE__)."/../../config/company/".$conf[0]."/config.php";
+
+    if ($this->is_file_check($path_config)) {
+      require_once($path_config);
+    }
 
 
-      $CONFIG['LDAP_ATTRIBUTE'] = $CONFIG_LDAP_ATTRIBUTE;
+      $CONFIG['CONFIG_LDAP_ATTRIBUTE'] = $CONFIG_LDAP_ATTRIBUTE;
       $CONFIG['CONFIG_PHOTO'] = $CONFIG_PHOTO;
       $CONFIG['CONFIG_APP'] = $CONFIG_APP;
       $CONFIG['CONFIG_PHONE'] = $CONFIG_PHONE;
@@ -38,8 +42,17 @@ class ConfigHandler
     }
 
     function getConfigPhone(){
-      require_once(dirname(__FILE__)."/../../config/phone/phone_codes.php");
-      require_once(dirname(__FILE__)."/../../config/phone/provider_desc.php");
+    $path_phone_codes = dirname(__FILE__)."/../../config/phone/phone_codes.php";
+
+
+      if ($this->is_file_check($path_phone_codes)) {
+       require_once($path_phone_codes);
+      }
+
+      $path_provider_desc = dirname(__FILE__)."/../../config/phone/provider_desc.php";
+      if ($this->is_file_check($path_provider_desc)) {
+       require_once($path_provider_desc);
+      }
 
       $CONFIG_PHONE['PHONE_CODES'] = $PHONE_CODES;
       $CONFIG_PHONE['PROVIDER_DESC'] = $PROVIDER_DESC;
@@ -47,4 +60,15 @@ class ConfigHandler
       return  $CONFIG_PHONE;
     }
 
+    function is_file_check($path){
+
+      if (is_file($path)) {
+      $check = true;
+      } else {
+       echo "Не найден файл: "+ $path;
+       $check = false;
+      }
+
+    return $check;
+    }
 }

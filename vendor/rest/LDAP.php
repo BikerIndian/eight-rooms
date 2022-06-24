@@ -23,7 +23,7 @@ class LDAP
         ldap_set_option($this->LC, LDAP_OPT_REFERRALS, 0);
 
         $this->CONFIG_LDAP = $CONFIG['CONFIG_LDAP'];
-        $this->CONFIG_LDAP_ATTRIBUTE = $CONFIG['LDAP_ATTRIBUTE'];
+        $this->CONFIG_LDAP_ATTRIBUTE = $CONFIG['CONFIG_LDAP_ATTRIBUTE'];
         $this->CONFIG_APP = $CONFIG['CONFIG_APP'];
 
         $this->SizePageDividerAttr      = $this->CONFIG_LDAP_ATTRIBUTE['LDAP_SIZE_LIMIT_PAGE_DIVIDER_FIELD'];

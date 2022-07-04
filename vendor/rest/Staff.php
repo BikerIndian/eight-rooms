@@ -136,7 +136,7 @@ class Staff
 		if (empty($Val)) return 'x';
 		if($Link)
 		{
-			if($this->$CONFIG_PHONE['FORMAT_CITY_PHONE'])
+			if($this->CONFIG_PHONE['FORMAT_CITY_PHONE'])
 			{		
 				if($this->CONFIG_PHONE['USE_PHONE_CODES_DESCRIPTION'] AND $phone_attr['provider_desc'])
 					$phone_title="title=\"".$phone_attr['provider_desc']."\"";

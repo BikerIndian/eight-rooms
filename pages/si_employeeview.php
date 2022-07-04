@@ -140,7 +140,11 @@ else
 	}
 
 if(!$CONFIG_PHONE['HIDE_CITY_PHONE_FIELD'])
-	echo "<div class=\"phone\"><h6>".$localization->get('city_phone').":</h6> <".$tag.">".$staff->makeCityPhone($ldap->getValue($dn, $CONFIG_LDAP_ATTRIBUTE['LDAP_CITY_PHONE_FIELD']))."</".$tag."></div>";
+	echo "<div class=\"phone\"><h6>"
+	.$localization->get('city_phone')
+	.":</h6> <".$tag.">"
+	.$staff->makeCityPhone($ldap->getValue($dn, $CONFIG_LDAP_ATTRIBUTE['LDAP_CITY_PHONE_FIELD']))
+	."</".$tag."></div>";
 
 echo "<div class=\"otherphone\"><h6>".$localization->get('intrenal_phone').":</h6> <".$tag.">".$staff->makeInternalPhone($ldap->getValue($dn, $CONFIG_LDAP_ATTRIBUTE['LDAP_INTERNAL_PHONE_FIELD']))."</".$tag."></div>";
 
@@ -156,8 +160,8 @@ if(!$CONFIG_APP['HIDE_ROOM_NUMBER'])
 echo "<div class=\"email\"><h6>E-mail:</h6> ".$staff->makeMailUrl($ldap->getValue($dn, $CONFIG_LDAP_ATTRIBUTE['LDAP_MAIL_FIELD']))."</div>";
 
 
-$StDate=$ldap->getValue($dn, $LDAP_ST_DATE_VACATION_FIELD);
-$EndDate=$ldap->getValue($dn, $LDAP_END_DATE_VACATION_FIELD);
+$StDate=$ldap->getValue($dn, $CONFIG_LDAP_ATTRIBUTE["LDAP_ST_DATE_VACATION_FIELD"]);
+$EndDate=$ldap->getValue($dn, $CONFIG_LDAP_ATTRIBUTE['LDAP_END_DATE_VACATION_FIELD'] );
 $staff->printVacOnCurrentPage($StDate, $EndDate);
 
 $DeputyDN=$ldap->getValue($dn, $LDAP_DEPUTY_FIELD);	

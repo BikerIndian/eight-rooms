@@ -13,7 +13,7 @@ if(is_array($_COOKIE['xmpp_list']) && $XMPP_MESSAGE_LISTS_ENABLE)
     $i=0;
     foreach($Recipients[$CONFIG_LDAP_ATTRIBUTE['LDAP_DISTINGUISHEDNAME_FIELD']] AS $key=>$value)
         {
-        echo "<div><input type=\"checkbox\" name=\"resipients[".$i."]\" value=\"".$Recipients[$GLOBALS['LDAP_USERPRINCIPALNAME_FIELD']][$key]."\" data-xmpp-item=\"true\" checked=\"checked\"/>".$staff->makeNameUrlFromDn($Recipients[$CONFIG_LDAP_ATTRIBUTE['LDAP_DISTINGUISHEDNAME_FIELD']][$key], $Recipients[$DISPLAY_NAME_FIELD][$key])."</div>";
+        echo "<div><input type=\"checkbox\" name=\"resipients[".$i."]\" value=\"".$Recipients[$GLOBALS['LDAP_USERPRINCIPALNAME_FIELD']][$key]."\" data-xmpp-item=\"true\" checked=\"checked\"/>".$staff->getClickUrlOnName($Recipients[$CONFIG_LDAP_ATTRIBUTE['LDAP_DISTINGUISHEDNAME_FIELD']][$key], $Recipients[$DISPLAY_NAME_FIELD][$key])."</div>";
         $i++;
         }
     }

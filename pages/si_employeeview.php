@@ -8,7 +8,6 @@ use ru860e\rest\LDAPTable;
 $fio = isset($_POST['fio']) ? $_POST['fio'] :
        isset($_GET['fio']) ? $_GET['fio'] :
        "";
-
 $dn = isset($_POST['dn']) ? $_POST['dn'] :
        isset($_GET['dn']) ? $_GET['dn'] :
        "";
@@ -24,45 +23,13 @@ $sorttype = isset($_POST['sorttype']) ? $_POST['sorttype'] :
 $CONFIG_PHOTO = $CONFIG['CONFIG_PHOTO'];
 $CONFIG_LDAP_ATTRIBUTE = $CONFIG['CONFIG_LDAP_ATTRIBUTE'];
 $CONFIG_PHONE = $CONFIG['CONFIG_PHONE'];
-/*
-$LdapListAttrs = array(
-        $CONFIG_LDAP_ATTRIBUTE['LDAP_DISTINGUISHEDNAME_FIELD'],
-        $DisplayName,
-  		$CONFIG_LDAP_ATTRIBUTE['LDAP_MAIL_FIELD'],
-  		$CONFIG_LDAP_ATTRIBUTE['LDAP_INTERNAL_PHONE_FIELD'],
-  		$CONFIG_LDAP_ATTRIBUTE['LDAP_CITY_PHONE_FIELD'],
-  		$CONFIG_LDAP_ATTRIBUTE['LDAP_ST_DATE_VACATION_FIELD'],
-  		$CONFIG_LDAP_ATTRIBUTE['LDAP_END_DATE_VACATION_FIELD'],
-  		$CONFIG_LDAP_ATTRIBUTE['LDAP_TITLE_FIELD'],
-  		$CONFIG_LDAP_ATTRIBUTE['LDAP_DEPARTMENT_FIELD'],
-  		$CONFIG_LDAP_ATTRIBUTE['LDAP_CELL_PHONE_FIELD'],
-  		$CONFIG_LDAP_ATTRIBUTE['LDAP_MANAGER_FIELD'],
-  		$CONFIG_LDAP_ATTRIBUTE['LDAP_COMPUTER_FIELD'],
-  		$CONFIG_LDAP_ATTRIBUTE['LDAP_DEPUTY_FIELD'],
-  		$CONFIG_LDAP_ATTRIBUTE['LDAP_GUID_FIELD'],
-  		$CONFIG_LDAP_ATTRIBUTE['LDAP_USERPRINCIPALNAME_FIELD'],
-  		$CONFIG_LDAP_ATTRIBUTE['LDAP_ROOM_NUMBER_FIELD']);
-
-
-$Staff = $ldap->getArray(
-    $LDAP_USER['OU_USER_READ'],
-    "(&(objectCategory=person)(objectClass=user)".$CONFIG_LDAP['DIS_USERS_COND'].")",
-    $LdapListAttrs,
-    array(
-          $DisplayName,
-          array('ad_def_full_name')
-          )
-    );
-
-
-if (is_array($Staff)) {
-}
-*/
 
 $OU = $LDAP_USER['OU_USER_READ'];
 
-if($fio)
-	$dn=$ldap->getValue($OU, $CONFIG_LDAP_ATTRIBUTE['LDAP_DISTINGUISHEDNAME_FIELD'], "cn=".$fio);
+if($fio){
+  $dn=$ldap->getValue($OU, $CONFIG_LDAP_ATTRIBUTE['LDAP_DISTINGUISHEDNAME_FIELD'], "cn=".$fio);
+}
+
 
 
 
@@ -76,9 +43,15 @@ else
 	$Image=$ldap->getImage($dn, $CONFIG_LDAP_ATTRIBUTE['LDAP_PHOTO_FIELD'], $Image);
 	}
 
-echo"<table class=\"user\">";
-echo"<tr>";
-echo"<td width=\"3%\">";
+function renderTemplate($template, $param = false) {
+    ob_start();
+    if ($param) {
+        extract($param);
+    }
+    include($template);
+}
+
+$page_content = renderTemplate('vi_employeeview.php', array("title"=>"hello"));
 
 if($Image)
 	echo"<div class=\"photo\"><img src=\"".$Image."\" height=\"".$CONFIG_PHOTO['PHOTO_MAX_HEIGHT']."\" width=\"".$CONFIG_PHOTO['PHOTO_MAX_WIDTH']."\"></div>";
@@ -210,10 +183,10 @@ if($ManDN)
 echo "<div class=\"employee\"><h6>".$localization->get('immediate_supervisor').":</h6><br>";
 	if($USE_DISPLAY_NAME)
 	{
-		echo $staff->makeNameUrlFromDn($ManDN, $ldap->getValue($ManDN, $DISPLAY_NAME_FIELD));
+		echo $staff->getClickUrlOnName($ManDN, $ldap->getValue($ManDN, $DISPLAY_NAME_FIELD));
 	}
 	else
-		echo $staff->makeNameUrlFromDn($ManDN);
+		echo $staff->getClickUrlOnName($ManDN);
 echo "</div>";
 }
 
@@ -237,7 +210,7 @@ else
 $table->addColumn($LDAP_INTERNAL_PHONE_FIELD, $localization->get('intrenal_phone'), true);
 $table->addColumn("title", "Должность");
 
-$table->addPregReplace("/^(.*)$/eu", "$staff->makeNameUrlFromDn('\\1')", "ФИО");
+$table->addPregReplace("/^(.*)$/eu", "$staff->getClickUrlOnName('\\1')", "ФИО");
 
 $table->addPregReplace("/^\.\./u", "", "Должность");
 $table->addPregReplace("/^\./u", "", "Должность");

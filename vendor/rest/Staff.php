@@ -51,23 +51,69 @@ class Staff
 			}
 		}
 
-	function makeNameUrlFromDn($DN, $Title="")
+	function getClickUrlOnName($DN, $fio="???")
 		{
+
+            $format =
+            '<a
+            href="newwin.php?menu_marker=si_employeeview&fio=%s"
+            data-lightview-type="iframe"
+            data-lightview-options="width: \'80%%\', height: \'100%%\', keyboard: {esc: true}, skin: \'light\'"
+            class="lightview in_link">
+            <span class=\'surname\'>%s</span>
+            </a>';
+
+            $format1 = '"<span class=\'surname\'>%s</span>"';
+
 		if($this->CONFIG_APP['USE_DISPLAY_NAME'])
-			{
-			$DN=preg_replace("/([ёA-zА-я-]+)[\s]{1}([ёA-zА-я-]+[\s]{1}[ёA-zА-я-]+)(CN.*)/u", "<a href=\"newwin.php?menu_marker=si_employeeview&dn=\\3\" data-lightview-type=\"iframe\" data-lightview-options=\"width: '80%', height: '100%', keyboard: {esc: true}, skin: 'light'\" class=\"lightview in_link\"><span class='surname'>\\1</span> \\2</a>", $Title.$DN);
-			$DN=preg_replace("/([ёA-zА-я-]+[\s]{1}[ёA-zA-я]{1}.)[\s]{1}([ёA-zА-я-]+)(CN.*)/u", "<a href=\"newwin.php?menu_marker=si_employeeview&dn=\\3\" data-lightview-type=\"iframe\" data-lightview-options=\"width: '80%', height: '100%', keyboard: {esc: true}, skin: 'light'\" class=\"lightview in_link\"><span class='surname'>\\2</span> \\1</a>", $DN);	
-			$DN=preg_replace("/([ёA-zA-я0-9№\s-]{1,})(CN.*)/u", "<a href=\"newwin.php?menu_marker=si_employeeview&dn=\\2\" data-lightview-type=\"iframe\" data-lightview-options=\"width: '80%', height: '100%', keyboard: {esc: true}, skin: 'light'\" class=\"lightview in_link\"><span class='surname'> \\1</span></a>", $DN);		
-			$DN=preg_replace("/^CN=([ёA-zA-я0-9\s\.-]{1,})(.*)$/u", "<a href=\"newwin.php?menu_marker=si_employeeview&dn=\\0\" data-lightview-type=\"iframe\" data-lightview-options=\"width: '80%', height: '100%', keyboard: {esc: true}, skin: 'light'\" class=\"lightview in_link\"><span class='surname'> \\1</span></a>", $DN);		
+		{
+
+            $pattern1 = "/([ёA-zА-я-]+)[\s]{1}([ёA-zА-я-]+[\s]{1}[ёA-zА-я-]+)(CN.*)/u";
+            $pattern2 = "/([ёA-zА-я-]+[\s]{1}[ёA-zA-я]{1}.)[\s]{1}([ёA-zА-я-]+)(CN.*)/u";
+            $pattern3 = "/([ёA-zA-я0-9№\s-]{1,})(CN.*)/u";
+            $pattern4 = "/^CN=([ёA-zA-я0-9\s\.-]{1,})(.*)$/u";
+
+
+            if(preg_match($pattern1, $fio.$DN, $matches)){
+                $fio=$matches[1];
+            }
+            if(preg_match($pattern2, $DN, $matches)){
+                $fio=$matches[1];
+            }
+            if(preg_match($pattern3, $DN, $matches)){
+                $fio=$matches[1];
+            }
+            if(preg_match($pattern4, $DN, $matches)){
+                $fio=$matches[1];
+            }
+
+            $clickUrl = sprintf($format, $fio, $fio);
+
 			}
 		else
 			{
-			$DN=preg_replace("/^[A-Za-z]+=*([ёА-яA-z0-9\s-.]+),[\S\s]+$/eu", "'<a href=\"newwin.php?menu_marker=si_employeeview&dn='.'\\0'.'\" data-lightview-type=\"iframe\" data-lightview-options=\"width: '80%', height: '100%', keyboard: {esc: true}, skin: 'light'\" class=\"lightview in_link\">___\\1</a>'", $DN);
-			$DN=preg_replace("/___([ёA-zА-я-]+)[\s]{1}([ёA-zА-я-]+[\s]{1}[ёA-zА-я-]+)/u", "<span class='surname'>\\1</span> \\2", $DN);
-			//Для формата Имя О. Фамилия
-			$DN=preg_replace("/___([ёA-zА-я-]+[\s]{1}[ёA-zA-я]{1}.)[\s]{1}([ёA-zА-я-]+)/u", "<span class='surname'>\\2</span> \\1", $DN);	
-			}	
-		return $DN;
+
+			$pattern5 = "/^[A-Za-z]+=*([ёА-яA-z0-9\s-.]+),[\S\s]+$/eu";
+			$pattern6 = "/___([ёA-zА-я-]+)[\s]{1}([ёA-zА-я-]+[\s]{1}[ёA-zА-я-]+)/u";
+			$pattern7 = "/___([ёA-zА-я-]+[\s]{1}[ёA-zA-я]{1}.)[\s]{1}([ёA-zА-я-]+)/u";
+
+            if(preg_match($pattern5, $DN, $matches)){
+                $fio=$matches[1];
+                $clickUrl = sprintf($format, $fio, $fio);
+            }
+
+            if(preg_match($pattern6, $DN, $matches)){
+                $clickUrl = sprintf($format1, $matches[1], $matches[2]);
+            }
+
+            // Для формата Имя О. Фамилия
+            if(preg_match($pattern7, $DN, $matches)){
+                $clickUrl = sprintf($format1, $matches[2], $matches[1]);
+            }
+
+		}
+
+		return $clickUrl;
 		}
 		
 	function makeMailUrl($Mail)
@@ -90,15 +136,15 @@ class Staff
 	function makeDeputy($DN, $Title='')
 		{
 		if($this->CONFIG_APP['USE_DISPLAY_NAME'])
-			return $this->makeNameUrlFromDn($DN, $Title);
+			return $this->getClickUrlOnName($DN, $Title);
 		else
-			return $this->makeNameUrlFromDn($DN);
+			return $this->getClickUrlOnName($DN);
 		}
 
 	function printDeputyInList($DN, $Title='')
 		{
 		if($this->CONFIG_APP['SHOW_DEPUTY'] && $DN && $this->CONFIG_APP['SHOW_DEPUTY_IN_LISTS'])
-			echo "<span class=\"unimportant\"> ".$localization->get("deputy")." </span><span class=\"deputy\">".$staff->makeNameUrlFromDn($DN, $Title)."</span>";
+			echo "<span class=\"unimportant\"> ".$localization->get("deputy")." </span><span class=\"deputy\">".$staff->getClickUrlOnName($DN, $Title)."</span>";
 		}
 
 	// Функции форматирования телефонных номеров
@@ -427,9 +473,9 @@ class Staff
 			    $this->CONFIG_LDAP_ATTRIBUTE['DISPLAY_NAME_FIELD']));
 
 		if(empty($Vars['search_str'])) //Если не велся поиск, то не подсвечивавем результаты
-			echo $this->makeNameUrlFromDn($userName, $staffUserList[$Vars['display_name']][$key]); //Делаем ссылку на полную информацию о сотруднике
+			echo $this->getClickUrlOnName($userName, $staffUserList[$Vars['display_name']][$key]); //Делаем ссылку на полную информацию о сотруднике
 		else
-			echo $this->highlightSearchResult($this->makeNameUrlFromDn($userName, $staffUserList[$Vars['display_name']][$key]), $Vars['search_str']); //Делаем ссылку на полную информацию о сотруднике
+			echo $this->highlightSearchResult($this->getClickUrlOnName($userName, $staffUserList[$Vars['display_name']][$key]), $Vars['search_str']); //Делаем ссылку на полную информацию о сотруднике
 
 		echo "</td>";
 		if(empty($Vars['search_str'])) //Если не велся поиск, то не подсвечивавем результаты

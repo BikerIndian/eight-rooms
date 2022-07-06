@@ -1,40 +1,98 @@
 <?php
+
+ini_set('error_reporting', E_ALL);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+
+use ru860e\controllers;
+use ru860e\rest\LdapAssistant;
 use ru860e\rest\Localization;
 use ru860e\rest\Application;
+use ru860e\rest\ConfigHandler;
 use ru860e\rest\LDAP;
-use ru860e\controllers;
+use ru860e\rest\Staff;
+use ru860e\rest\Phones;
+//use ru860e\rest\LdapAssistant;
 
-require_once("./config.php");
+//require_once("./config.php");
 require_once("./libs/forms.php");
 require_once("./libs/staff.php");
-require_once("./libs/phones.php");
+//require_once("./libs/phones.php");
 require_once("./libs/time.php");
 require_once("./libs/localization.php");
 require_once("./libs/spyc.php");
 require_once("./vendor/controllers/SiteController.php");
 
-$Controller = new controllers\SiteController();
-$L = new Localization("./config/locales/" . $LOCALIZATION . ".yml");
 
-Application::makeLdapConfigAttrLowercase(); //Преобразуем все атрибуты LDAP в нижний регистр.
+$configHandler = new ConfigHandler();
+$CONFIG = $configHandler->getConfig();
+
+$CONFIG_XMPP = $CONFIG['CONFIG_XMPP'];
+$CONFIG_APP = $CONFIG['CONFIG_APP'];
+$LDAP_USER = $CONFIG['LDAP_USER'];
+$ADMINS = $LDAP_USER['ADMINS'];
+
+$BOOKMARK_NAMES = $CONFIG['BOOKMARK']['BOOKMARK_NAMES'];
+$PAGE_LINKS = $CONFIG['PAGE_LINKS'];
+$CONFIG_PDF = $CONFIG['CONFIG_PDF'];
+$CONFIG_EXEL = $CONFIG['CONFIG_EXEL'] ;
+$CONFIG_PHONE = $CONFIG['CONFIG_PHONE'];
+$BLOCK_VIS = $CONFIG['BLOCK_VIS'];
+$BIRTHDAYS = $CONFIG['BIRTHDAYS'];
+$CONFIG_LDAP_ATTRIBUTE = $CONFIG['CONFIG_LDAP_ATTRIBUTE'];
+
+$CURRENT_SKIN = $CONFIG_APP['CURRENT_SKIN'];
+
+
+
+
+$Controller = new controllers\SiteController();
+//$localization->get('by_alphabet')
+
+$localization = new Localization("./config/locales/" . $CONFIG_APP['LOCALIZATION'] . ".yml");
+
+
+
+
 //Database
 //----------------------------------------
-$ldap = new LDAP($LDAPServer, $LDAPUser, $LDAPPassword); //Соединяемся с сервером
+$ldap = new LDAP($LDAP_USER['SERVER_LDAP'], $LDAP_USER['USER_READ'], $LDAP_USER['PASSWORD_USER_READ'],$CONFIG); //Соединяемся с сервером
+$ldapAssistant = new LdapAssistant($ldap,$CONFIG);
 //----------------------------------------	
+$application = new Application($ldap,$CONFIG['BOOKMARK']);
+$application->makeLdapConfigAttrLowercase(); //Преобразуем все атрибуты LDAP в нижний регистр.
+$phones = new Phones($configHandler->getConfigPhone(),$CONFIG);
 
-setlocale(LC_CTYPE, "ru_RU." . $GLOBALS['CHARSET_APP']);
+$staff = new Staff($CONFIG,$application,$phones);
 
-@$menu_marker = ($_POST['menu_marker']) ? $_POST['menu_marker'] : (($_GET['menu_marker']) ? $_GET['menu_marker'] : $DEFAULT_PAGE);
+
+setlocale(LC_CTYPE, "ru_RU." . $CONFIG_APP['CHARSET_APP']);
+
+// Определяем вывод страницы
+$menu_marker = isset($_POST['menu_marker']) ? $_POST['menu_marker'] :
+               isset($_GET['menu_marker']) ? $_GET['menu_marker'] :
+               $CONFIG_APP['DEFAULT_PAGE'];
+
+
+
 // выводим по отделам
 //$menu_marker="si_dep_staff_list";
-@$only_bookmark = ($_POST['only_bookmark']) ? $_POST['only_bookmark'] : $_GET['only_bookmark'];
-@$BOOKMARK_NAME = ($_POST['bookmark_name']) ? $_POST['bookmark_name'] : (($_GET['bookmark_name']) ? $_GET['bookmark_name'] : current(array_keys($BOOKMARK_NAMES[current(array_keys($BOOKMARK_NAMES))])));
+$only_bookmark = isset($_POST['only_bookmark']) ? $_POST['only_bookmark'] :
+                 isset($_GET['only_bookmark']);
+
+$BOOKMARK_NAME = isset($_POST['bookmark_name']) ? $_POST['bookmark_name'] :
+                 isset($_GET['bookmark_name']) ? $_GET['bookmark_name'] :
+                 current(array_keys($BOOKMARK_NAMES[current(array_keys($BOOKMARK_NAMES))]));
 
 
-if ((@$_POST['form_sent']) && (@!$GLOBALS['only_bookmark'])) //Если отправлена форма поиска и флажок "только во вкладке не был установлен"
-    @$BOOKMARK_NAME = "";
+if (isset($_POST['form_sent']) && !isset($GLOBALS['only_bookmark'])) //Если отправлена форма поиска и флажок "только во вкладке не был установлен"
+
+// !!!
+$BOOKMARK_NAME = "";
 $bookmark_name = $BOOKMARK_NAME;
-@$bookmark_attr = ($_POST['bookmark_attr']) ? $_POST['bookmark_attr'] : (($_GET['bookmark_attr']) ? $_GET['bookmark_attr'] : current(array_keys($BOOKMARK_NAMES)));
+$bookmark_attr = isset($_POST['bookmark_attr']) ? $_POST['bookmark_attr'] :
+                 isset($_GET['bookmark_attr']) ? $_GET['bookmark_attr'] :
+                 current(array_keys($BOOKMARK_NAMES));
 
 
 //Записываем переменные в массив. Массив используется для формирование скрытых полей форм и url-ов.
@@ -62,7 +120,7 @@ if (@$_GET['iamnot']) { //Если нажата кнопка выход, то у
 
 if (@$_SERVER['REMOTE_USER']) { //Если есть прозрачно аутентифицированный пользователь. И в серверной переменной хранится его логин
 
-    if ($DistinguishedName = $ldap->getValue($OU, $LDAP_DISTINGUISHEDNAME_FIELD, $LDAP_USERPRINCIPALNAME_FIELD . "=" . $_SERVER['REMOTE_USER'] . "*")) { //Находим его distinguishedname
+    if ($DistinguishedName = $ldap->getValue($OU, $CONFIG_LDAP_ATTRIBUTE['LDAP_DISTINGUISHEDNAME_FIELD'], $LDAP_USERPRINCIPALNAME_FIELD . "=" . $_SERVER['REMOTE_USER'] . "*")) { //Находим его distinguishedname
         //Сохраняем куку с distinguishedname, что бы в дальнейшем аутентифицировать пользователя по куке.
         setcookie('dn', $DistinguishedName, time() + 5000 * 24 * 60 * 60, "/");
         $_COOKIE['dn'] = $DistinguishedName;
@@ -128,13 +186,13 @@ if (isset($_COOKIE['dn'])) {
 <body onLoad="scroll();">
 
 <?php
-if ($XMPP_ENABLE)
-    echo "<div id=\"send_xmpp_message\" class=\"lightview\">" . $L->l('send_message') . "</div>";
+if ($CONFIG_XMPP['XMPP_ENABLE'])
+    echo "<div id=\"send_xmpp_message\" class=\"lightview\">" . $localization->get('send_message') . "</div>";
 ?>
 
 
 <?php
-if ($ALARM_MESSAGE) {
+if ($CONFIG['ALARM_MESSAGE']) {
     echo "<div class=\"alarm\" id=\"alarm_mess\">" . $ALARM_MESSAGE . "</div>";
 }
 ?>
@@ -156,11 +214,11 @@ if ($ALARM_MESSAGE) {
                         else
                             $class = "";
 
-                        $BookMarkLinks = Application::getBookMarkLinks($key, $class);
+                        $BookMarkLinks = $application->getBookMarkLinks($key, $class);
                         echo implode(current($BookMarkLinks));
 
                         if (is_array($BookMarkLinks['window']))
-                            echo Application::makeWindow($BookMarkLinks['window']);
+                            echo $application->makeWindow($BookMarkLinks['window']);
                         $i++;
                     }
                 }
@@ -186,23 +244,29 @@ if ($ALARM_MESSAGE) {
                 <?php //
                 //Вывод PDF
 
-                if ($ENABLE_PDF_EXPORT) {
+                if ($CONFIG_PDF['ENABLE_PDF_EXPORT']) {
                     ?>
-                    <div class="tab export"><a id="exp_pdf_sep_dep"
-                                               href="./pages/si_export_pdf_department.php?bookmark_name=<?php echo $BOOKMARK_NAME; ?>&bookmark_attr=<?php echo $bookmark_attr; ?>"
-                                               target="_blank" class="in_link"><?php echo $L->l('by_department'); ?></a>
+                    <div class="tab export">
+                     <a id="exp_pdf_sep_dep"
+                       href="./pages/si_export_pdf_department.php?bookmark_name=<?php echo $BOOKMARK_NAME; ?>&bookmark_attr=<?php echo $bookmark_attr; ?>"
+                       target="_blank" class="in_link"><?php echo $localization->get('by_department'); ?>
+                      </a>
                     </div>
-                    <div class="tab export"><a id="exp_pdf_sep_alph"
-                                               href="./pages/si_export_pdf_alphabet.php?bookmark_name=<?php echo $BOOKMARK_NAME; ?>&bookmark_attr=<?php echo $bookmark_attr; ?>"
-                                               target="_blank" class="in_link"><?php echo $L->l('by_alphabet'); ?></a>
+
+                    <div class="tab export">
+                      <a id="exp_pdf_sep_alph"
+                       href="./pages/si_export_pdf_alphabet.php?bookmark_name=<?php echo $BOOKMARK_NAME; ?>&bookmark_attr=<?php echo $bookmark_attr; ?>"
+                       target="_blank" class="in_link"><?php echo $localization->get('by_alphabet'); ?>
+                      </a>
                     </div>
                 <?php } ?>
 
 
-                <?php if ($ENABLE_EXEL_EXPORT) {
+                <?php if ($CONFIG_EXEL['ENABLE_EXEL_EXPORT']) {
                     ?>
-                    <div class="tab export"><a id="exp_exl_sep_dep" href="./pages/si_export_xlsx_department.php"
-                                               target="_blank" class="in_link"><?php echo $L->l('by_department'); ?></a>
+                    <div class="tab export">
+                    <a id="exp_exl_sep_dep" href="./pages/si_export_xlsx_department.php"
+                                               target="_blank" class="in_link"><?php echo $localization->get('by_department'); ?></a>
                     </div>
 
                 <?php } ?>
@@ -217,8 +281,8 @@ if ($ALARM_MESSAGE) {
         <td>
             <?php
             // Вывод справочника
-            if (is_file($PHPPath . "/" . $menu_marker . ".php")) {
-                include($PHPPath . "/" . $menu_marker . ".php");
+            if (is_file($CONFIG_APP['PHPPath']. "/" . $menu_marker . ".php")) {
+                include($CONFIG_APP['PHPPath']. "/" . $menu_marker . ".php");
             }
             ?>
         </td>

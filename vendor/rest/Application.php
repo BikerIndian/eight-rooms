@@ -9,10 +9,19 @@
 
 namespace ru860e\rest;
 
-abstract class Application
+class Application
 {
+    private $ldap;
+    private $BOOKMARK;
 
-    public static function getHiddenFieldForForm()
+ function __construct($ldap,$BOOKMARK)
+    {
+    $this->ldap = $ldap;
+    $this->BOOKMARK = $BOOKMARK;
+
+    }
+
+    public function getHiddenFieldForForm()
     {
         $HiddenFields='';
         foreach($GLOBALS['CurrentVars'] AS $key=>$value)
@@ -23,9 +32,9 @@ abstract class Application
         return $HiddenFields;
     }
 
-    public static function getSearchFilter($SearchStr, $LdapAttr)
+    public function getSearchFilter($SearchStr, $LdapAttr)
     {
-        $SearchStr=LDAP::escapeFilterValue($SearchStr);
+        $SearchStr=$ldap->escapeFilterValue($SearchStr);
         $Filter='(|';
         foreach($LdapAttr AS $value)
         {
@@ -35,7 +44,7 @@ abstract class Application
         return str_replace("***", "*", $Filter);
     }
 
-    public static function getCollTitle($Title='', $Attr=array())
+    public function getCollTitle($Title='', $Attr=array())
     {
         $th_css_class='';
         $th_content=$Title;
@@ -87,19 +96,25 @@ abstract class Application
      * @return string
      *
      */
-    public static function getCompanyNameLdapFilter()
+    public function getCompanyNameLdapFilter()
     {
-        $bookmark_name=LDAP::escapeFilterValue($GLOBALS['BOOKMARK_NAME']);
+    // $GLOBALS['BOOKMARK_NAME']
+
+ //echo $this->BOOKMARK['BOOKMARK_NAMES'];
+
+//echo $this->BOOKMARK['BOOKMARK_NAME_EXACT_FIT']["company"];
+        //$bookmark_name=$this->ldap->escapeFilterValue($this->BOOKMARK['BOOKMARK_NAMES']);
+        $bookmark_name=$GLOBALS['bookmark_name'];
         $bookmark_attr=$GLOBALS['bookmark_attr'];
 
         if(($bookmark_name=="*") || ( (@$_POST['form_sent']) && (@!$GLOBALS['only_bookmark']) ) )
         {
 
-            foreach($GLOBALS['BOOKMARK_NAMES'] AS $key=>$value)
+            foreach($this->BOOKMARK['BOOKMARK_NAMES'] AS $key=>$value)
             {
-                $bookmark_names=LDAP::escapeFilterValue(array_keys($value));
+                $bookmark_names=$ldap->escapeFilterValue(array_keys($value));
 
-                if($GLOBALS['BOOKMARK_NAME_EXACT_FIT'][$bookmark_attr])
+                if($this->BOOKMARK['BOOKMARK_NAME_EXACT_FIT'][$bookmark_attr])
                     $filters[]="|(".$key."=".implode(")(".$key."=", $bookmark_names).")";
                 else
                 {
@@ -111,7 +126,10 @@ abstract class Application
         }
         else
         {
-            if($GLOBALS['BOOKMARK_NAME_EXACT_FIT'][$bookmark_attr])
+        print_r($bookmark_name);
+       // echo "(".$bookmark_attr."=".$bookmark_name.")";
+
+            if($this->BOOKMARK['BOOKMARK_NAME_EXACT_FIT'][$bookmark_attr])
                 $filter="(".$bookmark_attr."=".$bookmark_name.")";
             else
                 $filter="(".$bookmark_attr."=*".$bookmark_name."*)";
@@ -124,7 +142,7 @@ abstract class Application
     /**
      *  Преобразовать все атрибуты LDAP в нижний регистр
      */
-    public static function makeLdapConfigAttrLowercase()
+    public function makeLdapConfigAttrLowercase()
     {
         foreach($GLOBALS AS $key => $value)
         {
@@ -134,7 +152,7 @@ abstract class Application
         }
     }
 
-    public static function makeWindow($Links, $NumPosInCol=3)
+    public function makeWindow($Links, $NumPosInCol=3)
     {
         $Window="<div class=\"tab\"><a href=\"\" class=\"in_link window\"></a></div>";
         $Window.="<div class=\"window hidden\">";
@@ -163,7 +181,7 @@ abstract class Application
      * второй элемент 'window'- массив ссылок для скрытого всплывающего окна
      */
 
-    public static function getBookMarkLinks($bookmark_attr, $class='')
+    public function getBookMarkLinks($bookmark_attr, $class='')
     {
         if ( array_key_exists($bookmark_attr, $GLOBALS['BOOKMARK_MAX_NUM_ITEMS']) )
             $max_items=$GLOBALS['BOOKMARK_MAX_NUM_ITEMS'][$bookmark_attr]; //Сколько вкладок максимум показывать по данному атрибуту

@@ -6,7 +6,7 @@ $Initials=$ldap->getValue($dn, $LDAP_INITIALS_FIELD);
 $V=explode(" - ", $ldap->getValue($dn, $LDAP_VACATION_FIELD));
 
 $DirectorSn=$ldap->getValue($OU, $LDAP_SN_FIELD, "(".$LDAP_TITLE_FIELD."=".$DIRECTOR_FULL_TITLE.")");
-$DirectorDn=$ldap->getValue($OU, $LDAP_DISTINGUISHEDNAME_FIELD, "(".$LDAP_TITLE_FIELD."=".$DIRECTOR_FULL_TITLE.")");
+$DirectorDn=$ldap->getValue($OU, $CONFIG_LDAP_ATTRIBUTE['LDAP_DISTINGUISHEDNAME_FIELD'], "(".$LDAP_TITLE_FIELD."=".$DIRECTOR_FULL_TITLE.")");
 $DirectorInitials=$ldap->getValue($OU, $LDAP_INITIALS_FIELD, "(".$LDAP_TITLE_FIELD."=".$DIRECTOR_FULL_TITLE.")");
 $DirectorCompany=str_replace("\"", "&laquo;&raquo;", $ldap->getValue($OU, $LDAP_COMPANY_FIELD, "(".$LDAP_TITLE_FIELD."=".$DIRECTOR_FULL_TITLE.")"));
 

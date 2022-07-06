@@ -3,12 +3,12 @@ namespace ru860e\rest;
 
 class Localization
 	{
-	private $LocaleVars;
+	private $localeVars;
 
 
 	function __construct($YmlFile)
 		{
-		$this->LocaleVars=Spyc::YAMLLoad($YmlFile);
+		$this->localeVars=Spyc::YAMLLoad($YmlFile);
 		}
 
 
@@ -23,11 +23,15 @@ class Localization
      * @param $Parameter
      * @return mixed
      */
-	public function l($Parameter)
+	public function get($parameter)
 		{
-		return $this->LocaleVars[$Parameter];
+		return $this->localeVars[$parameter];
 		}
 
+	public function getArr($parameter)
+		{
+		return $this->localeVars[$parameter];
+		}
     /**
      * Возвращает массив значений "Locale"
      *
@@ -35,7 +39,7 @@ class Localization
      */
     public function getLocaleVars()
     {
-        return $this->LocaleVars;
+        return $this->localeVars;
     }
 
 

@@ -19,12 +19,12 @@ if($XMPP_ENABLE)
         if($XMPP_MESSAGE_SIGN_ENABLE)
             {
             $UserInfo = $ldap->getArray($_COOKIE['dn'], false, array($DISPLAY_NAME_FIELD, $LDAP_TITLE_FIELD, $LDAP_CELL_PHONE_FIELD, $LDAP_INTERNAL_PHONE_FIELD), false, false, true);
-            $Sign =  "\n\n".$L->l("start_of_xmpp_sign");
+            $Sign =  "\n\n".$localization->get("start_of_xmpp_sign");
             $Sign.= "\n".$UserInfo[$DISPLAY_NAME_FIELD][0]." (".$UserInfo[$LDAP_TITLE_FIELD][0].")";
             if($XMPP_USE_INTERNAL_PHONE_IN_SIGN_ENABLE)
-              $Sign.= "\n".$L->l("intrenal_phone").": ".$UserInfo[$LDAP_INTERNAL_PHONE_FIELD][0]."";
+              $Sign.= "\n".$localization->get("intrenal_phone").": ".$UserInfo[$LDAP_INTERNAL_PHONE_FIELD][0]."";
             if($XMPP_USE_MOBILE_PHONE_IN_SIGN_ENABLE)
-              $Sign.= "\n".$L->l("cell_phone").": ".$UserInfo[$LDAP_CELL_PHONE_FIELD][0]."";
+              $Sign.= "\n".$localization->get("cell_phone").": ".$UserInfo[$LDAP_CELL_PHONE_FIELD][0]."";
             $message.=$Sign;
             }
 
@@ -38,7 +38,7 @@ if($XMPP_ENABLE)
 
         if(is_array($_POST['groups']))
             {
-            $Filter = "(|(".$LDAP_DISTINGUISHEDNAME_FIELD."=".implode(")(".$LDAP_DISTINGUISHEDNAME_FIELD."=", LDAP::escapeFilterValue($_POST['groups']))."))";
+            $Filter = "(|(".$CONFIG_LDAP_ATTRIBUTE['LDAP_DISTINGUISHEDNAME_FIELD']."=".implode(")(".$CONFIG_LDAP_ATTRIBUTE['LDAP_DISTINGUISHEDNAME_FIELD']."=", $ldap->escapeFilterValue($_POST['groups']))."))";
             //echo $Filter;
             $Entries = $ldap->ldap_search($OU, $Filter, array($LDAP_MEMBER_FIELD));
 
@@ -48,7 +48,7 @@ if($XMPP_ENABLE)
                     $Filter = "(|";
                 for($j=0; $j<$Entries[$i][$LDAP_MEMBER_FIELD]['count']; $j++)
                     {
-                    $Filter.="(".$LDAP_DISTINGUISHEDNAME_FIELD."=".LDAP::escapeFilterValue($Entries[$i][$LDAP_MEMBER_FIELD][$j]).")";
+                    $Filter.="(".$CONFIG_LDAP_ATTRIBUTE['LDAP_DISTINGUISHEDNAME_FIELD']."=".$ldap->escapeFilterValue($Entries[$i][$LDAP_MEMBER_FIELD][$j]).")";
                     }
                 
                 } 
@@ -81,7 +81,7 @@ if($XMPP_ENABLE)
             }
         
 
-        echo "{\"success\": \"true\", \"message\": \"".$L->l('xmpp_message_has_been_sent')."\"}";
+        echo "{\"success\": \"true\", \"message\": \"".$localization->get('xmpp_message_has_been_sent')."\"}";
         } catch(XMPPHP_Exception $e) {
             echo "{\"success\": \"true\", \"message\": \"".$e->getMessage()."\"}";
             }

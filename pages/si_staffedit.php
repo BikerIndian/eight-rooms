@@ -116,15 +116,15 @@ if($Access)
 		if($USE_DISPLAY_NAME)
 			$table->addColumn($DISPLAY_NAME_FIELD.", distinguishedname", "ФИО", true, 0, false, "ad_def_full_name");
 		else
-			$table->addColumn($LDAP_DISTINGUISHEDNAME_FIELD, "ФИО", true, 0, false, "ad_def_full_name");
+			$table->addColumn($CONFIG_LDAP_ATTRIBUTE['LDAP_DISTINGUISHEDNAME_FIELD'], "ФИО", true, 0, false, "ad_def_full_name");
 		$table->addColumn($LDAP_TITLE_FIELD, "Должность");
 		$table->addColumn($LDAP_MAIL_FIELD, "E-mail", true);
-		$table->addColumn($LDAP_INTERNAL_PHONE_FIELD, $L->l('intrenal_phone'), true);
-		$table->addColumn($LDAP_CITY_PHONE_FIELD, $L->l('city_phone'), true);
+		$table->addColumn($LDAP_INTERNAL_PHONE_FIELD, $localization->get('intrenal_phone'), true);
+		$table->addColumn($LDAP_CITY_PHONE_FIELD, $localization->get('city_phone'), true);
 		$table->addColumn($LDAP_CELL_PHONE_FIELD, "Мобильный", true);		
 		$table->addColumn($LDAP_BIRTH_FIELD, "Д.Р.", true, 0, false, "dd.mm.yyyy");
 		$table->addColumn($LDAP_PHOTO_FIELD, "Фото", true);	
-		$table->addColumn($LDAP_DISTINGUISHEDNAME_FIELD, "Править");		
+		$table->addColumn($CONFIG_LDAP_ATTRIBUTE['LDAP_DISTINGUISHEDNAME_FIELD'], "Править");
 
 		$table->addVar("name", $Name);
 		if(@$_GET['form_sent']||@$_POST['form_sent'])
@@ -136,8 +136,8 @@ if($Access)
 
 		//$Name=quotemeta($Name);
 
-		$Conditions1[$LDAP_DISTINGUISHEDNAME_FIELD]['!=']=$dn;
-		$Conditions2[$LDAP_DISTINGUISHEDNAME_FIELD]['=']=$dn;
+		$Conditions1[$CONFIG_LDAP_ATTRIBUTE['LDAP_DISTINGUISHEDNAME_FIELD']]['!=']=$dn;
+		$Conditions2[$CONFIG_LDAP_ATTRIBUTE['LDAP_DISTINGUISHEDNAME_FIELD']]['=']=$dn;
 
 		
 	//ФИО
@@ -218,25 +218,25 @@ if($Access)
 
 	//Внутренний
 	//-------------------------------------------------------------------------------------------------		
-		$table->addPregReplace("/(".strtolower(preg_quote($Name)).")/u", "<u class='found'>\\1</u>", $L->l('intrenal_phone'), 1, $Conditions1);
-		$table->addPregReplace("/^$/u", "x", $L->l('intrenal_phone'));
+		$table->addPregReplace("/(".strtolower(preg_quote($Name)).")/u", "<u class='found'>\\1</u>", $localization->get('intrenal_phone'), 1, $Conditions1);
+		$table->addPregReplace("/^$/u", "x", $localization->get('intrenal_phone'));
 		if(@$Errors[$LDAP_INTERNAL_PHONE_FIELD])
-			$table->addPregReplace("/([\w\W]{1,})/u", "<span class=\"title\"><input class=\"error othertelephone\" name=\"".$LDAP_INTERNAL_PHONE_FIELD."\" value=\"".$Errors[$LDAP_INTERNAL_PHONE_FIELD]."\"/><em>Новый внутренний номер не соответствует формату. <br/>Действующие значение: <b> \\1 </b><i></i></em></span>", $L->l('intrenal_phone'), 1, $Conditions2);
+			$table->addPregReplace("/([\w\W]{1,})/u", "<span class=\"title\"><input class=\"error othertelephone\" name=\"".$LDAP_INTERNAL_PHONE_FIELD."\" value=\"".$Errors[$LDAP_INTERNAL_PHONE_FIELD]."\"/><em>Новый внутренний номер не соответствует формату. <br/>Действующие значение: <b> \\1 </b><i></i></em></span>", $localization->get('intrenal_phone'), 1, $Conditions2);
 		else
-			$table->addPregReplace("/([\w\W]{1,})/u", "<input class=\"text othertelephone\" name=\"".$LDAP_INTERNAL_PHONE_FIELD."\" value=\"\\1\"/>", $L->l('intrenal_phone'), 1, $Conditions2);
-		$table->addPregReplace("/value=\"x\"/", "value=\"\"", $L->l('intrenal_phone'), 1, $Conditions2);
+			$table->addPregReplace("/([\w\W]{1,})/u", "<input class=\"text othertelephone\" name=\"".$LDAP_INTERNAL_PHONE_FIELD."\" value=\"\\1\"/>", $localization->get('intrenal_phone'), 1, $Conditions2);
+		$table->addPregReplace("/value=\"x\"/", "value=\"\"", $localization->get('intrenal_phone'), 1, $Conditions2);
 	//-------------------------------------------------------------------------------------------------
 
 	//Городской
 	//-------------------------------------------------------------------------------------------------		
-		$table->addPregReplace("/^([0-9]{3})([0-9]{3})$/u", "\\1-\\2", $L->l('city_phone'), 1, $Conditions1);
-		$table->addPregReplace("/(".preg_quote($Name).")/u", "<u class='found'>\\1</u>", $L->l('city_phone'), 1, $Conditions1);
-		$table->addPregReplace("/^$/u", "x", $L->l('city_phone'));
+		$table->addPregReplace("/^([0-9]{3})([0-9]{3})$/u", "\\1-\\2", $localization->get('city_phone'), 1, $Conditions1);
+		$table->addPregReplace("/(".preg_quote($Name).")/u", "<u class='found'>\\1</u>", $localization->get('city_phone'), 1, $Conditions1);
+		$table->addPregReplace("/^$/u", "x", $localization->get('city_phone'));
 		if(@$Errors[$LDAP_CITY_PHONE_FIELD])
-			$table->addPregReplace("/([\w\W]{1,})/u", "<span class=\"title\"><input class=\"error telephonenumber\" name=\"".$LDAP_CITY_PHONE_FIELD."\" value=\"".$Errors[$LDAP_CITY_PHONE_FIELD]."\"/><em>Новый городской номер не соответствует формату. <br/>Действующие значение: <b> \\1 </b><i></i></em></span>", $L->l('city_phone'), 1, $Conditions2);
+			$table->addPregReplace("/([\w\W]{1,})/u", "<span class=\"title\"><input class=\"error telephonenumber\" name=\"".$LDAP_CITY_PHONE_FIELD."\" value=\"".$Errors[$LDAP_CITY_PHONE_FIELD]."\"/><em>Новый городской номер не соответствует формату. <br/>Действующие значение: <b> \\1 </b><i></i></em></span>", $localization->get('city_phone'), 1, $Conditions2);
 		else
-			$table->addPregReplace("/([\w\W]{1,})/u", "<input class=\"text telephonenumber\" name=\"".$LDAP_CITY_PHONE_FIELD."\" value=\"\\1\"/>", $L->l('city_phone'), 1, $Conditions2);	
-		$table->addPregReplace("/value=\"x\"/u", "value=\"\"", $L->l('city_phone'), 1, $Conditions2);
+			$table->addPregReplace("/([\w\W]{1,})/u", "<input class=\"text telephonenumber\" name=\"".$LDAP_CITY_PHONE_FIELD."\" value=\"\\1\"/>", $localization->get('city_phone'), 1, $Conditions2);
+		$table->addPregReplace("/value=\"x\"/u", "value=\"\"", $localization->get('city_phone'), 1, $Conditions2);
 	//-------------------------------------------------------------------------------------------------	
 		
 	//Мобильный
@@ -274,7 +274,7 @@ if($Access)
 		$table->addPregReplace("/^([\w\W]{1,}$)/u", "Есть", "Фото", 1);
 		$table->addPregReplace("/^$/u", "x", "Фото", 1);	
 		$Conditions3[$LDAP_OBJECTCLASS_FIELD]['=']="user";
-		$Conditions3[$LDAP_DISTINGUISHEDNAME_FIELD]['=']=$dn;
+		$Conditions3[$CONFIG_LDAP_ATTRIBUTE['LDAP_DISTINGUISHEDNAME_FIELD']]['=']=$dn;
 		$table->addPregReplace("/^Есть$/u", "<iframe allowtransparency=\"true\" src=\"./newwin.php?menu_marker=si_staff_add_photo&ButTitle=Изменить&dn=".$dn."\" frameborder=\"0\" scrolling=\"no\" width=\"70\" height=\"40\"></iframe>", "Фото", 1, $Conditions3);
 		$table->addPregReplace("/^x$/u", "<iframe allowtransparency=\"true\" src=\"./newwin.php?menu_marker=si_staff_add_photo&ButTitle=Добавить&dn=".$dn."\" frameborder=\"0\" scrolling=\"no\" width=\"70\" height=\"40\"></iframe>", "Фото", 1, $Conditions3);
 	//-------------------------------------------------------------------------------------------------	
@@ -283,7 +283,7 @@ if($Access)
 
 	// Делаем фильтр для выборки сотрудников нужных компаний
 	//-------------------------------------------------------------------------------------------------------------
-		$CompanyNameLdapFilter=Application::getCompanyNameLdapFilter();
+		$CompanyNameLdapFilter=$application->getCompanyNameLdapFilter();
 	//-------------------------------------------------------------------------------------------------------------	
 		
 		$table->printTable($OU, "(&".$CompanyNameLdapFilter."(|(".$LDAP_OBJECTCLASS_FIELD."=user)(".$LDAP_OBJECTCLASS_FIELD."=contact))(|(".$LDAP_CN_FIELD."=".$cn.")(".$LDAP_MAIL_FIELD."=".$cn.")(".$LDAP_INTERNAL_PHONE_FIELD."=".$cn.")(".$LDAP_CITY_PHONE_FIELD."=".$cn.")(".$LDAP_CELL_PHONE_FIELD."=".$cn.")(".$LDAP_TITLE_FIELD."=".$cn.")(".$LDAP_DEPARTMENT_FIELD."=".$cn."))".$DIS_USERS_COND.")");

@@ -5,42 +5,64 @@ use ru860e\rest\Staff;
 use ru860e\rest\LDAPTable;
 
 
+$fio = isset($_POST['fio']) ? $_POST['fio'] :
+       isset($_GET['fio']) ? $_GET['fio'] :
+       "";
+$dn = isset($_POST['dn']) ? $_POST['dn'] :
+       isset($_GET['dn']) ? $_GET['dn'] :
+       "";
 
-$dn=($_GET['dn'])?$_GET['dn']:$_POST['dn'];
-@$fio=($_GET['fio'])?$_GET['fio']:$_POST['fio'];
+$sortcolumn = isset($_POST['sortcolumn']) ? $_POST['sortcolumn'] :
+       isset($_GET['sortcolumn']) ? $_GET['sortcolumn'] :
+       "ФИО";
 
-@$_GET['sortcolumn']=($_GET['sortcolumn'])?$_GET['sortcolumn']:"ФИО";
-@$_GET['sorttype']=($_GET['sorttype'])?$_GET['sorttype']:"ASC";
+$sorttype = isset($_POST['sorttype']) ? $_POST['sorttype'] :
+       isset($_GET['sorttype']) ? $_GET['sorttype'] :
+       "ASC";
 
-$ldap=new LDAP($LDAPServer, $LDAPUser, $LDAPPassword);
+$CONFIG_PHOTO = $CONFIG['CONFIG_PHOTO'];
+$CONFIG_LDAP_ATTRIBUTE = $CONFIG['CONFIG_LDAP_ATTRIBUTE'];
+$CONFIG_PHONE = $CONFIG['CONFIG_PHONE'];
 
-if($fio)
-	$dn=$ldap->getValue($OU, $LDAP_DISTINGUISHEDNAME_FIELD, "cn=".$fio);
+//$OU = $LDAP_USER['OU_USER_READ'];
+$dn = $LDAP_USER['DN_USERS_PHONEBOOK'];
 
-
-if($DIRECT_PHOTO) {
-    $Image = $ldap->getImage($dn, $GLOBALS['LDAP_PHOTO_FIELD']);
+if($fio){
+  $user=$ldap->getUser($dn,$fio);
+  //$dn=$ldap->getValue($OU, $CONFIG_LDAP_ATTRIBUTE['LDAP_DISTINGUISHEDNAME_FIELD'], "cn=".$fio);
 }
-else
-	{
 
-	$Image=$GLOBALS['PHOTO_DIR']."/".md5($dn).".jpg";
-	$Image=$ldap->getImage($dn, $GLOBALS['LDAP_PHOTO_FIELD'], $Image);
+
+
+
+if($CONFIG_PHOTO['DIRECT_PHOTO']) {
+    $Image = $ldap->getImage($dn, $CONFIG_LDAP_ATTRIBUTE['LDAP_PHOTO_FIELD']);
+    }
+    else
+	{
+	$Image=$CONFIG_PHOTO['PHOTO_DIR']."/".md5($dn).".jpg";
+	$Image=$ldap->getImage($dn, $CONFIG_LDAP_ATTRIBUTE['LDAP_PHOTO_FIELD'], $Image);
 	}
 
-echo"<table class=\"user\">";
-echo"<tr>";
-echo"<td width=\"3%\">";
+function renderTemplate($template, $param = false) {
+    ob_start();
+    if ($param) {
+        extract($param);
+    }
+    include($template);
+}
+
+$page_content = renderTemplate('vi_employeeview.php', array("title"=>"hello"));
 
 if($Image)
-	echo"<div class=\"photo\"><img src=\"".$Image."\" height=\"$PHOTO_MAX_HEIGHT\" width=\"$PHOTO_MAX_WIDTH\"></div>";	
+	echo"<div class=\"photo\"><img src=\"".$Image."\" height=\"".$CONFIG_PHOTO['PHOTO_MAX_HEIGHT']."\" width=\"".$CONFIG_PHOTO['PHOTO_MAX_WIDTH']."\"></div>";
 else
-	echo"<div class=\"photo\"><img src=\"./skins/".$CURRENT_SKIN."/images/ldap/user.png\"></div>";
+	echo"<div class=\"photo\"><img src=\"./skins/".$CONFIG_APP['CURRENT_SKIN']."/images/ldap/user.png\"></div>";
 echo"</td>";
 echo"<td>";
 
-if($USE_DISPLAY_NAME)
-	$Name=$ldap->getValue($dn, $DISPLAY_NAME_FIELD);
+if($CONFIG_APP['USE_DISPLAY_NAME'])
+	$Name=$ldap->getValue($dn, $CONFIG_LDAP_ATTRIBUTE['DISPLAY_NAME_FIELD']);
 else
 	$Name=$ldap->getValue($dn, "name");
 
@@ -53,29 +75,29 @@ $FIO=preg_replace("/^([ёA-zА-я-]+[\s]{1}[ёA-zА-я-]{1}.)[\s]{1}([ёA-zА-я
 
 echo $FIO;
 
-if($SHOW_EVALUATION_PERIOD_MESSAGE && $LDAP_CREATED_DATE_FIELD)
+if($CONFIG_APP['SHOW_EVALUATION_PERIOD_MESSAGE'] && $CONFIG_LDAP_ATTRIBUTE['LDAP_CREATED_DATE_FIELD'])
 	{
-	$Created=$ldap->getValue($dn, $LDAP_CREATED_DATE_FIELD);	
-	$CreatedUnixTime=Time::getTimeOfDMYHI($Created, $LDAP_CREATED_DATE_FORMAT);
+	$Created=$ldap->getValue($dn, $CONFIG_LDAP_ATTRIBUTE['LDAP_CREATED_DATE_FIELD']);
+	$CreatedUnixTime=Time::getTimeOfDMYHI($Created,$CONFIG_APP['LDAP_CREATED_DATE_FORMAT']);
 	$NumWorkDays=round((Time::getOnlyDatePartFromTime(time())-Time::getOnlyDatePartFromTime($CreatedUnixTime))/(24*60*60));
 	//if($NumWorkDays<=$EVALUATION_PERIOD)
 	if(false)
 		echo "<h6 class=\"alarm\">Новый сотрудник</h6> &mdash; <small>работает в компании <big>".$L->ending($NumWorkDays, 'день', 'дня', 'дней')."</big></small>";
 	}
 
-$Department=$ldap->getValue($dn, $LDAP_DEPARTMENT_FIELD);
-$Title= $ldap->getValue($dn, $LDAP_TITLE_FIELD);
+$Department=$ldap->getValue($dn, $CONFIG_LDAP_ATTRIBUTE['LDAP_DEPARTMENT_FIELD']   );
+$Title= $ldap->getValue($dn, $CONFIG_LDAP_ATTRIBUTE['LDAP_TITLE_FIELD'] );
 
 if($Department)
-	echo "<div class=\"position\"><nobr class=\"department\">".Staff::makeDepartment($Department)."</nobr> <br/><span class=\"position\">".Staff::makeTitle($Title)."</span></div>";
+	echo "<div class=\"position\"><nobr class=\"department\">".$staff->makeDepartment($Department)."</nobr> <br/><span class=\"position\">".$staff->makeTitle($Title)."</span></div>";
 
-if($VACATION)
+if($CONFIG_APP['VACATION'])
 	{
-	$e[0]=$ldap->getValue($dn, $LDAP_ST_DATE_VACATION_FIELD); $e[1]=$ldap->getValue($dn, $LDAP_END_DATE_VACATION_FIELD);
+	$e[0]=$ldap->getValue($dn, $CONFIG_LDAP_ATTRIBUTE['LDAP_ST_DATE_VACATION_FIELD'] ); $e[1]=$ldap->getValue($dn, $CONFIG_LDAP_ATTRIBUTE['LDAP_END_DATE_VACATION_FIELD']);
 
 	if($e[0]&&$e[1])
 		{
-		$VacationState=Staff::getVacationState($e[0], $e[1]);
+		$VacationState=$staff->getVacationState($e[0], $e[1]);
 		if($VacationState == 0)
 			$tag="del";
 		else if($VacationState < 0)
@@ -91,35 +113,38 @@ else
 	$tag="span";
 	}
 
-if(!$HIDE_CITY_PHONE_FIELD)
-	echo "<div class=\"phone\"><h6>".$L->l('city_phone').":</h6> <".$tag.">".Staff::makeCityPhone($ldap->getValue($dn, $LDAP_CITY_PHONE_FIELD))."</".$tag."></div>";
+if(!$CONFIG_PHONE['HIDE_CITY_PHONE_FIELD'])
+	echo "<div class=\"phone\"><h6>"
+	.$localization->get('city_phone')
+	.":</h6> <".$tag.">"
+	.$staff->makeCityPhone($ldap->getValue($dn, $CONFIG_LDAP_ATTRIBUTE['LDAP_CITY_PHONE_FIELD']))
+	."</".$tag."></div>";
 
-echo "<div class=\"otherphone\"><h6>".$L->l('intrenal_phone').":</h6> <".$tag.">".Staff::makeInternalPhone($ldap->getValue($dn, $LDAP_INTERNAL_PHONE_FIELD))."</".$tag."></div>";
+echo "<div class=\"otherphone\"><h6>".$localization->get('intrenal_phone').":</h6> <".$tag.">".$staff->makeInternalPhone($ldap->getValue($dn, $CONFIG_LDAP_ATTRIBUTE['LDAP_INTERNAL_PHONE_FIELD']))."</".$tag."></div>";
 
-if(!$HIDE_CELL_PHONE_FIELD)
-	echo "<div class=\"otherphone\"><h6>".$L->l('cell_phone').":</h6> ".Staff::makeCellPhone($ldap->getValue($dn, $LDAP_CELL_PHONE_FIELD))."</div>";
+if(!$CONFIG_PHONE['HIDE_CELL_PHONE_FIELD'])
+	echo "<div class=\"otherphone\"><h6>".$localization->get('cell_phone').":</h6> ".$staff->makeCellPhone($ldap->getValue($dn, $CONFIG_LDAP_ATTRIBUTE['LDAP_CELL_PHONE_FIELD']))."</div>";
 
-if($HomePhone=$ldap->getValue($dn, $LDAP_HOMEPHONE_FIELD))
-	echo "<div class=\"otherphone\"><h6>".$L->l('home_phone').":</h6> ".Staff::makeHomePhone($HomePhone)."</div>";
+if($HomePhone=$ldap->getValue($dn, $CONFIG_LDAP_ATTRIBUTE['LDAP_HOMEPHONE_FIELD']))
+	echo "<div class=\"otherphone\"><h6>".$localization->get('home_phone').":</h6> ".$staff->makeHomePhone($HomePhone)."</div>";
 
-if(!$HIDE_ROOM_NUMBER)
-	echo "<div class=\"otherphone\"><h6>".$L->l('room_number').":</h6> ".Staff::makePlainText($ldap->getValue($dn, $LDAP_ROOM_NUMBER_FIELD))."</div>";
+if(!$CONFIG_APP['HIDE_ROOM_NUMBER'])
+	echo "<div class=\"otherphone\"><h6>".$localization->get('room_number').":</h6> ".$staff->makePlainText($ldap->getValue($dn, $CONFIG_LDAP_ATTRIBUTE['LDAP_ROOM_NUMBER_FIELD']))."</div>";
 
-echo "<div class=\"email\"><h6>E-mail:</h6> ".Staff::makeMailUrl($ldap->getValue($dn, $LDAP_MAIL_FIELD))."</div>";
+echo "<div class=\"email\"><h6>E-mail:</h6> ".$staff->makeMailUrl($ldap->getValue($dn, $CONFIG_LDAP_ATTRIBUTE['LDAP_MAIL_FIELD']))."</div>";
 
 
-
-$StDate=$ldap->getValue($dn, $LDAP_ST_DATE_VACATION_FIELD);
-$EndDate=$ldap->getValue($dn, $LDAP_END_DATE_VACATION_FIELD);
-Staff::printVacOnCurrentPage($StDate, $EndDate);
+$StDate=$ldap->getValue($dn, $CONFIG_LDAP_ATTRIBUTE["LDAP_ST_DATE_VACATION_FIELD"]);
+$EndDate=$ldap->getValue($dn, $CONFIG_LDAP_ATTRIBUTE['LDAP_END_DATE_VACATION_FIELD'] );
+$staff->printVacOnCurrentPage($StDate, $EndDate);
 
 $DeputyDN=$ldap->getValue($dn, $LDAP_DEPUTY_FIELD);	
-if($DeputyDN && $SHOW_DEPUTY && (Staff::checkInVacation($StDate, $EndDate) && $BIND_DEPUTY_AND_VACATION) || !$BIND_DEPUTY_AND_VACATION)
+if($DeputyDN && $SHOW_DEPUTY && ($staff->checkInVacation($StDate, $EndDate) && $BIND_DEPUTY_AND_VACATION) || !$BIND_DEPUTY_AND_VACATION)
 	{
 	echo "<div class=\"employee birthday\">
-		<h6>".$L->l('deputy_for_vacation_period').":</h6><br/>";
+		<h6>".$localization->get('deputy_for_vacation_period').":</h6><br/>";
 
-	echo Staff::makeDeputy($DeputyDN, $ldap->getValue($DeputyDN, $DISPLAY_NAME_FIELD));
+	echo $staff->makeDeputy($DeputyDN, $ldap->getValue($DeputyDN, $DISPLAY_NAME_FIELD));
 	echo "</div>";
 	}
 
@@ -129,7 +154,7 @@ $Birth=$ldap->getValue($dn, $LDAP_BIRTH_FIELD);
 //-----------------------------------------------------------------------------
 if($Birth)
 {
-	switch($BIRTH_DATE_FORMAT)
+	switch($BIRTHDAYS['BIRTH_DATE_FORMAT'])
 	{
 		case 'yyyy-mm-dd':
 		{
@@ -144,25 +169,25 @@ if($Birth)
 	}
 
 	$Jubilee="";
-	if($SHOW_JUBILEE_INFO)
+	if($BIRTHDAYS['SHOW_JUBILEE_INFO'])
 		{	
-		if(!((date("Y")-$Date[2])%5)) $Jubilee="<div>".$L->l('round_date')."</div>";
-		if(!((date("Y")-$Date[2])%10)) $Jubilee="<div>".$L->l('jubilee')."</div>";
+		if(!((date("Y")-$Date[2])%5)) $Jubilee="<div>".$localization->get('round_date')."</div>";
+		if(!((date("Y")-$Date[2])%10)) $Jubilee="<div>".$localization->get('jubilee')."</div>";
 		}
-	echo"<div class=\"birthday\"><h6>".$L->l('birthday').":</h6> ".(int) $Date[0]." ".$MONTHS[(int) $Date[1]].". ".@$Jubilee."</div>";	
+	echo"<div class=\"birthday\"><h6>".$localization->get('birthday').":</h6> ".(int) $Date[0]." ".$MONTHS[(int) $Date[1]].". ".@$Jubilee."</div>";
 }
 //-----------------------------------------------------------------------------
 
 $ManDN=$ldap->getValue($dn, $LDAP_MANAGER_FIELD);	
 if($ManDN)
 {
-echo "<div class=\"employee\"><h6>".$L->l('immediate_supervisor').":</h6><br>";
+echo "<div class=\"employee\"><h6>".$localization->get('immediate_supervisor').":</h6><br>";
 	if($USE_DISPLAY_NAME)
 	{
-		echo Staff::makeNameUrlFromDn($ManDN, $ldap->getValue($ManDN, $DISPLAY_NAME_FIELD));
+		echo $staff->getClickUrlOnName($ManDN, $ldap->getValue($ManDN, $DISPLAY_NAME_FIELD));
 	}
 	else
-		echo Staff::makeNameUrlFromDn($ManDN);
+		echo $staff->getClickUrlOnName($ManDN);
 echo "</div>";
 }
 
@@ -183,18 +208,18 @@ if($USE_DISPLAY_NAME)
 	$table->addColumn($DISPLAY_NAME_FIELD.", distinguishedname", "ФИО", true, 0, false, "ad_def_full_name");
 else	
 	$table->addColumn("distinguishedname", "ФИО", true, 0, false, "ad_def_full_name");
-$table->addColumn($LDAP_INTERNAL_PHONE_FIELD, $L->l('intrenal_phone'), true);
+$table->addColumn($LDAP_INTERNAL_PHONE_FIELD, $localization->get('intrenal_phone'), true);
 $table->addColumn("title", "Должность");
 
-$table->addPregReplace("/^(.*)$/eu", "Staff::makeNameUrlFromDn('\\1')", "ФИО");	
+$table->addPregReplace("/^(.*)$/eu", "$staff->getClickUrlOnName('\\1')", "ФИО");
 
 $table->addPregReplace("/^\.\./u", "", "Должность");
 $table->addPregReplace("/^\./u", "", "Должность");
-$table->addPregReplace("/^(.*)$/eu", "Staff::makeInternalPhone('\\1')", $L->l('intrenal_phone'));
+$table->addPregReplace("/^(.*)$/eu", "$staff->makeInternalPhone('\\1')", $localization->get('intrenal_phone'));
 
 echo"<div id=\"people_table\">";
 
-$table->printTable($OU, "(&(company=*)(manager=".LDAP::escapeFilterValue($dn).")".$DIS_USERS_COND.")");
+$table->printTable($OU, "(&(company=*)(manager=".$ldap->escapeFilterValue($dn).")".$DIS_USERS_COND.")");
 echo"</div>";
 echo"</td>";
 echo"</tr>";

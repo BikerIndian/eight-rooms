@@ -136,136 +136,90 @@ class LDAP
     }
 
 
+    function getUserByHexGui($dn,$uid)
+    {
+      $guid = hex2bin($uid);
+      $filter = "(&(objectCategory=person)(objectClass=user)(objectGUID=".$guid."))";
+      $ls = ldap_search($this->LC, $dn, $filter, $this->getUserAttributes());
+      $entries = ldap_get_entries($this->LC, $ls);
+      return $this->parseUser($entries[0]);
+    }
+
     function getUser($dn,$userName)
     {
-          $Attributes = array(
-                  $this->CONFIG_LDAP_ATTRIBUTE['DISPLAY_NAME_FIELD'],
-                  $this->CONFIG_LDAP_ATTRIBUTE['LDAP_DISTINGUISHEDNAME_FIELD'],
-                  $this->CONFIG_LDAP_ATTRIBUTE['LDAP_NAME_FIELD'],
-                  $this->CONFIG_LDAP_ATTRIBUTE['LDAP_MAIL_FIELD'],
-                  $this->CONFIG_LDAP_ATTRIBUTE['LDAP_INTERNAL_PHONE_FIELD'],
-                  $this->CONFIG_LDAP_ATTRIBUTE['LDAP_CITY_PHONE_FIELD'],
-                  $this->CONFIG_LDAP_ATTRIBUTE['LDAP_ST_DATE_VACATION_FIELD'],
-                  $this->CONFIG_LDAP_ATTRIBUTE['LDAP_END_DATE_VACATION_FIELD'],
-                  $this->CONFIG_LDAP_ATTRIBUTE['LDAP_TITLE_FIELD'],
-                  $this->CONFIG_LDAP_ATTRIBUTE['LDAP_DEPARTMENT_FIELD'],
-                  $this->CONFIG_LDAP_ATTRIBUTE['LDAP_CELL_PHONE_FIELD'],
-                  $this->CONFIG_LDAP_ATTRIBUTE['LDAP_MANAGER_FIELD'],
-                  $this->CONFIG_LDAP_ATTRIBUTE['LDAP_COMPUTER_FIELD'],
-                  $this->CONFIG_LDAP_ATTRIBUTE['LDAP_DEPUTY_FIELD'],
-                  $this->CONFIG_LDAP_ATTRIBUTE['LDAP_GUID_FIELD'],
-                  $this->CONFIG_LDAP_ATTRIBUTE['LDAP_USERPRINCIPALNAME_FIELD'],
-                  $this->CONFIG_LDAP_ATTRIBUTE['LDAP_ROOM_NUMBER_FIELD']);
+      $filter = "(&(objectCategory=person)(objectClass=user)(CN=".$userName."))";
+      $ls = ldap_search($this->LC, $dn, $filter, $this->getUserAttributes());
+      $entries = ldap_get_entries($this->LC, $ls);
+      return $this->parseUser($entries[0]);
+    }
 
+    function getArrayUsers($dn,$filter = false)
+    {
+        if(!$filter){
+         $filter = "(&(objectCategory=person)(objectClass=user))";
+        }
 
+        $ls = ldap_search($this->LC, $dn, $filter, $this->getUserAttributes());
+        $entries = ldap_get_entries($this->LC, $ls);
+        $length = count($entries);
 
-$filter = "(&(objectCategory=person)(objectClass=user)(CN=".$userName."))";
+        for ($i = 0; $i < $length-1; $i++) {
+            $arrayUsers[$i]=$this->parseUser($entries[$i]);
+        }
 
-     //$LS = ldap_search($this->LC, $DN, "name=*", $Attributes);
-     $ls = ldap_search($this->LC, $dn, $filter, $Attributes);
+        return $arrayUsers;
+    }
 
+    private function getUserAttributes(){
+              $LDAP_GUID_FIELD = "objectguid";
+              $attributes = array(
+                      $LDAP_GUID_FIELD,
+                      $this->CONFIG_LDAP_ATTRIBUTE['DISPLAY_NAME_FIELD'],
+                      $this->CONFIG_LDAP_ATTRIBUTE['LDAP_DISTINGUISHEDNAME_FIELD'],
+                      $this->CONFIG_LDAP_ATTRIBUTE['LDAP_NAME_FIELD'],
+                      $this->CONFIG_LDAP_ATTRIBUTE['LDAP_MAIL_FIELD'],
+                      $this->CONFIG_LDAP_ATTRIBUTE['LDAP_INTERNAL_PHONE_FIELD'],
+                      $this->CONFIG_LDAP_ATTRIBUTE['LDAP_CITY_PHONE_FIELD'],
+                      $this->CONFIG_LDAP_ATTRIBUTE['LDAP_ST_DATE_VACATION_FIELD'],
+                      $this->CONFIG_LDAP_ATTRIBUTE['LDAP_END_DATE_VACATION_FIELD'],
+                      $this->CONFIG_LDAP_ATTRIBUTE['LDAP_TITLE_FIELD'],
+                      $this->CONFIG_LDAP_ATTRIBUTE['LDAP_DEPARTMENT_FIELD'],
+                      $this->CONFIG_LDAP_ATTRIBUTE['LDAP_CELL_PHONE_FIELD'],
+                      $this->CONFIG_LDAP_ATTRIBUTE['LDAP_MANAGER_FIELD'],
+                      $this->CONFIG_LDAP_ATTRIBUTE['LDAP_COMPUTER_FIELD'],
+                      $this->CONFIG_LDAP_ATTRIBUTE['LDAP_DEPUTY_FIELD'],
+                      $this->CONFIG_LDAP_ATTRIBUTE['LDAP_USERPRINCIPALNAME_FIELD'],
+                      $this->CONFIG_LDAP_ATTRIBUTE['LDAP_ROOM_NUMBER_FIELD'],
+                      );
+     return $attributes;
+    }
+    private function parseUser($entries){
 
-       // Если пустой то возврат
-       if (!($entries = ldap_get_entries($this->LC, $ls))) {
+         // Если пустой то возврат
+         if (!$entries) {
             return new User();
-       }
+         }
 
-
-     $entries = $entries[0];
-
-     $user = new User();
-
-     $user->DISPLAY_NAME_FIELD              = $this->setStr($this->CONFIG_LDAP_ATTRIBUTE['DISPLAY_NAME_FIELD'],$entries);
-     $user->LDAP_DISTINGUISHEDNAME_FIELD    = $this->setStr($this->CONFIG_LDAP_ATTRIBUTE['LDAP_DISTINGUISHEDNAME_FIELD'],$entries);
-     $user->LDAP_NAME_FIELD                 = $this->setStr($this->CONFIG_LDAP_ATTRIBUTE['LDAP_NAME_FIELD'],$entries);
-     $user->LDAP_MAIL_FIELD                 = $this->setStr($this->CONFIG_LDAP_ATTRIBUTE['LDAP_MAIL_FIELD'],$entries);
-     $user->LDAP_INTERNAL_PHONE_FIELD       = $this->setStr($this->CONFIG_LDAP_ATTRIBUTE['LDAP_INTERNAL_PHONE_FIELD'],$entries);
-     $user->LDAP_CITY_PHONE_FIELD           = $this->setStr($this->CONFIG_LDAP_ATTRIBUTE['LDAP_CITY_PHONE_FIELD'],$entries);
-     $user->LDAP_ST_DATE_VACATION_FIELD     = $this->setStr($this->CONFIG_LDAP_ATTRIBUTE['LDAP_ST_DATE_VACATION_FIELD'],$entries);
-     $user->LDAP_END_DATE_VACATION_FIELD    = $this->setStr($this->CONFIG_LDAP_ATTRIBUTE['LDAP_END_DATE_VACATION_FIELD'],$entries);
-     $user->LDAP_TITLE_FIELD                = $this->setStr($this->CONFIG_LDAP_ATTRIBUTE['LDAP_TITLE_FIELD'],$entries);
-     $user->LDAP_DEPARTMENT_FIELD           = $this->setStr($this->CONFIG_LDAP_ATTRIBUTE['LDAP_DEPARTMENT_FIELD'],$entries);
-     $user->LDAP_CELL_PHONE_FIELD           = $this->setStr($this->CONFIG_LDAP_ATTRIBUTE['LDAP_CELL_PHONE_FIELD'],$entries);
-     $user->LDAP_MANAGER_FIELD              = $this->setStr($this->CONFIG_LDAP_ATTRIBUTE['LDAP_MANAGER_FIELD'],$entries);
-     $user->LDAP_COMPUTER_FIELD             = $this->setStr($this->CONFIG_LDAP_ATTRIBUTE['LDAP_COMPUTER_FIELD'],$entries);
-     $user->LDAP_DEPUTY_FIELD               = $this->setStr($this->CONFIG_LDAP_ATTRIBUTE['LDAP_DEPUTY_FIELD'],$entries);
-     $user->LDAP_GUID_FIELD                 = $this->setStr($this->CONFIG_LDAP_ATTRIBUTE['LDAP_GUID_FIELD'],$entries);
-     $user->LDAP_USERPRINCIPALNAME_FIELD    = $this->setStr($this->CONFIG_LDAP_ATTRIBUTE['LDAP_USERPRINCIPALNAME_FIELD'],$entries);
-     $user->LDAP_ROOM_NUMBER_FIELD          = $this->setStr($this->CONFIG_LDAP_ATTRIBUTE['LDAP_ROOM_NUMBER_FIELD'],$entries);
-
-/*
-                  $this->CONFIG_LDAP_ATTRIBUTE['LDAP_NAME_FIELD'],
-                  $this->CONFIG_LDAP_ATTRIBUTE['LDAP_MAIL_FIELD'],
-                  $this->CONFIG_LDAP_ATTRIBUTE['LDAP_INTERNAL_PHONE_FIELD'],
-                  $this->CONFIG_LDAP_ATTRIBUTE['LDAP_CITY_PHONE_FIELD'],
-                  $this->CONFIG_LDAP_ATTRIBUTE['LDAP_ST_DATE_VACATION_FIELD'],
-                  $this->CONFIG_LDAP_ATTRIBUTE['LDAP_END_DATE_VACATION_FIELD'],
-                  $this->CONFIG_LDAP_ATTRIBUTE['LDAP_TITLE_FIELD'],
-
-                  $this->CONFIG_LDAP_ATTRIBUTE['LDAP_DEPARTMENT_FIELD'],
-                  $this->CONFIG_LDAP_ATTRIBUTE['LDAP_CELL_PHONE_FIELD'],
-                  $this->CONFIG_LDAP_ATTRIBUTE['LDAP_MANAGER_FIELD'],
-                  $this->CONFIG_LDAP_ATTRIBUTE['LDAP_COMPUTER_FIELD'],
-                  $this->CONFIG_LDAP_ATTRIBUTE['LDAP_DEPUTY_FIELD'],
-                  $this->CONFIG_LDAP_ATTRIBUTE['LDAP_GUID_FIELD'],
-                  $this->CONFIG_LDAP_ATTRIBUTE['LDAP_USERPRINCIPALNAME_FIELD'],
-                  $this->CONFIG_LDAP_ATTRIBUTE['LDAP_ROOM_NUMBER_FIELD']);
-*/
-
-     return $user;
-
-
-    /*
-
-
-
-      //Получаем правильно отсортированных сотрудников с необходимыми атрибутами LDAP
-$cn = "(&(objectCategory=person)(objectClass=user)".$CONFIG_LDAP['DIS_USERS_COND'].")";
-echo $cn . "<br>";
-//$cn = "memberof=CN=База Маркировки,OU=Users,OU=BMJ-Office,DC=bmj,DC=group,DC=local";
-$cn = "CN=База Маркировки";
-$cn = "(&(objectCategory=person)(objectClass=user)(".$cn."))";
-echo $cn;
-
-      $user_list = $ldap->getArray(
-          $LDAP_USER['OU_USER_READ'],
-          $cn,
-          $LdapListAttrs,
-                    array(
-                          $DisplayName,
-                          array('ad_def_full_name')
-                          )
-       );
-
-
-
-     // $Attribute, $Filter = false, $NotRecode = false
-        $Attributes = array($Attribute);
-        $Attributes = $this->arrtolower($Attributes);
-
-        $DN = iconv($this->CONFIG_APP['CHARSET_APP'], $this->CONFIG_APP['CHARSET_DATA'], $DN);
-        $Filter = iconv($this->CONFIG_APP['CHARSET_APP'], $this->CONFIG_APP['CHARSET_DATA'], $Filter);
-
-        if (!$Filter) {
-            $Filter = $this->CONFIG_LDAP_ATTRIBUTE['LDAP_CN_FIELD'] . "=*";
-        }
-
-        if (@$LS = ldap_search($this->LC, $DN, $Filter, $Attributes)) {
-            //for ($Entries=ldap_first_entry($this->LC, $LS); $Entries!=false; $Entries=ldap_next_entry($this->LC,$Entries))
-            if ($Entries = ldap_get_entries($this->LC, $LS)) {
-
-                if (!$NotRecode)
-                    return @iconv($this->CONFIG_APP['CHARSET_DATA'], $this->CONFIG_APP['CHARSET_APP'], $Entries[0][$Attribute][0]);
-                else
-                    return $Entries[0][$Attribute][0];
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
-     */
-
+         $LDAP_GUID_FIELD = "objectguid";
+         $user = new User();
+         $user->LDAP_GUID_FIELD                 = bin2hex($entries[$LDAP_GUID_FIELD][0]);
+         $user->DISPLAY_NAME_FIELD              = $this->setStr($this->CONFIG_LDAP_ATTRIBUTE['DISPLAY_NAME_FIELD'],$entries);
+         $user->LDAP_DISTINGUISHEDNAME_FIELD    = $this->setStr($this->CONFIG_LDAP_ATTRIBUTE['LDAP_DISTINGUISHEDNAME_FIELD'],$entries);
+         $user->LDAP_NAME_FIELD                 = $this->setStr($this->CONFIG_LDAP_ATTRIBUTE['LDAP_NAME_FIELD'],$entries);
+         $user->LDAP_MAIL_FIELD                 = $this->setStr($this->CONFIG_LDAP_ATTRIBUTE['LDAP_MAIL_FIELD'],$entries);
+         $user->LDAP_INTERNAL_PHONE_FIELD       = $this->setStr($this->CONFIG_LDAP_ATTRIBUTE['LDAP_INTERNAL_PHONE_FIELD'],$entries);
+         $user->LDAP_CITY_PHONE_FIELD           = $this->setStr($this->CONFIG_LDAP_ATTRIBUTE['LDAP_CITY_PHONE_FIELD'],$entries);
+         $user->LDAP_ST_DATE_VACATION_FIELD     = $this->setStr($this->CONFIG_LDAP_ATTRIBUTE['LDAP_ST_DATE_VACATION_FIELD'],$entries);
+         $user->LDAP_END_DATE_VACATION_FIELD    = $this->setStr($this->CONFIG_LDAP_ATTRIBUTE['LDAP_END_DATE_VACATION_FIELD'],$entries);
+         $user->LDAP_TITLE_FIELD                = $this->setStr($this->CONFIG_LDAP_ATTRIBUTE['LDAP_TITLE_FIELD'],$entries);
+         $user->LDAP_DEPARTMENT_FIELD           = $this->setStr($this->CONFIG_LDAP_ATTRIBUTE['LDAP_DEPARTMENT_FIELD'],$entries);
+         $user->LDAP_CELL_PHONE_FIELD           = $this->setStr($this->CONFIG_LDAP_ATTRIBUTE['LDAP_CELL_PHONE_FIELD'],$entries);
+         $user->LDAP_MANAGER_FIELD              = $this->setStr($this->CONFIG_LDAP_ATTRIBUTE['LDAP_MANAGER_FIELD'],$entries);
+         $user->LDAP_COMPUTER_FIELD             = $this->setStr($this->CONFIG_LDAP_ATTRIBUTE['LDAP_COMPUTER_FIELD'],$entries);
+         $user->LDAP_DEPUTY_FIELD               = $this->setStr($this->CONFIG_LDAP_ATTRIBUTE['LDAP_DEPUTY_FIELD'],$entries);
+         $user->LDAP_USERPRINCIPALNAME_FIELD    = $this->setStr($this->CONFIG_LDAP_ATTRIBUTE['LDAP_USERPRINCIPALNAME_FIELD'],$entries);
+         $user->LDAP_ROOM_NUMBER_FIELD          = $this->setStr($this->CONFIG_LDAP_ATTRIBUTE['LDAP_ROOM_NUMBER_FIELD'],$entries);
+         return $user;
     }
 
     function getImage($DN, $Attribute, $File = false)    //$File=false

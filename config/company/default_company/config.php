@@ -30,7 +30,6 @@ $CONFIG_LDAP_ATTRIBUTE['LDAP_SN_FIELD']                                   ="sn";
 $CONFIG_LDAP_ATTRIBUTE['LDAP_INITIALS_FIELD']                             ="initials";                    // Атрибут LDAP в котором будет хранится инициалы сотрудника
 $CONFIG_LDAP_ATTRIBUTE['LDAP_DEPUTY_FIELD']                               ="extensionattribute15";        // Атрибут LDAP в котором будет хранится ссылка на замещающего на время отпуска
 $CONFIG_LDAP_ATTRIBUTE['LDAP_FAVOURITE_USER_FIELD']                       ="alexFavorites";               // Атрибут LDAP в котором будут хранится ссылки на избранных сотрудником сотрудников
-$CONFIG_LDAP_ATTRIBUTE['LDAP_GUID_FIELD']                                 ="objectguid";
 $CONFIG_LDAP_ATTRIBUTE['LDAP_SIZE_LIMIT_PAGE_DIVIDER_FIELD']              ="displayname";                 // Атрибут LDAP по которому будет разбиваться выборка сотрудников из LDAP (что бы обойти серверный SIZE LIMIT)
 $CONFIG_LDAP_ATTRIBUTE['LDAP_CREATED_DATE_FIELD']                         ="whenCreated";                 // Атрибут LDAP в котором будет хранится дата создания учетной записи
 $CONFIG_LDAP_ATTRIBUTE['LDAP_CHANGED_DATE_FIELD']                         ="whenChanged";

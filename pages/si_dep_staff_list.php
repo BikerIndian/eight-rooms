@@ -58,13 +58,13 @@ $LdapListAttrs = array(
   		$CONFIG_LDAP_ATTRIBUTE['LDAP_MANAGER_FIELD'],
   		$CONFIG_LDAP_ATTRIBUTE['LDAP_COMPUTER_FIELD'],
   		$CONFIG_LDAP_ATTRIBUTE['LDAP_DEPUTY_FIELD'],
-  		$CONFIG_LDAP_ATTRIBUTE['LDAP_GUID_FIELD'],
   		$CONFIG_LDAP_ATTRIBUTE['LDAP_USERPRINCIPALNAME_FIELD'],
   		$CONFIG_LDAP_ATTRIBUTE['LDAP_ROOM_NUMBER_FIELD']);
 //Получаем правильно отсортированных сотрудников с необходимыми атрибутами LDAP, учитывая настроки сортировки из конфига
 
 $inquiry = "(&(objectCategory=person)".$CONFIG_LDAP['DIS_USERS_COND'].")";
 
+/*
 $staffUserList=$ldap->getArray(
     $LDAP_USER['OU_USER_READ'],
 	$inquiry,
@@ -75,7 +75,9 @@ $staffUserList=$ldap->getArray(
   	    $CONFIG_LDAP_ATTRIBUTE['LDAP_TITLE_FIELD'],
   	    $CONFIG['STAFF_SORT_ORDER'],
   	    $DisplayName));
-
+*/
+$dn = $CONFIG_APP['DN_USERS_PHONEBOOK'];
+$staffUserList = $ldap->getArrayUsers($dn);
 
 if(is_array($staffUserList))
 {
@@ -134,6 +136,13 @@ if(is_array($staffUserList))
 			}
 		}
 	$row=0;	// переменная, используемая для нумерации строк таблицы
+
+	foreach ($staffUserList as $user) {
+
+        //echo $user->DISPLAY_NAME_FIELD."<br>";
+    }
+
+
 	foreach($staffUserList[$CONFIG_LDAP_ATTRIBUTE['LDAP_DISTINGUISHEDNAME_FIELD']] AS $key=>$value)
 	{
 		if($staffUserList[$CONFIG_LDAP_ATTRIBUTE['LDAP_DEPARTMENT_FIELD']][$key]!=@$prevDEP) //Если отдел текущего сотрудника аналогичен отделу предыдущего

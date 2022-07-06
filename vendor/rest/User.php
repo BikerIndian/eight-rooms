@@ -11,6 +11,7 @@ namespace ru860e\rest;
 
 class User
 {
+public $LDAP_GUID_FIELD = "";
 public $DISPLAY_NAME_FIELD = "";
 public $LDAP_DISTINGUISHEDNAME_FIELD = "";
 public $LDAP_NAME_FIELD = "";
@@ -25,7 +26,6 @@ public $LDAP_CELL_PHONE_FIELD = "";
 public $LDAP_MANAGER_FIELD = "";
 public $LDAP_COMPUTER_FIELD = "";
 public $LDAP_DEPUTY_FIELD = "";
-public $LDAP_GUID_FIELD = "";
 public $LDAP_USERPRINCIPALNAME_FIELD = "";
 public $LDAP_ROOM_NUMBER_FIELD = "";
 

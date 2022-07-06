@@ -24,21 +24,22 @@ $CONFIG_PHOTO = $CONFIG['CONFIG_PHOTO'];
 $CONFIG_LDAP_ATTRIBUTE = $CONFIG['CONFIG_LDAP_ATTRIBUTE'];
 $CONFIG_PHONE = $CONFIG['CONFIG_PHONE'];
 
-$OU = $LDAP_USER['OU_USER_READ'];
+//$OU = $LDAP_USER['OU_USER_READ'];
+$dn = $LDAP_USER['DN_USERS_PHONEBOOK'];
 
 if($fio){
-  $dn=$ldap->getValue($OU, $CONFIG_LDAP_ATTRIBUTE['LDAP_DISTINGUISHEDNAME_FIELD'], "cn=".$fio);
+  $user=$ldap->getUser($dn,$fio);
+  //$dn=$ldap->getValue($OU, $CONFIG_LDAP_ATTRIBUTE['LDAP_DISTINGUISHEDNAME_FIELD'], "cn=".$fio);
 }
 
 
 
 
 if($CONFIG_PHOTO['DIRECT_PHOTO']) {
-    $Image = $ldap->getImage($dn, $LDAP_PHOTO_FIELD);
-}
-else
+    $Image = $ldap->getImage($dn, $CONFIG_LDAP_ATTRIBUTE['LDAP_PHOTO_FIELD']);
+    }
+    else
 	{
-
 	$Image=$CONFIG_PHOTO['PHOTO_DIR']."/".md5($dn).".jpg";
 	$Image=$ldap->getImage($dn, $CONFIG_LDAP_ATTRIBUTE['LDAP_PHOTO_FIELD'], $Image);
 	}

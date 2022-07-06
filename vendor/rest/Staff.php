@@ -51,7 +51,23 @@ class Staff
 			}
 		}
 
-	function getClickUrlOnName($DN, $fio="???")
+	function getClickUrlOnName($user)
+	{
+    $format =
+    '<a
+    href="newwin.php?menu_marker=si_employeeview&uid=%s"
+    data-lightview-type="iframe"
+    data-lightview-options="width: \'80%%\', height: \'100%%\', keyboard: {esc: true}, skin: \'light\'"
+    class="lightview in_link">
+    <span class=\'surname\'>%s</span>
+    </a>';
+
+     $clickUrl = sprintf($format, $user->LDAP_GUID_FIELD, $user->DISPLAY_NAME_FIELD);
+
+     return $clickUrl;
+	}
+
+	function getClickUrlOnName1($DN, $fio="???")
 		{
 
             $format =

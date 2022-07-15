@@ -80,21 +80,29 @@ class Counter extends Content
         // "Если Файл существует";
         if (file_exists($this->countFileName)) {
 
+        $counts_arr = array();
+        // Если файл пустой
+        if(filesize($this->countFileName) > 0){
             $contentIsFile = $this->readFile(); //Чтение файла
-
             $this->contentIsFileArr = explode("\n", $contentIsFile);
             $counts_arr = explode("|", $this->contentIsFileArr[0]);
+        }
 
+            if(1<count($counts_arr)){
             $this->counts["todayUniques"] = $counts_arr[1];
             $this->counts["totalVisits"] = $counts_arr[3] + 1;
             $this->counts["perDay"] = $counts_arr[2] + 1;
+                // Если новая дата текущая то
+                if ($counts_arr[0] != $this->counts["date"]) {
+                    $this->counts[0] = $this->counts["date"];
+                    $this->counts["todayUniques"] = 1;
+                    $this->counts["perDay"] = 1;
+                }
 
-
-            // Если новая дата текущая то
-            if ($counts_arr[0] != $this->counts["date"]) {
-                $this->counts[0] = $this->counts["date"];
-                $this->counts["todayUniques"] = 1;
-                $this->counts["perDay"] = 1;
+            } else {
+             $this->counts["todayUniques"] = 1;
+             $this->counts["totalVisits"] = 1;
+             $this->counts["perDay"] = 1;
             }
 
 

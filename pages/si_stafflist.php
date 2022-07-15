@@ -59,8 +59,6 @@ $LdapListAttrs = array($LDAP_DISTINGUISHEDNAME_FIELD, $DisplayName,
 $CompanyNameLdapFilter=Application::getCompanyNameLdapFilter();
 if(! empty($Name))
 	$SearchFilter=Application::getSearchFilter($Name, $LdapListAttrs);
-
-echo $SearchFilter;
 //-------------------------------------------------------------------------------------------------------------	
 //Получаем правильно отсортированных сотрудников с необходимыми атрибутами LDAP, учитывая настроки сортировки из конфига
 $Staff=$ldap->getArray($OU,

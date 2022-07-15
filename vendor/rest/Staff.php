@@ -299,7 +299,11 @@ abstract class Staff
 				}
 						
 
-			if($GLOBALS['menu_marker']=='si_alph_staff_list' || $GLOBALS['menu_marker']=='si_dep_staff_list' || $GLOBALS['menu_marker']=='si_stafflist' )
+			if(
+			    $GLOBALS['menu_marker']=='si_alph_staff_list' ||
+			    $GLOBALS['menu_marker']=='si_dep_staff_list'  ||
+			    $GLOBALS['menu_marker']=='si_stafflist'
+			)
 				echo"<span class=\"".$class."\">".$vac_title.$vac_period."</span>";
 			if($GLOBALS['menu_marker']=='si_employeeview')
 				echo"<div class=\"birthday\">".$vac_title.$vac_period."</div>";

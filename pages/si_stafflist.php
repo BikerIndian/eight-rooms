@@ -1,6 +1,7 @@
 
-<form class="heads" method="POST" action="<?php echo $_SERVER['PHP_SELF']."?menu_marker=si_stafflist" ?>">
+<form class="heads" method="POST" action="<?php echo $_SERVER['PHP_SELF']?>?menu_marker=si_stafflist">
 <?php
+use ru860e\rest\Application;
 $time=time();
 @$_GET['sortcolumn']=($_GET['sortcolumn'])?$_GET['sortcolumn']:"ФИО";
 @$_GET['sorttype']=($_GET['sorttype'])?$_GET['sorttype']:"ASC";
@@ -58,6 +59,7 @@ $CompanyNameLdapFilter=Application::getCompanyNameLdapFilter();
 if(! empty($Name))
 	$SearchFilter=Application::getSearchFilter($Name, $LdapListAttrs);
 
+echo $SearchFilter;
 //-------------------------------------------------------------------------------------------------------------	
 //Получаем правильно отсортированных сотрудников с необходимыми атрибутами LDAP, учитывая настроки сортировки из конфига
 $Staff=$ldap->getArray($OU,

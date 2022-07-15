@@ -1,4 +1,3 @@
-<form class="heads" method="POST" action="<?php echo $_SERVER['PHP_SELF'] ?>">
 <?php
 use ru860e\rest\Application;
 use ru860e\rest\LDAP;
@@ -8,6 +7,7 @@ if (isset($_GET['sortcolumn'])){$_GET['sortcolumn']=($_GET['sortcolumn'])?$_GET[
 if (isset($_GET['sorttype'])){$_GET['sorttype']=($_GET['sorttype'])?$_GET['sorttype']:"ASC";}
 
 ?>
+<form class="heads" method="POST" action="<?php echo $_SERVER['PHP_SELF']?>?menu_marker=si_stafflist">
 <div class="heads">
 <?php
 if($BLOCK_VIS[$menu_marker]['birthdays'])

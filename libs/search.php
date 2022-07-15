@@ -1,5 +1,14 @@
 <?php
-@$Name=($_POST['name'])?$_POST['name']:(($_GET['name'])?$_GET['name']:$SEARCH_DEFAULT_VALUE);
+if(isset($_POST['name'])){
+    $Name= $_POST['name'];
+} elseif (isset($_GET['name'])) {
+    $Name= $_GET['name'];
+} else {
+$name = "";
+   $Name = $SEARCH_DEFAULT_VALUE;
+}
+
+
 $BadSymbols=array("[", "]", "{", "}", "<", ">", ".", ",", ";", ":", "!", "?", "&", "#", "%", "^", "+", "|", "/", "~", "$");
 $Name=str_replace($BadSymbols, "", $Name);
 

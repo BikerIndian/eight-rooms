@@ -243,8 +243,8 @@ BLOCK_VIS - Данный параметр позволяет управлять 
 - Блок быстрого перехода на букву или на отдел ['fast_move']
 */
 //Блок поиска сотрудников
-$BLOCK_VIS['si_dep_staff_list']['search']=false;
-$BLOCK_VIS['si_alph_staff_list']['search']=false;
+$BLOCK_VIS['si_dep_staff_list']['search']=true;
+$BLOCK_VIS['si_alph_staff_list']['search']=true;
 $BLOCK_VIS['si_stafflist']['search']=true;
 
 //Блок, выводящий информацию об аутентифицированном сотруднике

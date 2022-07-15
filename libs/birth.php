@@ -101,7 +101,7 @@ if($BIRTHDAYS['$NEAR_BIRTHDAYS']) {
              //Добавляем в фильтр условия, что бы показывались сотрудники у которых соответствует компания
              if($dates)
              {
-                 $filter = "(&(company=".$CONFIG_LDAP_ATTRIBUTE['LDAP_COMPANY_FIELD'].")(|".$dates.")".$DIS_USERS_COND.")";
+                 $filter = "(&(|".$dates.")".$DIS_USERS_COND.")";
              }
              return $filter;
      }

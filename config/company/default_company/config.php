@@ -178,6 +178,7 @@ $STAFF_SORT_ORDER["Главный"]='order_replace';
 // Поиск в справочнике
 //----------------------------------------------------------------------------
 $SEARCH_DEFAULT_VALUE="*"; //Значение по умолчанию для поля поиска.
+$SEARCH_TEMPLATE_REQUEST="(&(objectCategory=person)(objectClass=user)(|(cn=*%%searchStr%%*)(telephonenumber=*%%searchStr%%*))(!(useraccountcontrol:1.2.840.113556.1.4.803:=2))(!(useraccountcontrol:1.2.840.113556.1.4.803:=16))(!(memberOf=".$LDAP_NoSHOW_GROOP.")))";
 $ONLY_BOOKMARK=false; //Если false, то галочка "Искать только пользователей в закладке" снята, если true то - выставлена. 
 $ONLY_BOOKMARK_VIS=true; //Если false, то галочка "Искать только пользователей в закладке" не будет отображаться, если true то - будет. 
 //----------------------------------------------------------------------------

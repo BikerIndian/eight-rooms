@@ -1,7 +1,7 @@
-
-<form class="heads" method="POST" action="<?php echo $_SERVER['PHP_SELF']?>?menu_marker=si_stafflist">
 <?php
 use ru860e\rest\Application;
+use ru860e\rest\Staff;
+
 $time=time();
 @$_GET['sortcolumn']=($_GET['sortcolumn'])?$_GET['sortcolumn']:"ФИО";
 @$_GET['sorttype']=($_GET['sorttype'])?$_GET['sorttype']:"ASC";
@@ -18,6 +18,7 @@ $sort_order=(! empty($_GET['sort_order'])) ? $_GET['sort_order'] : 'asc';
 $sort_field=(! empty($_GET['sort_field'])) ? $_GET['sort_field'] : $DisplayName;
 ?>
 
+<form class="heads" method="POST" action="<?php echo $_SERVER['PHP_SELF']?>?menu_marker=si_stafflist">
 <div class="heads">
 
 <?php
@@ -63,7 +64,8 @@ echo $SearchFilter;
 //-------------------------------------------------------------------------------------------------------------	
 //Получаем правильно отсортированных сотрудников с необходимыми атрибутами LDAP, учитывая настроки сортировки из конфига
 $Staff=$ldap->getArray($OU,
- 	"(&".$SearchFilter." ".$CompanyNameLdapFilter."(".$LDAP_CN_FIELD."=*)".$DIS_USERS_COND.")",
+ 	//"(&".$SearchFilter." ".$CompanyNameLdapFilter."(".$LDAP_CN_FIELD."=*)".$DIS_USERS_COND.")",
+ 	$SearchFilter,
 	$LdapListAttrs,
   	array($sort_field, array($sort_field =>"ad_def_full_name")), $sort_order);
 
@@ -155,7 +157,7 @@ if(is_array($Staff))
 											 ) );
 	if($GLOBALS['XMPP_ENABLE'] && $GLOBALS['XMPP_MESSAGE_LISTS_ENABLE'] && !empty($_COOKIE['dn']))	
 		echo Application::getCollTitle("");
-	if($FAVOURITE_CONTACTS && $_COOKIE['dn'])
+	if($FAVOURITE_CONTACTS && isset($_COOKIE['dn']))
 		echo Application::getCollTitle("");
 
 	if(empty($_COOKIE['dn']) && $ENABLE_DANGEROUS_AUTH)
@@ -163,7 +165,8 @@ if(is_array($Staff))
 	//-------------------------------------------------------------------------------------------------------------
 	
 
-	$FavouriteDNs=$ldap->getAttrValue($_COOKIE['dn'], $LDAP_FAVOURITE_USER_FIELD);
+    if(isset($_COOKIE['dn'])){
+    $FavouriteDNs=$ldap->getAttrValue($_COOKIE['dn'], $LDAP_FAVOURITE_USER_FIELD);
 
 	//Выводим пользователей, которые есть в избраном
 	if($GLOBALS['FAVOURITE_CONTACTS'] && is_array($FavouriteDNs) && !empty($_COOKIE['dn']))
@@ -190,7 +193,9 @@ if(is_array($Staff))
 				}
 			}
 		}
-
+    } else {
+        $FavouriteDNs = "";
+    }
 
 
 	$row=0;	// переменная, используемая для нумерации строк таблицы

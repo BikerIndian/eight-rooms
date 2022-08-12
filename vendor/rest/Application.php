@@ -32,7 +32,16 @@ abstract class Application
             $Filter.="(".$value."=*".$SearchStr."*)";
         }
         $Filter.=")";
-        return str_replace("***", "*", $Filter);
+        //$template="(&(objectCategory=person)(objectClass=user)(|(cn=*%%str%%*)(telephonenumber=*%%str%%*)))";
+        $template=$GLOBALS['SEARCH_TEMPLATE_REQUEST'];
+        $strSearch = str_replace("%%searchStr%%", $SearchStr, $template);
+
+        if($SearchStr == "*"){
+        // return str_replace("***", "*", $Filter);
+         return str_replace("***", "*", $strSearch);
+        }
+
+        return $strSearch;
     }
 
     public static function getCollTitle($Title='', $Attr=array())

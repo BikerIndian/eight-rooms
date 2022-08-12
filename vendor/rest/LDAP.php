@@ -3,7 +3,7 @@
  * User: Vladimir Svishch
  * Mail: 5693031@gmail.com
  * Git: https://github.com/BikerIndian
- * Date: 23.01.2018
+ * Date: 23.01.2022
  * Time: 10:19
  */
 
@@ -99,6 +99,7 @@ class LDAP
             return false;
     }
 
+    // @DEPRECATED
     function getValue($DN, $Attribute, $Filter = false, $NotRecode = false) //Устарела. Использовать getAttrValue()
     {
         $Attributes = array($Attribute);

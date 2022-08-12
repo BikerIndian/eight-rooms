@@ -29,8 +29,10 @@ class LDAPTable
     {
         $this->UI = $UI;
         $this->Href = $_SERVER['PHP_SELF'] . "?menu_marker=" . $GLOBALS['menu_marker'];
-        $this->SortColumn = ($_GET[$this->UI . 'sortcolumn']) ? $_GET[$this->UI . 'sortcolumn'] : $_POST[$this->UI . 'sortcolumn'];
-        $this->SortType = ($_GET[$this->UI . 'sorttype']) ? $_GET[$this->UI . 'sorttype'] : (($_POST[$this->UI . 'sorttype']) ? $_POST[$this->UI . 'sorttype'] : "ASC");
+
+
+        $this->SortColumn = (isset($_GET[$this->UI . 'sortcolumn'])) ? $_GET[$this->UI . 'sortcolumn'] : (isset($_POST[$this->UI . 'sortcolumn']) ? $_POST[$this->UI . 'sortcolumn']: "");
+        $this->SortType = (isset($_GET[$this->UI . 'sorttype'])) ? $_GET[$this->UI . 'sorttype'] : (isset($_POST[$this->UI . 'sorttype']) ? $_POST[$this->UI . 'sorttype'] : "ASC");
         $this->Head = $Head;
         $this->Numbering = $Numbering;
 

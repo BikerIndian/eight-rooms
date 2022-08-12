@@ -27,24 +27,70 @@ abstract class Staff
 			}
 		}
 
-	public static function makeNameUrlFromDn($DN, $Title="")
-		{
-		if($GLOBALS['USE_DISPLAY_NAME'])
-			{
-			$DN=preg_replace("/([ёA-zА-я-]+)[\s]{1}([ёA-zА-я-]+[\s]{1}[ёA-zА-я-]+)(CN.*)/u", "<a href=\"newwin.php?menu_marker=si_employeeview&dn=\\3\" data-lightview-type=\"iframe\" data-lightview-options=\"width: '80%', height: '100%', keyboard: {esc: true}, skin: 'light'\" class=\"lightview in_link\"><span class='surname'>\\1</span> \\2</a>", $Title.$DN);
-			$DN=preg_replace("/([ёA-zА-я-]+[\s]{1}[ёA-zA-я]{1}.)[\s]{1}([ёA-zА-я-]+)(CN.*)/u", "<a href=\"newwin.php?menu_marker=si_employeeview&dn=\\3\" data-lightview-type=\"iframe\" data-lightview-options=\"width: '80%', height: '100%', keyboard: {esc: true}, skin: 'light'\" class=\"lightview in_link\"><span class='surname'>\\2</span> \\1</a>", $DN);	
-			$DN=preg_replace("/([ёA-zA-я0-9№\s-]{1,})(CN.*)/u", "<a href=\"newwin.php?menu_marker=si_employeeview&dn=\\2\" data-lightview-type=\"iframe\" data-lightview-options=\"width: '80%', height: '100%', keyboard: {esc: true}, skin: 'light'\" class=\"lightview in_link\"><span class='surname'> \\1</span></a>", $DN);		
-			$DN=preg_replace("/^CN=([ёA-zA-я0-9\s\.-]{1,})(.*)$/u", "<a href=\"newwin.php?menu_marker=si_employeeview&dn=\\0\" data-lightview-type=\"iframe\" data-lightview-options=\"width: '80%', height: '100%', keyboard: {esc: true}, skin: 'light'\" class=\"lightview in_link\"><span class='surname'> \\1</span></a>", $DN);		
-			}
-		else
-			{
-			$DN=preg_replace("/^[A-Za-z]+=*([ёА-яA-z0-9\s-.]+),[\S\s]+$/eu", "'<a href=\"newwin.php?menu_marker=si_employeeview&dn='.'\\0'.'\" data-lightview-type=\"iframe\" data-lightview-options=\"width: '80%', height: '100%', keyboard: {esc: true}, skin: 'light'\" class=\"lightview in_link\">___\\1</a>'", $DN);
-			$DN=preg_replace("/___([ёA-zА-я-]+)[\s]{1}([ёA-zА-я-]+[\s]{1}[ёA-zА-я-]+)/u", "<span class='surname'>\\1</span> \\2", $DN);
-			//Для формата Имя О. Фамилия
-			$DN=preg_replace("/___([ёA-zА-я-]+[\s]{1}[ёA-zA-я]{1}.)[\s]{1}([ёA-zА-я-]+)/u", "<span class='surname'>\\2</span> \\1", $DN);	
-			}	
-		return $DN;
-		}
+ public static function makeNameUrlFromDn($DN, $fio="???")
+   		{
+
+        $format =
+               '<a
+               href="newwin.php?menu_marker=si_employeeview&dn=%s"
+               data-lightview-type="iframe"
+               data-lightview-options="width: \'80%%\', height: \'100%%\', keyboard: {esc: true}, skin: \'light\'"
+               class="lightview in_link">
+               <span class=\'surname\'>%s</span>
+               </a>';
+
+        $format1 = '"<span class=\'surname\'>%s</span>"';
+
+   		if($GLOBALS['USE_DISPLAY_NAME'])
+   		{
+
+               $pattern1 = "/([ёA-zА-я-]+)[\s]{1}([ёA-zА-я-]+[\s]{1}[ёA-zА-я-]+)(CN.*)/u";
+               $pattern2 = "/([ёA-zА-я-]+[\s]{1}[ёA-zA-я]{1}.)[\s]{1}([ёA-zА-я-]+)(CN.*)/u";
+               $pattern3 = "/([ёA-zA-я0-9№\s-]{1,})(CN.*)/u";
+               $pattern4 = "/^CN=([ёA-zA-я0-9\s\.-]{1,})(.*)$/u";
+
+
+               if(preg_match($pattern1, $fio.$DN, $matches)){
+                   $fio=$matches[1];
+               }
+               if(preg_match($pattern2, $DN, $matches)){
+                   $fio=$matches[1];
+               }
+               if(preg_match($pattern3, $DN, $matches)){
+                   $fio=$matches[1];
+               }
+               if(preg_match($pattern4, $DN, $matches)){
+                   $fio=$matches[1];
+               }
+
+               $clickUrl = sprintf($format, $DN, $fio);
+
+   			}
+   		else
+   			{
+
+   			$pattern5 = "/^[A-Za-z]+=*([ёА-яA-z0-9\s-.]+),[\S\s]+$/eu";
+   			$pattern6 = "/___([ёA-zА-я-]+)[\s]{1}([ёA-zА-я-]+[\s]{1}[ёA-zА-я-]+)/u";
+   			$pattern7 = "/___([ёA-zА-я-]+[\s]{1}[ёA-zA-я]{1}.)[\s]{1}([ёA-zА-я-]+)/u";
+
+               if(preg_match($pattern5, $DN, $matches)){
+                   $fio=$matches[1];
+                   $clickUrl = sprintf($format, $DN, $fio);
+               }
+
+               if(preg_match($pattern6, $DN, $matches)){
+                   $clickUrl = sprintf($format1, $matches[1], $matches[2]);
+               }
+
+               // Для формата Имя О. Фамилия
+               if(preg_match($pattern7, $DN, $matches)){
+                   $clickUrl = sprintf($format1, $matches[2], $matches[1]);
+               }
+
+   		}
+
+   return $clickUrl;
+   }
 		
 	public static function makeMailUrl($Mail)
 		{

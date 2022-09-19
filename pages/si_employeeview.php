@@ -1,9 +1,9 @@
 <?php
 
+use net\svishch\php\ldap\LdapConnector;
 use ru860e\rest\LDAP;
 use ru860e\rest\Staff;
 use ru860e\rest\LDAPTable;
-
 
 
 $dn=($_GET['dn'])?$_GET['dn']:$_POST['dn'];
@@ -13,6 +13,8 @@ $dn=($_GET['dn'])?$_GET['dn']:$_POST['dn'];
 @$_GET['sorttype']=($_GET['sorttype'])?$_GET['sorttype']:"ASC";
 
 $ldap=new LDAP($LDAPServer, $LDAPUser, $LDAPPassword);
+
+$ldapConnector = new LdapConnector($LDAPServer, $LDAPUser, $LDAPPassword,$CONFIG);
 
 if($fio)
 	$dn=$ldap->getValue($OU, $LDAP_DISTINGUISHEDNAME_FIELD, "cn=".$fio);
@@ -179,6 +181,9 @@ echo"<td colspan='2'>";
 echo"<div class=\"staff\" id=\"people\"><h6>Подчиненные:</h6></div>";
 $table=new LDAPTable($LDAPServer, $LDAPUser, $LDAPPassword, false, false);
 
+$usersArr = $ldapConnector->getSubordinatesByAttribute($dn);
+
+/*
 if($USE_DISPLAY_NAME)
 	$table->addColumn($DISPLAY_NAME_FIELD.", distinguishedname", "ФИО", true, 0, false, "ad_def_full_name");
 else	
@@ -186,15 +191,27 @@ else
 $table->addColumn($LDAP_INTERNAL_PHONE_FIELD, $L->l('intrenal_phone'), true);
 $table->addColumn("title", "Должность");
 
-$table->addPregReplace("/^(.*)$/eu", "Staff::makeNameUrlFromDn('\\1')", "ФИО");	
+$table->addPregReplace("/^(.*)$/eu",Staff::makeNameUrlFromDn('\\1'), "ФИО");
 
 $table->addPregReplace("/^\.\./u", "", "Должность");
 $table->addPregReplace("/^\./u", "", "Должность");
-$table->addPregReplace("/^(.*)$/eu", "Staff::makeInternalPhone('\\1')", $L->l('intrenal_phone'));
+$table->addPregReplace("/^(.*)$/eu", Staff::makeInternalPhone('\\1'), $L->l('intrenal_phone'));
+*/
 
 echo"<div id=\"people_table\">";
+   echo "<table class='sqltable' cellpadding='4'>";
+//$table->printTable($OU, "(&(company=*)(manager=".LDAP::escapeFilterValue($dn).")".$DIS_USERS_COND.")");
 
-$table->printTable($OU, "(&(company=*)(manager=".LDAP::escapeFilterValue($dn).")".$DIS_USERS_COND.")");
+if(is_array($usersArr))
+{
+    $i=0;
+    foreach($usersArr AS $key=>$value){
+        $i++;
+
+        echo"<tr class=\"even\" ><td>$i</td><td>$value->DISPLAY_NAME_FIELD</td><td>$value->LDAP_CITY_PHONE_FIELD</td><td>$value->LDAP_TITLE_FIELD</td></tr>";
+    }
+}
+
 echo"</div>";
 echo"</td>";
 echo"</tr>";

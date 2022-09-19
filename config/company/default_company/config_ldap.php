@@ -23,3 +23,6 @@ $ADMIN_LOGINS[]='admin@ad.loc';
 $LDAP_WRITE_USER='domain_write_user@domain.ru';	// Учетная запись c правами записи в LDAP.
 $LDAP_WRITE_PASSWORD='password_for_domain_write_user'; // Пароль для учетной записи c правами записи в LDAP, указанной в переменной $LDAP_WRITE_USER.
 $LDAP_NoSHOW_GROOP = 'TelNoShow,CN=Users,DC=ad,DC=loc'; // Группа пользователей, которую не отображает справочник
+
+$CONFIG['CONFIG_LDAP']['OU']  =  $OU;
+

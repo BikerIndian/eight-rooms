@@ -57,7 +57,8 @@ $LDAP_NoSHOW_GROOP = 'CN=TelNoShow,CN=Users,DC=ad,DC=loc'; // Группа по�
 Дополнительные настройки в 
 .\eight-rooms\config\company\default_company\config.php
 
-
+### Делегирование прав на определенные атрибуты
+* https://system-administrators.info/?p=4018 
 ## Screenshots
 * Спраночник по отделам
 ![Спраночник по отделам](https://raw.githubusercontent.com/BikerIndian/eight-rooms/master/temp/img/1.png)

@@ -38,8 +38,10 @@ $LdapListAttrs = array($LDAP_DISTINGUISHEDNAME_FIELD, $DisplayName,
         $LDAP_ROOM_NUMBER_FIELD);
 
 //Получаем правильно отсортированных сотрудников с необходимыми атрибутами LDAP
+$filter = "(&(objectCategory=person)(|(objectclass=user)(objectclass=contact))(".$LDAP_CREATED_DATE_FIELD.">=".date('Ymd', time()-$NEW_USERS_NUM_DAYS*24*60*60)."000000.0Z)(".$LDAP_CN_FIELD."=*)".$DIS_USERS_COND.")";
+
 $Staff=$ldap->getArray($OU,
- "(&".$CompanyNameLdapFilter."(".$LDAP_CREATED_DATE_FIELD.">=".date('Ymd', time()-$NEW_USERS_NUM_DAYS*24*60*60)."000000.0Z)(".$LDAP_CN_FIELD."=*)".$DIS_USERS_COND.")",
+ $filter,
  $LdapListAttrs,
  array($LDAP_CREATED_DATE_FIELD), 'DESC');
 

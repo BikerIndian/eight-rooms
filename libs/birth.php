@@ -1,4 +1,9 @@
 <?php
+use ru860e\rest\Application;
+use ru860e\rest\LDAP;
+use ru860e\rest\Staff;
+use ru860e\rest\LDAPTable;
+
 //Выввод ближайших дней рождений
 $time=time();
 if($NEAR_BIRTHDAYS) 

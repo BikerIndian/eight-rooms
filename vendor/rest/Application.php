@@ -29,7 +29,9 @@ abstract class Application
         $Filter='(|';
         foreach($LdapAttr AS $value)
         {
+            if($value!=""){
             $Filter.="(".$value."=*".$SearchStr."*)";
+            }
         }
         $Filter.=")";
         return str_replace("***", "*", $Filter);

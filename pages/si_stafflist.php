@@ -1,6 +1,10 @@
-
 <form class="heads" method="POST" action="<?php echo $_SERVER['PHP_SELF']."?menu_marker=si_stafflist" ?>">
 <?php
+use ru860e\rest\Application;
+use ru860e\rest\LDAP;
+use ru860e\rest\Staff;
+use ru860e\rest\LDAPTable;
+
 $time=time();
 @$_GET['sortcolumn']=($_GET['sortcolumn'])?$_GET['sortcolumn']:"ФИО";
 @$_GET['sorttype']=($_GET['sorttype'])?$_GET['sorttype']:"ASC";
@@ -60,8 +64,10 @@ if(! empty($Name))
 
 //-------------------------------------------------------------------------------------------------------------	
 //Получаем правильно отсортированных сотрудников с необходимыми атрибутами LDAP, учитывая настроки сортировки из конфига
+//$filter = "(&".$SearchFilter." ".$CompanyNameLdapFilter."(".$LDAP_CN_FIELD."=*)".$DIS_USERS_COND.")";
+$filter = "(&".$SearchFilter."(".$LDAP_CN_FIELD."=*)".$DIS_USERS_COND.")";
 $Staff=$ldap->getArray($OU,
- 	"(&".$SearchFilter." ".$CompanyNameLdapFilter."(".$LDAP_CN_FIELD."=*)".$DIS_USERS_COND.")",
+ 	$filter,
 	$LdapListAttrs,
   	array($sort_field, array($sort_field =>"ad_def_full_name")), $sort_order);
 

@@ -427,10 +427,13 @@ abstract class Staff
 
 		if(self::showComputerName($Vars['current_login'])) //Если сотрудник является администратором справочника
 			{
-			if(empty($Vars['search_str'])) //Если не велся поиск, то не подсвечивавем результаты	
-				echo "<td>".self::makeComputerName($Staff[$GLOBALS['LDAP_COMPUTER_FIELD']][$key])."</td>"; //Выводим имя компьютера
-			else
-				echo "<td>".self::highlightSearchResult(self::makeComputerName($Staff[$GLOBALS['LDAP_COMPUTER_FIELD']][$key]), $Vars['search_str'])."</td>"; //Выводим имя компьютера
+			if (isset($Staff[$GLOBALS['LDAP_COMPUTER_FIELD']][$key])){
+			    if(empty($Vars['search_str']) ) //Если не велся поиск, то не подсвечивавем результаты
+				    echo "<td>".self::makeComputerName($Staff[$GLOBALS['LDAP_COMPUTER_FIELD']][$key])."</td>"; //Выводим имя компьютера
+
+			    else
+				    echo "<td>".self::highlightSearchResult(self::makeComputerName($Staff[$GLOBALS['LDAP_COMPUTER_FIELD']][$key]), $Vars['search_str'])."</td>"; //Выводим имя компьютера
+			    }
 			}
 		if( @$Staff[$GLOBALS['LDAP_CREATED_DATE_FIELD']][$key] ) 
 			echo "<td>".Time::getHandyDateOfDMYHI($Staff[$GLOBALS['LDAP_CREATED_DATE_FIELD']][$key], $GLOBALS['LDAP_CREATED_DATE_FORMAT'])."</td>"; //Выводим дату принятия на работу

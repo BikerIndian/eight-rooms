@@ -2,6 +2,7 @@
 use ru860e\rest\Application;
 use ru860e\rest\LDAP;
 use ru860e\rest\Staff;
+use ru860e\rest\LDAPTable;
 
 if($Access)
 	{
@@ -289,8 +290,9 @@ if($Access)
 		$CompanyNameLdapFilter=Application::getCompanyNameLdapFilter();
 	//-------------------------------------------------------------------------------------------------------------	
 		
-		$table->printTable($OU, "(&".$CompanyNameLdapFilter."(|(".$LDAP_OBJECTCLASS_FIELD."=user)(".$LDAP_OBJECTCLASS_FIELD."=contact))(|(".$LDAP_CN_FIELD."=".$cn.")(".$LDAP_MAIL_FIELD."=".$cn.")(".$LDAP_INTERNAL_PHONE_FIELD."=".$cn.")(".$LDAP_CITY_PHONE_FIELD."=".$cn.")(".$LDAP_CELL_PHONE_FIELD."=".$cn.")(".$LDAP_TITLE_FIELD."=".$cn.")(".$LDAP_DEPARTMENT_FIELD."=".$cn."))".$DIS_USERS_COND.")");
-		
+        $filter = "(&(|(".$LDAP_OBJECTCLASS_FIELD."=user)(".$LDAP_OBJECTCLASS_FIELD."=contact))(|(".$LDAP_CN_FIELD."=".$cn.")(".$LDAP_MAIL_FIELD."=".$cn.")(".$LDAP_INTERNAL_PHONE_FIELD."=".$cn.")(".$LDAP_CELL_PHONE_FIELD."=".$cn.")(".$LDAP_TITLE_FIELD."=".$cn.")(".$LDAP_DEPARTMENT_FIELD."=".$cn."))".$DIS_USERS_COND.")";
+		$table->printTable($OU,$filter);
+
 		if($dn)
 			echo "
 		<script type='text/javascript'>

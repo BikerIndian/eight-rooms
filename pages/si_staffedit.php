@@ -1,4 +1,7 @@
 <?php
+use ru860e\rest\Application;
+use ru860e\rest\LDAP;
+use ru860e\rest\Staff;
 
 if($Access)
 	{

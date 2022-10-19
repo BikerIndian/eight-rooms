@@ -66,13 +66,14 @@ if(is_array($Staff))
 		echo "<th><div>Компьютер</div></th>";
     if($GLOBALS['XMPP_ENABLE'] && $GLOBALS['XMPP_MESSAGE_LISTS_ENABLE'] && !empty($_COOKIE['dn']))  
         echo "<th><div></div></th>";            
-	if($FAVOURITE_CONTACTS && $_COOKIE['dn'])
+	if($FAVOURITE_CONTACTS && isset($_COOKIE['dn']))
 		echo "<th><div></div></th>";	
 	echo "<th><div></div></th>";
 	if(empty($_COOKIE['dn']) && $ENABLE_DANGEROUS_AUTH)
 		echo Application::getCollTitle();		
 	//-------------------------------------------------------------------------------------------------------------
-	
+	$FavouriteDNs="";
+	if(isset($_COOKIE['dn']))
 	$FavouriteDNs=$ldap->getAttrValue($_COOKIE['dn'], $LDAP_FAVOURITE_USER_FIELD);
 
 

@@ -48,6 +48,7 @@ else
 
 
 $control=$ldap->getValue($dn, "useraccountcontrol");
+if(is_null($control) || !is_numeric($control)){$control=0;}
 $LockedCssClass= ((($control & 2)==2)||(($control & 2) == 16))?"locked":"";
 
 $FIO=preg_replace("/^([ёA-zА-я-]+)[\s]{1}([ёA-zА-я-]+[\s]{1}[ёA-zА-я-]+)$/u", "<div class=\"surname_head ".$LockedCssClass."\">$1</div><div class=\"name ".$LockedCssClass."\">$2</div>", $Name);

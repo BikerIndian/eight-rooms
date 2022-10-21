@@ -143,11 +143,11 @@ if ($ENABLE_EXEL_EXPORT) {
                 $Name = "";
                 $Patronymic = "";
 
-                if (preg_match("/[ЁA-ZА-Я]{1}[ёa-zа-я-]+[\s]{1}[ЁA-ZА-Я]{1}[ёa-zа-я-]+[\s]{1}[ЁA-ZА-Я]{1}[ёa-zа-я-]+/u", $Staff[$DisplayName][$i])) {
+                /*if (preg_match("/[ЁA-ZА-Я]{1}[ёa-zа-я-]+[\s]{1}[ЁA-ZА-Я]{1}[ёa-zа-я-]+[\s]{1}[ЁA-ZА-Я]{1}[ёa-zа-я-]+/u", $Staff[$DisplayName][$i])) {
                     $Surname = $FIO[0];
                     $Name = $FIO[1];
                     $Patronymic = $FIO[2];
-                }
+                }*/
                 if (preg_match("/[ЁA-ZА-Я]{1}[ёa-zа-я-]+[\s]{1}[ЁA-ZА-Я]{1}[.]{1}[\s]{1}[ЁA-ZА-Я]{1}[ёa-zа-я-]+/u", $Staff[$DisplayName][$i])) {
                     $Surname = $FIO[2];
                     $Name = $FIO[0];

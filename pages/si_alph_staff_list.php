@@ -54,8 +54,15 @@ $LdapListAttrs = array($LDAP_DISTINGUISHEDNAME_FIELD, $DisplayName,
     $LDAP_ROOM_NUMBER_FIELD);
 //Получаем правильно отсортированных сотрудников с необходимыми атрибутами LDAP
 
+    if ($BOOKMARK){
+    $inquiry = "(&(objectCategory=person)$CompanyNameLdapFilter$DIS_USERS_COND)";
+    }
+    else{
+    $inquiry = "(&(objectCategory=person)$DIS_USERS_COND)";
+    }
+
 $Staff = $ldap->getArray($OU,
-    "(&(objectCategory=person)(objectClass=user)$DIS_USERS_COND)",
+    $inquiry,
     $LdapListAttrs,
     array($DisplayName, array('ad_def_full_name')));
 

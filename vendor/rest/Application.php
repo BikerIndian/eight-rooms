@@ -94,6 +94,7 @@ abstract class Application
         $bookmark_name=LDAP::escapeFilterValue($GLOBALS['BOOKMARK_NAME']);
         $bookmark_attr=$GLOBALS['bookmark_attr'];
 
+        if($bookmark_name=="*" || $bookmark_attr=="*"){return "";}
         if(($bookmark_name=="*") || ( (@$_POST['form_sent']) && (@!$GLOBALS['only_bookmark']) ) )
         {
 

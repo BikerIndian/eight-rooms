@@ -45,7 +45,9 @@ if($USE_DISPLAY_NAME)
 else
 	$DisplayName=$LDAP_NAME_FIELD;
 //-------------------------------------------------------------------------------------------------------------
-$LdapListAttrs = array($LDAP_DISTINGUISHEDNAME_FIELD, $DisplayName,
+$LdapListAttrs = array(
+        $LDAP_DISTINGUISHEDNAME_FIELD,
+        $DisplayName,
   		$LDAP_MAIL_FIELD, 
   		$LDAP_INTERNAL_PHONE_FIELD,
   		$LDAP_CITY_PHONE_FIELD,
@@ -62,12 +64,26 @@ $LdapListAttrs = array($LDAP_DISTINGUISHEDNAME_FIELD, $DisplayName,
   		$LDAP_ROOM_NUMBER_FIELD);
 //Получаем правильно отсортированных сотрудников с необходимыми атрибутами LDAP, учитывая настроки сортировки из конфига
 
-$inquiry = "(&(objectCategory=person)$DIS_USERS_COND)";
+    if ($BOOKMARK){
+    $inquiry = "(&(objectCategory=person)$CompanyNameLdapFilter$DIS_USERS_COND)";
+    }
+    else{
+    $inquiry = "(&(objectCategory=person)$DIS_USERS_COND)";
+    }
 
-$Staff=$ldap->getArray($OU,
+
+$sort = array(
+        $LDAP_DEPARTMENT_FIELD,
+        $DEP_SORT_ORDER,
+        $LDAP_TITLE_FIELD,
+        $STAFF_SORT_ORDER,
+        $DisplayName);
+
+$Staff=$ldap->getArray(
+    $OU,
 	$inquiry,
 	$LdapListAttrs,
-  	array($LDAP_DEPARTMENT_FIELD, $DEP_SORT_ORDER, $LDAP_TITLE_FIELD, $STAFF_SORT_ORDER, $DisplayName));
+  	$sort);
 
 
 if(is_array($Staff))

@@ -122,14 +122,15 @@ $SHOW_CURRENT_VAC['si_dep_staff_list']=true;
 $BOOKMARK_NAMES['Атрибут в AD']['Значение атрибута']="Имя вкладки"
 */
 
-$BOOKMARK = true; // включить кастомные вкладоки
+$BOOKMARK = false; // включить кастомные вкладоки
+$BOOKMARK_NAMES['*']['']="Все";
 $BOOKMARK_NAMES['company']['MultX']="MultikiX";
 $BOOKMARK_NAMES['company']['MultY']="MultikiY";
 
 $BOOKMARK_NAME_EXACT_FIT['company']=true;
 $BOOKMARK_NAME_EXACT_FIT['mobile']=false;
 
-$BOOKMARK_MAX_NUM_ITEMS['company']=3;
+$BOOKMARK_MAX_NUM_ITEMS['company']=4;
 //----------------------------------------------------------------------------
 
 // Экспорт в PDF

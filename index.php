@@ -148,7 +148,7 @@ if ($ALARM_MESSAGE) {
             <div class="sep_tabs">
                 <?php
                 //Вывод закладок компаний
-                if (sizeof($BOOKMARK_NAMES) > 1) {
+                if ($BOOKMARK && sizeof($BOOKMARK_NAMES) > 0) {
                     $i = 0;
                     foreach ($BOOKMARK_NAMES AS $key => $value) {
                         if ($i != 0)

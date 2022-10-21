@@ -118,7 +118,11 @@ $SHOW_CURRENT_VAC['si_dep_staff_list']=true;
 Значение - то как данная организация будет отображаться в закладках справочника 
 Можно отображать не только организацию но и любые вкладки по атрибуту.
 */
+/*
+$BOOKMARK_NAMES['Атрибут в AD']['Значение атрибута']="Имя вкладки"
+*/
 
+$BOOKMARK = true; // включить кастомные вкладоки
 $BOOKMARK_NAMES['company']['MultX']="MultikiX";
 $BOOKMARK_NAMES['company']['MultY']="MultikiY";
 

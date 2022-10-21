@@ -214,11 +214,13 @@ abstract class Application
             $class='';
         }
         $i=0;
-        $WindowsLinks='';
+
+        $WindowsLinks = array();
+
         foreach($bookmark_names[$bookmark_attr] AS $key=>$value)
         {
             if($i<$start || $i>$end)
-                $WindowsLinks[]="<a href=\"".$_SERVER['PHP_SELF']."?bookmark_name=".$key."&bookmark_attr=".$bookmark_attr."&menu_marker=".$GLOBALS['menu_marker']."\">".$value."</a>";
+            $WindowsLinks[]="<a href=\"".$_SERVER['PHP_SELF']."?bookmark_name=".$key."&bookmark_attr=".$bookmark_attr."&menu_marker=".$GLOBALS['menu_marker']."\">".$value."</a>";
             $i++;
         }
 

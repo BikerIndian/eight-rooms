@@ -160,7 +160,7 @@ if ($ALARM_MESSAGE) {
                         $BookMarkLinks = Application::getBookMarkLinks($key, $class);
                         echo implode(current($BookMarkLinks));
 
-                        if (is_array($BookMarkLinks['window']))
+                        if ($key != "*" && is_array($BookMarkLinks['window']))
                             echo Application::makeWindow($BookMarkLinks['window']);
                         $i++;
                     }

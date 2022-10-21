@@ -4,12 +4,15 @@ use ru860e\rest\Application;
 use ru860e\rest\LDAP;
 use ru860e\rest\Staff;
 
+$DEBUG_XLSX = false;
+
+if($DEBUG_XLSX){
 /** Error reporting */
-/*
 ini_set('error_reporting', E_ALL);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
-*/
+}
+
 
 require_once('../libs/vendor/autoload.php');
 require_once('../config.php');
@@ -176,22 +179,23 @@ if ($ENABLE_EXEL_EXPORT) {
 
                 $roomNuber = isset($Staff[$LDAP_ROOM_NUMBER_FIELD][$i]) ? $Staff[$LDAP_ROOM_NUMBER_FIELD][$i] : "";
                 $mail = $Staff[$LDAP_MAIL_FIELD][$i];
-                $html.=
-                        $i .
-                        $Departam . // Отдел
-                        $Surname . // Фамилия
-                        " " . $Name . // Имя
+                $html.="<tr>".
+                        "<td>$i</td>" .
+                        "<td>$Departam</td>". // Отдел
+                        "<td>$Surname</td>" . // Фамилия
+                        "<td>$Name</td>".  // Имя
                         // "<<< ".$Patronymic.">>>".
                         // Внутренний телефон
-                        $internapPhone .
+                       "<td>$internapPhone</td>" .
                         // Мобильный телефон
-                        $cellPhone .
+                        "<td>$cellPhone</td>" .
                         // Должность
-                        $post .
+                        "<td>$post</td>" .
                         // Комната
-                        $roomNuber .
+                        "<td>$roomNuber</td>" .
                         // Почта
-                        $mail;
+                        "<td>$mail</td>"
+                        ."</tr>";
 
 
                 // Граница
@@ -207,8 +211,6 @@ if ($ENABLE_EXEL_EXPORT) {
                         ->setCellValue('E' . $ii, $post)
                         ->setCellValue('F' . $ii, $roomNuber)
                         ->setCellValue('G' . $ii, $mail);
-                
-
                 $ii++;
 
 
@@ -217,6 +219,10 @@ if ($ENABLE_EXEL_EXPORT) {
     }
 
 }
+
+if($DEBUG_XLSX){
+echo $html;
+} else {
 
 $objPHPExcel->setActiveSheetIndex(0);
 
@@ -232,8 +238,9 @@ header ('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT'); // always modified
 header ('Cache-Control: cache, must-revalidate'); // HTTP/1.1
 header ('Pragma: public'); // HTTP/1.0
 
+
 $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
 $objWriter->save('php://output');
 exit;
-
+}
 ?>

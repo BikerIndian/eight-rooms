@@ -117,7 +117,7 @@ class LdapConnector
 
     function getUser($dn,$userName)
     {
-      $filter = "(&(objectCategory=person)(objectClass=user)(CN=".$userName."))";
+      $filter = "(&(objectCategory=person)(CN=".$userName."))";
       $ls = ldap_search($this->LC, $dn, $filter, $this->getUserAttributes());
       $entries = ldap_get_entries($this->LC, $ls);
       return $this->parseUser($entries[0]);
@@ -125,7 +125,7 @@ class LdapConnector
 
     function getUserForDn($dn)
     {
-      $filter = "(&(objectCategory=person)(objectClass=user)(CN=*))";
+      $filter = "(&(objectCategory=person)(CN=*))";
       $ls = ldap_search($this->LC, $dn, $filter, $this->getUserAttributes());
       $entries = ldap_get_entries($this->LC, $ls);
       return $this->parseUser($entries[0]);
@@ -135,6 +135,9 @@ class LdapConnector
     /** Список подчененных сотрудников**/
     function getSubordinatesByAttribute($dn)
     {
+
+    $dn = str_replace( "(", '\28',$dn);
+    $dn = str_replace( ")", '\29',$dn);
      $user = $this->getUserForDn($dn);
      $filter = "(&(objectCategory=person)(objectClass=user)(manager=".$dn."))";
      $usersArr = $this->getArrayUsers($this->CONFIG_LDAP['OU'],  $filter);
@@ -144,7 +147,7 @@ class LdapConnector
     function getArrayUsers($dn,$filter = false)
     {
         if(!$filter){
-         $filter = "(&(objectCategory=person)(objectClass=user))";
+          $filter = "(&(objectCategory=person))";
         }
 
         $ls = ldap_search($this->LC, $dn, $filter, $this->getUserAttributes());

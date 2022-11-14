@@ -159,7 +159,7 @@ if(is_array($Staff))
 											 ) );
 	if($GLOBALS['XMPP_ENABLE'] && $GLOBALS['XMPP_MESSAGE_LISTS_ENABLE'] && !empty($_COOKIE['dn']))	
 		echo Application::getCollTitle("");
-	if($FAVOURITE_CONTACTS && $_COOKIE['dn'])
+	if($FAVOURITE_CONTACTS && isset($_COOKIE['dn']))
 		echo Application::getCollTitle("");
 
 	if(empty($_COOKIE['dn']) && $ENABLE_DANGEROUS_AUTH)
@@ -167,7 +167,7 @@ if(is_array($Staff))
 	//-------------------------------------------------------------------------------------------------------------
 	
 
-	$FavouriteDNs=$ldap->getAttrValue($_COOKIE['dn'], $LDAP_FAVOURITE_USER_FIELD);
+	$FavouriteDNs=$ldap->getAttrValue(isset($_COOKIE['dn']), $LDAP_FAVOURITE_USER_FIELD);
 
 	//Выводим пользователей, которые есть в избраном
 	if($GLOBALS['FAVOURITE_CONTACTS'] && is_array($FavouriteDNs) && !empty($_COOKIE['dn']))

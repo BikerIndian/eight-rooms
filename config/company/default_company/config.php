@@ -122,15 +122,17 @@ $SHOW_CURRENT_VAC['si_dep_staff_list']=true;
 $BOOKMARK_NAMES['Атрибут в AD']['Значение атрибута']="Имя вкладки"
 */
 
-$BOOKMARK = false; // включить кастомные вкладоки
+$BOOKMARK = true; // включить кастомные вкладоки
 $BOOKMARK_NAMES['*']['']="Все";
 $BOOKMARK_NAMES['company']['MultX']="MultikiX";
 $BOOKMARK_NAMES['company']['MultY']="MultikiY";
 
+$BOOKMARK_NAMES['company']['BMJ GmbH Германия']="Германия";
+
 $BOOKMARK_NAME_EXACT_FIT['company']=true;
 $BOOKMARK_NAME_EXACT_FIT['mobile']=false;
 
-$BOOKMARK_MAX_NUM_ITEMS['company']=4;
+$BOOKMARK_MAX_NUM_ITEMS['company']=2;
 //----------------------------------------------------------------------------
 
 // Экспорт в PDF
@@ -237,7 +239,7 @@ $PAGE_LINKS['si_stafflist']="Новички";
 
 $PAGE_LINKS['si_dep_staff_list']="По отделам";
 $PAGE_LINKS['si_alph_staff_list']="По алфавиту";
-#$PAGE_LINKS['si_stafflist']="Поиск сотрудников";
+$PAGE_LINKS['si_stafflist']="Поиск сотрудников";
 $PAGE_LINKS['si_new_workers']="Новички";
 #$PAGE_LINKS['si_locked_list']="Уволенные";
 

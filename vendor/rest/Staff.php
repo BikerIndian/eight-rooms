@@ -132,7 +132,7 @@ abstract class Staff
 		$phone_attr=get_phone_attr($Val);
 		if (empty($Val)) return 'x';
 		if($Link)
-			{	
+			{
 			$call_via_ip = ($GLOBALS['ENABLE_CALL_VIA_IP'] && isset($_COOKIE['dn']))?"call_via_ip":"";
 
 			if($GLOBALS['FORMAT_CELL_PHONE'])
@@ -411,18 +411,19 @@ abstract class Staff
 				echo "<td>".self::highlightSearchResult(self::makePlainText($Staff[$GLOBALS['LDAP_ROOM_NUMBER_FIELD']][$key]), $Vars['search_str'])."</td>"; //Делаем ссылку на полную информацию о сотруднике
 			}
 
-		echo "<td><".$tag.">".self::makeInternalPhone($Staff[$GLOBALS['LDAP_INTERNAL_PHONE_FIELD']][$key])."</".$tag."></td>"; //Выводим внутренний
+		echo "<td><".$tag.">".self::makeInternalPhone($Staff[$GLOBALS['LDAP_INTERNAL_PHONE_FIELD']][$key],$GLOBALS['ENABLE_CALL_VIA_IP'])."</".$tag."></td>"; //Выводим внутренний
+
 		if(!$GLOBALS['HIDE_CITY_PHONE_FIELD'])
 			{
-			echo "<td><".$tag.">".self::makeCityPhone($Staff[$GLOBALS['LDAP_CITY_PHONE_FIELD']][$key])."</".$tag."></td>"; //Выводим городской
+			echo "<td><".$tag.">".self::makeCityPhone($Staff[$GLOBALS['LDAP_CITY_PHONE_FIELD']][$key],$GLOBALS['ENABLE_CALL_VIA_IP'])."</".$tag."></td>"; //Выводим городской
 			}
 
 		if(!$GLOBALS['HIDE_CELL_PHONE_FIELD'])
 			{
 			if(empty($Vars['search_str'])) //Если не велся поиск, то не подсвечивавем результаты	
-				echo "<td>".self::makeCellPhone($Staff[$GLOBALS['LDAP_CELL_PHONE_FIELD']][$key])."</td>"; //Выводим сотовый
+				echo "<td>".self::makeCellPhone($Staff[$GLOBALS['LDAP_CELL_PHONE_FIELD']][$key],$GLOBALS['ENABLE_CALL_VIA_IP'])."</td>"; //Выводим сотовый
 			else
-				echo "<td>".self::highlightSearchResult(self::makeCellPhone($Staff[$GLOBALS['LDAP_CELL_PHONE_FIELD']][$key]), $Vars['search_str'])."</td>"; //Делаем ссылку на полную информацию о сотруднике
+				echo "<td>".self::highlightSearchResult(self::makeCellPhone($Staff[$GLOBALS['LDAP_CELL_PHONE_FIELD']][$key],$GLOBALS['ENABLE_CALL_VIA_IP']), $Vars['search_str'])."</td>"; //Делаем ссылку на полную информацию о сотруднике
 			}
 
 		if(self::showComputerName($Vars['current_login'])) //Если сотрудник является администратором справочника

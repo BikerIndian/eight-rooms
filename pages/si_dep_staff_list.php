@@ -147,7 +147,9 @@ if(is_array($Staff))
 	{
 		if($Staff[$LDAP_DEPARTMENT_FIELD][$key]!=@$prevDEP) //Если отдел текущего сотрудника аналогичен отделу предыдущего
 		{
-			if(strpos($Staff[$LDAP_DEPARTMENT_FIELD][$key], @$inclusionDEP)===0) //Если предыдущий отдел начинается с нового отдела (т.е. новый подстрока предыдущего)
+			if(is_string($Staff[$LDAP_DEPARTMENT_FIELD][$key])
+			&& is_string($inclusionDEP)
+			&& strpos($Staff[$LDAP_DEPARTMENT_FIELD][$key], @$inclusionDEP)===0) //Если предыдущий отдел начинается с нового отдела (т.е. новый подстрока предыдущего)
 			{
 				$depCSS="department";
 			}

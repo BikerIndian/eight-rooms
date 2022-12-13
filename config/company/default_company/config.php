@@ -355,7 +355,7 @@ $LDAP_MEMBER_FIELD = "member";
 
 //Call via IP phones
 //----------------------------------------------------------------------------
-$ENABLE_CALL_VIA_IP = true;
+$ENABLE_CALL_VIA_IP = false;
 $PHONE_LINK_TYPE = "callto:";
 $CALL_VIA_IP_CHANGE_PLUS_AND_SEVEN="08";
 

@@ -12,31 +12,18 @@ class ConfigHandler
 {
 
     public function getConfig(){
-    $conf[0] = "default_company";
-    $path_config = dirname(__FILE__)."/../../config/company/".$conf[0]."/config.php";
+        $conf[0] = "default_company";
 
-    if ($this->is_file_check($path_config)) {
-      require_once($path_config);
-    }
+        //echo dirname(__FILE__);
+        require_once(dirname(__FILE__) . "/Config.php");
+        $path_config = dirname(__FILE__)."/../../../../../../config/company/".$conf[0]."/config.php";
 
+        if ($this->is_file_check($path_config)) {
+          include($path_config);
+          //require_once($path_config);
+        }
 
-      $CONFIG['CONFIG_LDAP_ATTRIBUTE'] = $CONFIG_LDAP_ATTRIBUTE;
-      $CONFIG['CONFIG_PHOTO'] = $CONFIG_PHOTO;
-      $CONFIG['CONFIG_APP'] = $CONFIG_APP;
-      $CONFIG['CONFIG_PHONE'] = $CONFIG_PHONE;
-      $CONFIG['CONFIG_XMPP'] = $CONFIG_XMPP;
-      $CONFIG['LDAP_USER'] = $LDAP_USER;
-      $CONFIG['CONFIG_LDAP'] = $CONFIG_LDAP;
-      $CONFIG['BOOKMARK'] = $BOOKMARK;
-      $CONFIG['PAGE_LINKS'] = $PAGE_LINKS;
-      $CONFIG['CONFIG_PDF'] = $CONFIG_PDF;
-      $CONFIG['CONFIG_EXEL'] = $CONFIG_EXEL;
-      $CONFIG['BLOCK_VIS'] = $BLOCK_VIS;
-      $CONFIG['BIRTHDAYS'] = $BIRTHDAYS;
-      $CONFIG['DEP_SORT_ORDER'] = $DEP_SORT_ORDER;
-      $CONFIG['STAFF_SORT_ORDER'] = $STAFF_SORT_ORDER;
-      $CONFIG['CALL_VIA_IP'] = $CALL_VIA_IP;
-
+        require_once(dirname(__FILE__) . "/ConfigUpdate.php");
 
       return $CONFIG;
     }
@@ -65,7 +52,7 @@ class ConfigHandler
       if (is_file($path)) {
       $check = true;
       } else {
-       echo "Не найден файл: "+ $path;
+       echo "Не найден файл: " . $path;
        $check = false;
       }
 

@@ -33,6 +33,7 @@ $CONFIG_LDAP_ATTRIBUTE['LDAP_END_DATE_VACATION_FIELD']                    ="exte
 $CONFIG_LDAP_ATTRIBUTE['LDAP_AVATAR_FIELD']                               ="thumbnailphoto";              // Атрибут LDAP в котором будет хранится аватарка пользователя в бинарном виде
 $CONFIG_LDAP_ATTRIBUTE['LDAP_PHOTO_FIELD']                                ="jpegphoto";                   // Атрибут LDAP в котором будет хранится полное фото пользователя бинарном виде
 $CONFIG_LDAP_ATTRIBUTE['LDAP_ROOM_NUMBER_FIELD']                          ="physicaldeliveryofficename";  // Атрибут LDAP в котором будет хранится номер кабинета
+
 //----------------------------------------------------------------------------
 
 // LDAP
@@ -45,10 +46,6 @@ $LDAP_USER['OU_USER_READ']          = "DC=ad,DC=loc"; 		// В каком Organiz
 
 $CONFIG_APP['LDAP_NO_SHOW_GROOP']   = 'TelNoShow,CN=Users,DC=ad,DC=loc'; // Группа пользователей, которую не отображает справочник
 
-$CONFIG_LDAP['DIS_USERS_COND'] = "(!(useraccountcontrol:1.2.840.113556.1.4.803:=2))(!(useraccountcontrol:1.2.840.113556.1.4.803:=16))(!(memberOf=".$CONFIG_APP['LDAP_NO_SHOW_GROOP']."))"; // Условие фильтра LDAP, которое должно препятствовать выводу заблокированных и отключенных в Active Directory пользователей. По умолчанию используется значение «(!(useraccountcontrol:1.2.840.113556.1.4.803:=2))(!(useraccountcontrol:1.2.840.113556.1.4.803:=16))»
-$CONFIG_LDAP['LDAP_SIZE_LIMIT_COMPATIBILITY'] =false; //Сделать возможным выбирать большее количество сотрудников чем указано в SIZE LIMIT сервера? См. также $LDAP_SIZE_LIMIT_PAGE_DIVIDER_FIELD
-//$CONFIG_LDAP['OU'] = "";
+$CONFIG_LDAP['DIS_USERS_COND']      = "(!(useraccountcontrol:1.2.840.113556.1.4.803:=2))(!(useraccountcontrol:1.2.840.113556.1.4.803:=16))(!(memberOf=".$CONFIG_APP['LDAP_NO_SHOW_GROOP']."))"; // Условие фильтра LDAP, которое должно препятствовать выводу заблокированных и отключенных в Active Directory пользователей. По умолчанию используется значение «(!(useraccountcontrol:1.2.840.113556.1.4.803:=2))(!(useraccountcontrol:1.2.840.113556.1.4.803:=16))»
+$CONFIG_LDAP['LDAP_SIZE_LIMIT_COMPATIBILITY'] =false;       //Сделать возможным выбирать большее количество сотрудников чем указано в SIZE LIMIT сервера? См. также $LDAP_SIZE_LIMIT_PAGE_DIVIDER_FIELD
 
-$CONFIG['CONFIG_LDAP'] = $CONFIG_LDAP;
-$CONFIG['CONFIG_LDAP_ATTRIBUTE'] = $CONFIG_LDAP_ATTRIBUTE;
-$CONFIG['CONFIG_APP'] = $CONFIG_APP;

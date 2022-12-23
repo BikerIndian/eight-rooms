@@ -4,14 +4,13 @@ ini_set('error_reporting', E_ALL);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 
-require_once(dirname(__FILE__) . "/../../../libs/vendor/svishch/ldap/src/config/Config.php");
-require_once(dirname(__FILE__)."/config_ldap.php");
-
+include(dirname(__FILE__)."/config_ldap.php");
 
 $COMPANY_DIR = "default"; // Каталог для фоток ./temp/[$COMPANY_DIR]
 
 //LDAP
 $DIS_USERS_COND="(!(useraccountcontrol:1.2.840.113556.1.4.803:=2))(!(useraccountcontrol:1.2.840.113556.1.4.803:=16))(!(memberOf=".$LDAP_NoSHOW_GROOP."))"; // Условие фильтра LDAP, которое должно препятствовать выводу заблокированных и отключенных в Active Directory пользователей. По умолчанию используется значение «(!(useraccountcontrol:1.2.840.113556.1.4.803:=2))(!(useraccountcontrol:1.2.840.113556.1.4.803:=16))»
+$FILTER_ACCESS_USERS="(memberOf=".$LDAP_ACCESS_GROUP.")";
 $LDAP_SIZE_LIMIT_COMPATIBILITY=false; //Сделать возможным выбирать большее количество сотрудников чем указано в SIZE LIMIT сервера? См. также $LDAP_SIZE_LIMIT_PAGE_DIVIDER_FIELD
 //----------------------------------------------------------------------------
 
@@ -126,8 +125,6 @@ $BOOKMARK = true; // включить кастомные вкладоки
 $BOOKMARK_NAMES['*']['']="Все";
 $BOOKMARK_NAMES['company']['MultX']="MultikiX";
 $BOOKMARK_NAMES['company']['MultY']="MultikiY";
-
-$BOOKMARK_NAMES['company']['BMJ GmbH Германия']="Германия";
 
 $BOOKMARK_NAME_EXACT_FIT['company']=true;
 $BOOKMARK_NAME_EXACT_FIT['mobile']=false;
@@ -324,6 +321,7 @@ $SHOW_EVALUATION_PERIOD_MESSAGE=true; //Отображать предупреж�
 
 // Включаем аутентификацию
 $ENABLE_DANGEROUS_AUTH=true;
+$ENABLE_ACCESS = true; //Включить доступ к справочнику по паролю
 
 $LOCALIZATION="ru";
 

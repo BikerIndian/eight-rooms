@@ -99,6 +99,9 @@ class LDAP
             return false;
     }
 
+    /**
+    *   @deprecated
+    */
     function getValue($DN, $Attribute, $Filter = false, $NotRecode = false) //Устарела. Использовать getAttrValue()
     {
         $Attributes = array($Attribute);

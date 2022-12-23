@@ -123,6 +123,7 @@ class LdapConnector
       return $this->parseUser($entries[0]);
     }
 
+    /** Получить пользователя по dn **/
     function getUserForDn($dn)
     {
       $filter = "(&(objectCategory=person)(CN=*))";
@@ -132,18 +133,18 @@ class LdapConnector
     }
 
 
-    /** Список подчененных сотрудников**/
+    /** Список подчененных сотрудников **/
     function getSubordinatesByAttribute($dn)
     {
-
     $dn = str_replace( "(", '\28',$dn);
     $dn = str_replace( ")", '\29',$dn);
      $user = $this->getUserForDn($dn);
-     $filter = "(&(objectCategory=person)(objectClass=user)(manager=".$dn."))";
+     $filter = "(&(objectCategory=person)(objectClass=user)(!(useraccountcontrol:1.2.840.113556.1.4.803:=2))(manager=".$dn."))";
      $usersArr = $this->getArrayUsers($this->CONFIG_LDAP['OU'],  $filter);
      return $usersArr;
     }
 
+    /** Список пользователей **/
     function getArrayUsers($dn,$filter = false)
     {
         if(!$filter){
@@ -159,6 +160,27 @@ class LdapConnector
         }
 
         return $arrayUsers;
+    }
+
+    function isAccessUser($login, $password, $dn, $filter)
+    {
+
+       $bind = @ldap_bind($this->LC, $_POST['login'], $_POST['password']);
+
+       if ($bind) {
+       $arrayUsers = $this->getArrayUsers($dn,$filter);
+
+          $length = count($arrayUsers);
+
+             for ($i = 0; $i < $length-1; $i++) {
+               $loginAD = $arrayUsers[$i]->LDAP_USERPRINCIPALNAME_FIELD;
+                   if($login == $loginAD){
+                   return $arrayUsers[$i];
+                   }
+               }
+       }
+
+        return null;
     }
 
     private function getUserAttributes(){
@@ -184,6 +206,7 @@ class LdapConnector
                       );
      return $attributes;
     }
+
     private function parseUser($entries){
 
          // Если пустой то возврат

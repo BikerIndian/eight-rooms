@@ -3,7 +3,7 @@
  * User: Vladimir Svishch
  * Mail: 5693031@gmail.com
  * Git: https://github.com/BikerIndian
- * Date: 17.01.2018
+ * Date: 23.12.2022
  * Time: 14:59
  */
 
@@ -24,5 +24,4 @@ $LDAP_WRITE_USER='domain_write_user@domain.ru';	// Учетная запись c
 $LDAP_WRITE_PASSWORD='password_for_domain_write_user'; // Пароль для учетной записи c правами записи в LDAP, указанной в переменной $LDAP_WRITE_USER.
 $LDAP_NoSHOW_GROOP = 'TelNoShow,CN=Users,DC=ad,DC=loc'; // Группа пользователей, которую не отображает справочник
 
-$CONFIG['CONFIG_LDAP']['OU']  =  $OU;
-
+$LDAP_ACCESS_GROUP = 'CN=Domain Admins,CN=Users,DC=ad,DC=loc'; // Группа пользователей для доступа к справочнику

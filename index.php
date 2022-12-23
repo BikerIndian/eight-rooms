@@ -3,6 +3,8 @@ use ru860e\rest\Localization;
 use ru860e\rest\Application;
 use ru860e\rest\LDAP;
 use ru860e\controllers;
+use net\svishch\php\ldap\LdapConnector;
+use net\svishch\php\ldap\config\ConfigHandler;
 
 require_once("./config.php");
 require_once("./libs/forms.php");
@@ -12,6 +14,11 @@ require_once("./libs/time.php");
 require_once("./libs/localization.php");
 require_once("./libs/spyc.php");
 require_once("./vendor/controllers/SiteController.php");
+require_once("./libs/vendor/svishch/ldap/src/config/ConfigHandler.php");
+
+// -- config --
+$configHandler = new ConfigHandler();
+$CONFIG = $configHandler->getConfig();
 
 $Controller = new controllers\SiteController();
 $L = new Localization("./config/locales/" . $LOCALIZATION . ".yml");
@@ -20,7 +27,8 @@ Application::makeLdapConfigAttrLowercase(); //Преобразуем все ат
 //Database
 //----------------------------------------
 $ldap = new LDAP($LDAPServer, $LDAPUser, $LDAPPassword); //Соединяемся с сервером
-//----------------------------------------	
+$ldapConnector = new LdapConnector($LDAPServer, $LDAPUser, $LDAPPassword,$CONFIG);
+//----------------------------------------
 
 setlocale(LC_CTYPE, "ru_RU." . $GLOBALS['CHARSET_APP']);
 
@@ -59,32 +67,12 @@ if (@$_GET['iamnot']) { //Если нажата кнопка выход, то у
     $_COOKIE['dn'] = "";
 }
 
-
-if (@$_SERVER['REMOTE_USER']) { //Если есть прозрачно аутентифицированный пользователь. И в серверной переменной хранится его логин
-
-    if ($DistinguishedName = $ldap->getValue($OU, $LDAP_DISTINGUISHEDNAME_FIELD, $LDAP_USERPRINCIPALNAME_FIELD . "=" . $_SERVER['REMOTE_USER'] . "*")) { //Находим его distinguishedname
-        //Сохраняем куку с distinguishedname, что бы в дальнейшем аутентифицировать пользователя по куке.
-        setcookie('dn', $DistinguishedName, time() + 5000 * 24 * 60 * 60, "/");
-        $_COOKIE['dn'] = $DistinguishedName;
-    }
-} else {
-    if (@$_POST['password']) { //Если пользователь ввел пароль в ручную
-        $LC = ldap_connect($LDAPServer); //Соединяемся с сервером LDAP
-        if (@ldap_bind($LC, $ldap->getValue($dn, $LDAP_USERPRINCIPALNAME_FIELD), $_POST['password'])) { //Проверяем что пользователь может соединится с сервером LDAP используя введенный пароль.
-            setcookie('dn', $dn, time() + 5000 * 24 * 60 * 60, "/"); //Сохраняем куку с distinguishedname, что бы в дальнейшем аутентифицировать пользователя по куке.
-            $_COOKIE['dn'] = $dn;
-        }
-        /*
-          else
-          $Error['password']=true; */
-    }
-}
-
 //-------------------------------------------------------------------------------------------------	
 //Аутентификация пользователя
 //----------------------------------------	
 include_once("auth.php");
-//----------------------------------------	
+//----------------------------------------
+
 //Если есть кука с dn, то ищется имя залогиненого пользователя
 if (isset($_COOKIE['dn'])) {
     if ($USE_DISPLAY_NAME)

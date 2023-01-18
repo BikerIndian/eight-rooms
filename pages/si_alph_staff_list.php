@@ -46,6 +46,7 @@ $LdapListAttrs = array($LDAP_DISTINGUISHEDNAME_FIELD, $DisplayName,
     $LDAP_TITLE_FIELD,
     $LDAP_DEPARTMENT_FIELD,
     $LDAP_CELL_PHONE_FIELD,
+    $LDAP_HOMEPHONE_FIELD,
     $LDAP_MANAGER_FIELD,
     $LDAP_COMPUTER_FIELD,
     $LDAP_DEPUTY_FIELD,
@@ -77,13 +78,13 @@ if (is_array($Staff)) {
 		<th><div>" . $L->l('email') . "</div></th>";
     if (!$HIDE_ROOM_NUMBER)
         echo "<th><div>" . $L->l('room_number') . "</div></th>";
-    echo "
-		<th><div>" . $L->l('intrenal_phone') . "</div></th>
-		";
+        echo "<th><div>" . $L->l('intrenal_phone') . "</div></th>"; // Внутренний
     if (!$HIDE_CITY_PHONE_FIELD)
-        echo "<th><div>" . $L->l('city_phone') . "</div></th>";
+        echo "<th><div>" . $L->l('city_phone') . "</div></th>";     // Городской
     if (!$HIDE_CELL_PHONE_FIELD)
-        echo "<th><div>" . $L->l('cell_phone') . "</div></th>";
+        echo "<th><div>" . $L->l('cell_phone') . "</div></th>";     // Мобильный
+    if(!$HIDE_HOME_PHONE_FIELD)
+       	echo "<th><div>".$L->l('home_phone')."</div></th>";         // Домашний
     if (Staff::showComputerName($Login)) //Если сотрудник является администратором справочника
         echo "<th><div>Компьютер</div></th>";
     if ($GLOBALS['XMPP_ENABLE'] && $GLOBALS['XMPP_MESSAGE_LISTS_ENABLE'] && !empty($_COOKIE['dn']))

@@ -203,6 +203,7 @@ class LdapConnector
                       $this->CONFIG_LDAP_ATTRIBUTE['LDAP_DEPUTY_FIELD'],
                       $this->CONFIG_LDAP_ATTRIBUTE['LDAP_USERPRINCIPALNAME_FIELD'],
                       $this->CONFIG_LDAP_ATTRIBUTE['LDAP_ROOM_NUMBER_FIELD'],
+                      $this->CONFIG_LDAP_ATTRIBUTE['LDAP_BIRTH_FIELD'],
                       );
      return $attributes;
     }
@@ -233,6 +234,8 @@ class LdapConnector
          $user->LDAP_DEPUTY_FIELD               = $this->setStr($this->CONFIG_LDAP_ATTRIBUTE['LDAP_DEPUTY_FIELD'],$entries);
          $user->LDAP_USERPRINCIPALNAME_FIELD    = $this->setStr($this->CONFIG_LDAP_ATTRIBUTE['LDAP_USERPRINCIPALNAME_FIELD'],$entries);
          $user->LDAP_ROOM_NUMBER_FIELD          = $this->setStr($this->CONFIG_LDAP_ATTRIBUTE['LDAP_ROOM_NUMBER_FIELD'],$entries);
+         $user->LDAP_BIRTH_FIELD                = $this->setStr($this->CONFIG_LDAP_ATTRIBUTE['LDAP_BIRTH_FIELD'],$entries);
+
          return $user;
     }
 

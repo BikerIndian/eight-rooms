@@ -34,3 +34,5 @@ locked_date: "Date of dismissal"
 room_number: "Room number"
 pc: "PC"
 
+months: ['January' , 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+

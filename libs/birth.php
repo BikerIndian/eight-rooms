@@ -4,90 +4,144 @@ use ru860e\rest\LDAP;
 use ru860e\rest\Staff;
 use ru860e\rest\LDAPTable;
 
-//Выввод ближайших дней рождений
-$time=time();
-if($NEAR_BIRTHDAYS) 
-	{	
-	switch($BIRTH_DATE_FORMAT) //Определяем шаблоны для поиска ближайших дней рождения в зависимости от формат хранения даты
-		{
-		case 'yyyy-mm-dd':
-			$DateFormat="m-d";
-			$SortType="mm-dd";
-		break;
-		case 'dd.mm.yyyy':
-			$DateFormat="d.m";
-			$SortType="dd.mm";
-		break;
-		default:
-			$DateFormat="d.m";
-			$SortType="dd.mm";
-		}	
-	
-	function getBD($d) //Функция для регулярного выражения, заменяющее значение даты раждения в LDAP на удобно читаемое. Это конечно форменный пи..цц
-		{
-		$e=explode("q", $d);
-		return (int) $e[1]." ".$GLOBALS['MONTHS'][(int) $e[2]];
-		}
-	
-	echo"<div class=\"heads\">
-	<fieldset class=\"birthdays\">
-	<legend>".$L->l('nearest')." ".$NUM_ALARM_DAYES." ".$L->l('they_have_birthdays').":</legend>";	
-	
-	@$_GET['birthdayssortcolumn']=($_GET['birthdayssortcolumn'])?$_GET['birthdayssortcolumn']:"Дата";
-	@$_GET['birthdayssorttype']=($_GET['birthdayssorttype'])?$_GET['birthdayssorttype']:"ASC";
-	
-	$B=new LDAPTable($LDAPServer, $LDAPUser, $LDAPPassword, 389, false, false, "birthdays"); //Создаем LDAP таблицу берущую данные из БД
-	
-	//Добавляем колонку с ФИО
-	if($USE_DISPLAY_NAME)
-		$B->addColumn($DISPLAY_NAME_FIELD.", ".$LDAP_DISTINGUISHEDNAME_FIELD, "ФИО", false);	
-	else	
-		$B->addColumn($LDAP_DISTINGUISHEDNAME_FIELD, "ФИО", false);
-		
-	//Добавляем колонку с датой рождения
-	$B->addColumn($LDAP_BIRTH_FIELD, "Дата", false, 0, false, $SortType);
-	
-	//Преобразуем колонку с ФИО в ссылку на полную инфу о сотруднике
-	$B->addPregReplace("/^(.*)$/eu", "Staff::makeNameUrlFromDn('\\1')", "ФИО");	
 
-	//В зависимости от формата хранения даты преобразуем дату дня рождения для последующего преобразования в удобно читаемый формат
-	switch($BIRTH_DATE_FORMAT)
-		{
-		case 'yyyy-mm-dd':
-			$B->addPregReplace("/^([0-9]{4})-([0-9]{2})-([0-9]{2})$/u", 'q\\3q\\2q\\1', "Дата");
-		break;
-		case 'dd.mm.yyyy':
-			$B->addPregReplace("/^([0-9]{2})\.([0-9]{2})\.([0-9]{4})$/u", 'q\\1q\\2q\\3', "Дата");
-		break;
-		default:
-			$B->addPregReplace("/^([0-9]{2})\.([0-9]{2})\.([0-9]{4})$/u", 'q\\1q\\2q\\3', "Дата");
-		}
-	
-	//Преобразуем дату в удобно читаемый формат
-	$B->addPregReplace("/([q]{1}[0-9]{2})([q]{1}[0-9]{2})([q]{1}[0-9]{4})/eu", 'getBD(\\1\\2)', "Дата");
+$CONFIG_LDAP_ATTRIBUTE  = $CONFIG['CONFIG_LDAP_ATTRIBUTE'];
+$CONFIG_LDAP            = $CONFIG['CONFIG_LDAP'];
+$BIRTHDAYS              = $CONFIG['BIRTHDAYS'];
+$LDAP_USER              = $CONFIG['LDAP_USER'];
 
 
-	//Делаем фильтр необходимый для вывода ближайших дней рождения
-	for($i=0; $i<$NUM_ALARM_DAYES; $i++)
-		{
-		@$Dates.="(".$LDAP_BIRTH_FIELD."=*".date($DateFormat, $time+$i*24*60*60)."*)";
-		}
-			
-	//Добавляем в фильтр условия, что бы показывались сотрудники у которых соответствует компания
-	if($Dates)
-		{
-		$CompanyNameLdapFilter=Application::getCompanyNameLdapFilter();
-		
-		$B->printTable($OU, "(&".$CompanyNameLdapFilter."(|".$Dates.")".$DIS_USERS_COND.")");
-		}
+if($BIRTHDAYS['NEAR_BIRTHDAYS']) {
 
-	//Если необходимо ограничивать вывод строк с ближайшими днями рождения, то пишим в тело html-документа соответствующую информацию
-	if($BIRTH_VIS_ROW_NUM)
-		echo"<div id=\"birth_vis_row_num\" class=\"hidden\">".$BIRTH_VIS_ROW_NUM."</div><a id=\"show_all_birth\" href=\"#\">&darr;</a>";
-		
-	echo"</fieldset></div>";
+    $ldapListAttrs = array(
+                    $CONFIG_LDAP_ATTRIBUTE['LDAP_NAME_FIELD'],
+                    $CONFIG_LDAP_ATTRIBUTE['LDAP_BIRTH_FIELD'],
+                    $CONFIG_LDAP_ATTRIBUTE['LDAP_DISTINGUISHEDNAME_FIELD']
+                    );
 
+    $filterBirth = getFilterBirth(
+                $CONFIG_LDAP_ATTRIBUTE,
+                $BIRTHDAYS,
+                $CONFIG_LDAP['DIS_USERS_COND'],
+                time()
+                );
+
+    $userList = getUserList($ldapConnector,$LDAP_USER['OU_USER_READ'] ,$filterBirth,$ldapListAttrs);
+
+    printBirth($L,$CONFIG_LDAP_ATTRIBUTE,$BIRTHDAYS,$userList);
+
+}
+
+    function printBirth($localization,$CONFIG_LDAP_ATTRIBUTE,$BIRTHDAYS,$userList)
+	{
+
+
+        echo"<div class=\"heads\">
+            <fieldset class=\"birthdays\">
+            <legend>".$localization->l('nearest')." ".$BIRTHDAYS['NUM_ALARM_DAYES']." ".$localization->l('they_have_birthdays').":</legend>";
+        echo "<table class='sqltable' cellpadding='4'>";
+
+	    if (is_array($userList)) {
+                $row = 0;
+                //foreach ($userList[$CONFIG_LDAP_ATTRIBUTE['LDAP_NAME_FIELD']] AS $key => $value) {
+                foreach ($userList AS $key => $user) {
+                    $row++;
+                    //$name =  $userList[$CONFIG_LDAP_ATTRIBUTE['LDAP_NAME_FIELD']][$key];
+                    $name =  $user->DISPLAY_NAME_FIELD;
+                //     echo print_r($user);
+                    $ou =  $user->LDAP_DISTINGUISHEDNAME_FIELD;
+
+                    $link = getName($name,$ou);
+                    $birth =  $user->LDAP_BIRTH_FIELD;
+
+                    $birth =  formatDate($BIRTHDAYS['BIRTH_DATE_FORMAT'],$birth,$localization);
+                    echo "<tr class='" . getClassRow($row) . "'>";
+                    echo "<td>$link</td><td>$birth</td></tr>";
+                }
+        }
+
+        echo "</table> </div>";
 	}
 
+    function getName($name,$ou){
+        $link = "<a class=\"lightview in_link\" href=\"newwin.php?menu_marker=si_employeeview&dn=".$ou."\">".$name."</a>";
+        return $link;
+    }
+    function getClassRow($row){
+        $cssClassRow = "";
+        if ($row % 2) {
+       $cssClassRow = 'even';
+        } else {
+        $cssClassRow = 'odd';
+        }
+        return $cssClassRow;
+    }
 
-?>
+     function getFilterBirth(
+            $CONFIG_LDAP_ATTRIBUTE,
+            $BIRTHDAYS,
+            $DIS_USERS_COND,
+            $time
+            ){
+             $dates = "";
+             $filter;
+
+
+	        switch($BIRTHDAYS['BIRTH_DATE_FORMAT']) //Определяем шаблоны для поиска ближайших дней рождения в зависимости от формат хранения даты
+    		{
+    		case 'yyyy-mm-dd':
+    			$DateFormat="m-d";
+    			$SortType="mm-dd";
+    		break;
+    		case 'dd.mm.yyyy':
+    			$DateFormat="d.m";
+    			$SortType="dd.mm";
+    		break;
+    		default:
+    			$DateFormat="d.m";
+    			$SortType="dd.mm";
+    		}
+
+
+             for($i=0; $i<$BIRTHDAYS['NUM_ALARM_DAYES']; $i++)
+                 {
+                 $dates.="(".$CONFIG_LDAP_ATTRIBUTE['LDAP_BIRTH_FIELD']."=*".date($DateFormat, $time+$i*24*60*60)."*)";
+             }
+
+             //Добавляем в фильтр условия, что бы показывались сотрудники у которых соответствует компания
+             if($dates)
+             {
+                 //$filter = "(&(company=".$LDAP_USER['LDAP_COMPANY_FIELD'].")(|".$dates.")".$DIS_USERS_COND.")";
+                 $filter = "(&(|".$dates.")".$DIS_USERS_COND.")";
+             }
+
+             return $filter;
+     }
+
+    function getUserList($ldap,$OU,$filter,$ldapListAttrs)
+	{
+        //$ldapTable = $ldap->getArray($OU,$filter,$ldapListAttrs);
+        //$ldapConnector->getArrayUsers($OU,$filter);
+         $ldapTable = $ldap->getArrayUsers($OU,$filter);
+
+
+        return $ldapTable;
+	}
+
+	function formatDate($format,$dateIn,$localization){
+	    $dateOut="";
+	    switch($format)
+        {
+        case 'yyyy-mm-dd':
+          preg_match("/^([0-9]{4})-([0-9]{2})-([0-9]{2})$/u",  $dateIn,$dateArr);
+          break;
+        case 'dd.mm.yyyy':
+          preg_match("/^([0-9]{2})\.([0-9]{2})\.([0-9]{4})$/u",  $dateIn,$dateArr);
+          break;
+        default:
+          preg_match("/^([0-9]{2})\.([0-9]{2})\.([0-9]{4})$/u",  $dateIn,$dateArr);
+        }
+
+        // 	Вывод в формаете "17 Июня"
+        return $dateArr[1]." ". $localization->l('months')[(int) $dateArr[2]];
+	}

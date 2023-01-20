@@ -258,8 +258,8 @@ $BLOCK_VIS['si_dep_staff_list']['profile']=true; // Показывает мен�
 $BLOCK_VIS['si_alph_staff_list']['profile']=true;  // по умалчанию false
 $BLOCK_VIS['si_stafflist']['profile']=true;
 //Блок ближайших дней рождений
-$BLOCK_VIS['si_dep_staff_list']['birthdays']=false;
-$BLOCK_VIS['si_alph_staff_list']['birthdays']=false;
+$BLOCK_VIS['si_dep_staff_list']['birthdays']=true;
+$BLOCK_VIS['si_alph_staff_list']['birthdays']=true;
 $BLOCK_VIS['si_stafflist']['birthdays']=true;
 //Блок быстрого перехода на букву или на отдел
 $BLOCK_VIS['si_dep_staff_list']['fast_move']=true;
@@ -322,7 +322,7 @@ $SHOW_EVALUATION_PERIOD_MESSAGE=true; //Отображать предупреж�
 
 // Включаем аутентификацию
 $ENABLE_DANGEROUS_AUTH=true;
-$ENABLE_ACCESS = true; //Включить доступ к справочнику по паролю
+$ENABLE_ACCESS = false; //Включить доступ к справочнику по паролю
 
 $LOCALIZATION="ru";
 

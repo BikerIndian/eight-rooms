@@ -38,14 +38,7 @@ $CONFIG_LDAP_ATTRIBUTE['LDAP_ROOM_NUMBER_FIELD']                          ="phys
 
 // LDAP
 //----------------------------------------------------------------------------
-$CONFIG_LDAP_ATTRIBUTE['LDAP_COMPANY_FIELD'] = "COMPANY"; 	//Атрибут LDAP в котором будет хранится название компании сотрудника
-$LDAP_USER['SERVER_LDAP']           = 'ххх.ххх.ххх.ххх';	// Адрес сервера LDAP (Контроллер домена).
-$LDAP_USER['USER_READ']             = 'sprav@ad.loc'; 		// Учетная запись c правом чтения из LDAP. Можно писать в формате user_for_reading_ldap@YOUR_DOMAIN
-$LDAP_USER['PASSWORD_USER_READ']    = 'pass'; 			// Пароль для учетной записи, указанной в переменной $LDAPUser
-$LDAP_USER['OU_USER_READ']          = "DC=ad,DC=loc"; 		// В каком Organization Unit искать сотрудников. Оставляем двойные кавычки (внутри, если есть пробелы - обязательно заключать в одинарные кавычки).
 
-$CONFIG_APP['LDAP_NO_SHOW_GROOP']   = 'TelNoShow,CN=Users,DC=ad,DC=loc'; // Группа пользователей, которую не отображает справочник
-
-$CONFIG_LDAP['DIS_USERS_COND']      = "(!(useraccountcontrol:1.2.840.113556.1.4.803:=2))(!(useraccountcontrol:1.2.840.113556.1.4.803:=16))(!(memberOf=".$CONFIG_APP['LDAP_NO_SHOW_GROOP']."))"; // Условие фильтра LDAP, которое должно препятствовать выводу заблокированных и отключенных в Active Directory пользователей. По умолчанию используется значение «(!(useraccountcontrol:1.2.840.113556.1.4.803:=2))(!(useraccountcontrol:1.2.840.113556.1.4.803:=16))»
-$CONFIG_LDAP['LDAP_SIZE_LIMIT_COMPATIBILITY'] =false;       //Сделать возможным выбирать большее количество сотрудников чем указано в SIZE LIMIT сервера? См. также $LDAP_SIZE_LIMIT_PAGE_DIVIDER_FIELD
+//$CONFIG_LDAP['DIS_USERS_COND']      = "(!(useraccountcontrol:1.2.840.113556.1.4.803:=2))(!(useraccountcontrol:1.2.840.113556.1.4.803:=16))(!(memberOf=".$CONFIG_APP['LDAP_NO_SHOW_GROOP']."))"; // Условие фильтра LDAP, которое должно препятствовать выводу заблокированных и отключенных в Active Directory пользователей. По умолчанию используется значение «(!(useraccountcontrol:1.2.840.113556.1.4.803:=2))(!(useraccountcontrol:1.2.840.113556.1.4.803:=16))»
+//$CONFIG_LDAP['LDAP_SIZE_LIMIT_COMPATIBILITY'] =false;       //Сделать возможным выбирать большее количество сотрудников чем указано в SIZE LIMIT сервера? См. также $LDAP_SIZE_LIMIT_PAGE_DIVIDER_FIELD
 

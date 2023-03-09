@@ -4,7 +4,9 @@ use net\svishch\php\ldap\LdapConnector;
 use ru860e\rest\LDAP;
 use ru860e\rest\Staff;
 use ru860e\rest\LDAPTable;
+use net\svishch\php\ldap\config\ConfigHandler;
 
+require_once("./libs/vendor/svishch/ldap/src/config/ConfigHandler.php");
 
 $dn=($_GET['dn'])?$_GET['dn']:$_POST['dn'];
 @$fio=($_GET['fio'])?$_GET['fio']:$_POST['fio'];
@@ -14,6 +16,8 @@ $dn=($_GET['dn'])?$_GET['dn']:$_POST['dn'];
 
 $ldap=new LDAP($LDAPServer, $LDAPUser, $LDAPPassword);
 
+$configHandler = new ConfigHandler();
+$CONFIG = $configHandler->getConfig();
 $ldapConnector = new LdapConnector($LDAPServer, $LDAPUser, $LDAPPassword,$CONFIG);
 
 if($fio)

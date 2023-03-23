@@ -426,8 +426,8 @@ abstract class Staff
 				echo "<td>".self::highlightSearchResult(self::makeCellPhone($Staff[$GLOBALS['LDAP_CELL_PHONE_FIELD']][$key],$GLOBALS['ENABLE_CALL_VIA_IP']), $Vars['search_str'])."</td>"; //Делаем ссылку на полную информацию о сотруднике
 			}
         // Домашний
-        if(!$GLOBALS['HIDE_HOME_PHONE_FIELD']){
-        	echo "<td><".$tag.">".self::makeCityPhone($Staff[$GLOBALS['LDAP_HOMEPHONE_FIELD']][$key],$GLOBALS['ENABLE_CALL_VIA_IP'])."</".$tag."></td>"; //Выводим домашний
+        if(!$GLOBALS['HIDE_HOME_PHONE_FIELD'] && isset($Staff[$GLOBALS['LDAP_HOMEPHONE_FIELD']][$key])){
+        	echo "<td><".$tag.">".self::makeHomePhone($Staff[$GLOBALS['LDAP_HOMEPHONE_FIELD']][$key],$GLOBALS['ENABLE_CALL_VIA_IP'])."</".$tag."></td>"; //Выводим домашний
         }
 
 		if(self::showComputerName($Vars['current_login'])) //Если сотрудник является администратором справочника

@@ -297,7 +297,7 @@ class LDAP
             }
         }
 
-        if (@is_array($RA)) {
+        if (isset($RA) && is_array($RA)) {
             return $RA;
         } else {
             return false;

@@ -281,7 +281,7 @@ class LDAP
             //-----------------------------------------------------------------------------
 
 
-            for ($i = 0; $i < @$Entries[count]; $i++) {
+            for ($i = 0; $i < $Entries['count']; $i++) {
                 for ($j = 0; $j < $SizeOf; $j++) {
                     if (is_array($Sort)) {
                         @$Value = iconv($GLOBALS['CHARSET_DATA'], $GLOBALS['CHARSET_APP'], $Entries[$AS[$i]][$ADAttributes[$j]][0]);

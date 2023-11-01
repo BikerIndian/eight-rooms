@@ -14,6 +14,7 @@ https://github.com/BikerIndian/eight-rooms/tree/fix_subordinates
 
 ## Системные требования 
 PHP: ^7.0
+Module: php-mbstring, php-ldap
 
 ## Разработка и тестирование
 Ubuntu 18.04.4 LTS

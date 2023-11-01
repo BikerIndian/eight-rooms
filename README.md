@@ -4,8 +4,10 @@ Eight-rooms
 Телефонная книга LDAP (Active Directory)
 
 ## Контакты
-Если возникли вопросы, пиши лучше в телегу >>> https://t.me/eight_rooms
+Если возникли вопросы, пиши в телегу >>> https://t.me/eight_rooms
 
+## Doker
+https://github.com/BikerIndian/eight-rooms-docker
 ## Системные требования 
 PHP: ^7.0
 

@@ -8,6 +8,10 @@ Eight-rooms
 
 ## Doker
 https://github.com/BikerIndian/eight-rooms-docker
+
+## Самую свежую, качаем тут 
+https://github.com/BikerIndian/eight-rooms/tree/fix_subordinates
+
 ## Системные требования 
 PHP: ^7.0
 

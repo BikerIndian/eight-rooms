@@ -31,10 +31,10 @@ abstract class Staff
 		{
 		if($GLOBALS['USE_DISPLAY_NAME'])
 			{
-			$DN=preg_replace("/([ёA-zА-я-]+)[\s]{1}([ёA-zА-я-]+[\s]{1}[ёA-zА-я-]+)(CN.*)/u", "<a href=\"newwin.php?menu_marker=si_employeeview&dn=\\3\" data-lightview-type=\"iframe\" data-lightview-options=\"width: '80%', height: '100%', keyboard: {esc: true}, skin: 'light'\" class=\"lightview in_link\"><span class='surname'>\\1</span> \\2</a>", $Title.$DN);
-			$DN=preg_replace("/([ёA-zА-я-]+[\s]{1}[ёA-zA-я]{1}.)[\s]{1}([ёA-zА-я-]+)(CN.*)/u", "<a href=\"newwin.php?menu_marker=si_employeeview&dn=\\3\" data-lightview-type=\"iframe\" data-lightview-options=\"width: '80%', height: '100%', keyboard: {esc: true}, skin: 'light'\" class=\"lightview in_link\"><span class='surname'>\\2</span> \\1</a>", $DN);	
-			$DN=preg_replace("/([ёA-zA-я0-9№\s-]{1,})(CN.*)/u", "<a href=\"newwin.php?menu_marker=si_employeeview&dn=\\2\" data-lightview-type=\"iframe\" data-lightview-options=\"width: '80%', height: '100%', keyboard: {esc: true}, skin: 'light'\" class=\"lightview in_link\"><span class='surname'> \\1</span></a>", $DN);		
-			$DN=preg_replace("/^CN=([ёA-zA-я0-9\s\.-]{1,})(.*)$/u", "<a href=\"newwin.php?menu_marker=si_employeeview&dn=\\0\" data-lightview-type=\"iframe\" data-lightview-options=\"width: '80%', height: '100%', keyboard: {esc: true}, skin: 'light'\" class=\"lightview in_link\"><span class='surname'> \\1</span></a>", $DN);		
+			$DN=preg_replace("/([ёA-zА-я-\.-]+)[\s]{1}([ёA-zА-я-]+[\s]{1}[ёA-zА-я-]+)(CN.*)/u", "<a href=\"newwin.php?menu_marker=si_employeeview&dn=\\3\" data-lightview-type=\"iframe\" data-lightview-options=\"width: '80%', height: '100%', keyboard: {esc: true}, skin: 'light'\" class=\"lightview in_link\"><span class='surname'>\\1</span> \\2</a>", $Title.$DN);
+			$DN=preg_replace("/([ёA-zА-я-\.-]+[\s]{1}[ёA-zA-я]{1}.)[\s]{1}([ёA-zА-я-]+)(CN.*)/u", "<a href=\"newwin.php?menu_marker=si_employeeview&dn=\\3\" data-lightview-type=\"iframe\" data-lightview-options=\"width: '80%', height: '100%', keyboard: {esc: true}, skin: 'light'\" class=\"lightview in_link\"><span class='surname'>\\2</span> \\1</a>", $DN);
+			$DN=preg_replace("/([ёA-zA-я0-9№\s\.-]{1,})(CN.*)/u", "<a href=\"newwin.php?menu_marker=si_employeeview&dn=\\2\" data-lightview-type=\"iframe\" data-lightview-options=\"width: '80%', height: '100%', keyboard: {esc: true}, skin: 'light'\" class=\"lightview in_link\"><span class='surname'> \\1</span></a>", $DN);
+			$DN=preg_replace("/^CN=([ёA-zA-я0-9\s\.-]{1,})(.*)$/u", "<a href=\"newwin.php?menu_marker=si_employeeview&dn=\\0\" data-lightview-type=\"iframe\" data-lightview-options=\"width: '80%', height: '100%', keyboard: {esc: true}, skin: 'light'\" class=\"lightview in_link\"><span class='surname'> \\1</span></a>", $DN);
 			}
 		else
 			{

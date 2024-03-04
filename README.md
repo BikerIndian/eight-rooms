@@ -67,13 +67,13 @@ $LDAP_NoSHOW_GROOP = 'CN=TelNoShow,CN=Users,DC=ad,DC=loc'; // Группа по�
 
 
 ## Screenshots
-* Спраночник по отделам
-![Спраночник по отделам](https://raw.githubusercontent.com/BikerIndian/eight-rooms/master/temp/img/1.png)
+* Справочник по отделам
+![Справочник по отделам](https://raw.githubusercontent.com/BikerIndian/eight-rooms/master/temp/img/1.png)
 
 
 
-* Спраночник по алфавиту
-![Спраночник по алфавиту](https://raw.githubusercontent.com/BikerIndian/eight-rooms/master/temp/img/2.png)
+* Справочник по алфавиту
+![Справочник по алфавиту](https://raw.githubusercontent.com/BikerIndian/eight-rooms/master/temp/img/2.png)
 
 
 
@@ -82,14 +82,14 @@ $LDAP_NoSHOW_GROOP = 'CN=TelNoShow,CN=Users,DC=ad,DC=loc'; // Группа по�
 
 
 
-* Спраночник по отделам
+* Справочник по отделам
 ![PDF по отделам](https://raw.githubusercontent.com/BikerIndian/eight-rooms/master/temp/img/5.png)
 
 
 
-* PDF - Спраночник по алфавиту
+* PDF - Справочник по алфавиту
 ![PDF по алфавиту](https://raw.githubusercontent.com/BikerIndian/eight-rooms/master/temp/img/4.png)
 
 
-* EXEL - Справочник
-![EXEL](https://raw.githubusercontent.com/BikerIndian/eight-rooms/master/temp/img/6.png)
+* Microsoft Excel - Справочник
+![Excel](https://raw.githubusercontent.com/BikerIndian/eight-rooms/master/temp/img/6.png)

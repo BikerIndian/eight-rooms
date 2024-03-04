@@ -22,7 +22,7 @@ require_once("../libs/phones.php");
 require_once("../libs/pdf.php");
 
 $date_today = date("m.d.y");
-$fileNnameEXEL = '"' . $date_today . '-tel.xlsx"';
+$fileNnameEXEL = '"' . $date_today . '-tel.xls"';
 
 //----------------------  EXEL ------------------------------------
 if (PHP_SAPI == 'cli')

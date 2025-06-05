@@ -77,7 +77,7 @@ if (is_array($Staff)) {
 		<th><div>" . $L->l('position') . "</div></th>
 		<th><div>" . $L->l('email') . "</div></th>";
     if (!$HIDE_ROOM_NUMBER)
-        echo "<th><div>" . $L->l('room_number') . "</div></th>";
+        echo "<th><div>" . $L->l('room_number') . "</div></th>";    // Кабинет
         echo "<th><div>" . $L->l('intrenal_phone') . "</div></th>"; // Внутренний
     if (!$HIDE_CITY_PHONE_FIELD)
         echo "<th><div>" . $L->l('city_phone') . "</div></th>";     // Городской

@@ -214,9 +214,7 @@ if ($ALARM_MESSAGE) {
     </tr>
 
     <tr class="copyright" align="center">
-        <td><?php
-            $Controller->actionFoter();
-            ?></td>
+        <td><?php $Controller->actionFoter();?></td>
     </tr>
 
 </table>

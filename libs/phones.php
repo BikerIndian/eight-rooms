@@ -12,7 +12,7 @@ else
 
 function get_phone_attr($phone = '', $convert = true, $trim = true)
 {
-    if (empty($phone)) {
+    if (!isset($phone) || empty($phone)) {
         return '';
     }
     // очистка от лишнего мусора с сохранением информации о "плюсе" в начале номера
@@ -103,6 +103,12 @@ function get_phone_attr($phone = '', $convert = true, $trim = true)
 //------------------------------------------------------------------------
 function phoneBlocks($number, $blocklen)
 {
+
+        if (strlen($number) === 7 && ctype_digit($number)) {
+            $formatted = substr($number, 0, 3) . '-' . substr($number, 3, 2) . '-' . substr($number, 5, 2);
+            return $formatted;
+        }
+
         $add='';
         if (strlen($number)%2)
         {

@@ -268,7 +268,7 @@ $HIDE_STAFF_WITHOUT_PHONES=false; // То же что $PDF_HIDE_STAFF_WITHOUT_PH
 $ALPH_ITEM_IN_LINE=35; // Количество букв в одной строке в блоке быстрого перехода, на странице с разбивкой сотрудников по первым буквам фамилии. По умолчанию значение равно «35»
 $DEP_ITEM_IN_COL=3; // Количество отделов в одном столбце в блоке быстрого перехода, на странице с разбивкой сотрудников по отделам. По умолчанию значение равно «3»
 //$COPY_RIGHT="<a href=\"http://www.pitin.su\" target=\"NewWindow\">© V. Pitin, 2012 </a>"; // :-)
-$COPY_RIGHT="© Vladimir Svishch, 2021, mail:  <a href=\"mailto:5693031@gmail.com\" class=\"in_link\">5693031@gmail.com</a> & Vladimir Pitin, 2012";
+$COPY_RIGHT="© Vladimir Svishch, 2025, mail:  <a href=\"mailto:5693031@gmail.com\" class=\"in_link\">5693031@gmail.com</a> & Vladimir Pitin, 2012";
 
 /* 
 $DEP_ADD - Этот атрибут позволяет добавить дополнительную строку в конце названия отдела на странице с разбивкой сотрудников по отделам.

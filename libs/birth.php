@@ -64,7 +64,7 @@ if($BIRTHDAYS['NEAR_BIRTHDAYS']) {
 	}
 
     function getName($name,$ou){
-        $link = "<a class=\"lightview in_link\" href=\"newwin.php?menu_marker=si_employeeview&dn=".$ou."\">".$name."</a>";
+        $link = "<a href=\"newwin.php?menu_marker=si_employeeview&dn=".$ou."\" data-lightview-type=\"iframe\" data-lightview-options=\"width: '80%', height: '100%', keyboard: {esc: true}, skin: 'light'\" class=\"lightview in_link\">".$name."</a>";
         return $link;
     }
     function getClassRow($row){

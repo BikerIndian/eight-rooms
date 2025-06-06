@@ -143,5 +143,17 @@ if($BIRTHDAYS['NEAR_BIRTHDAYS']) {
         }
 
         // 	Вывод в формаете "17 Июня"
-        return $dateArr[1]." ". $localization->l('months')[(int) $dateArr[2]];
+        return $dateArr[1]." ". $localization->l('months')[(int) $dateArr[2]].getAnniversary($dateArr[3]);
+	}
+
+	function getAnniversary($year){
+	    $currentYear = date('Y');
+        $diff = $currentYear - $year;
+
+        // Проверяем, является ли разница лет юбилейной (кратной 5, 10, 25, 50, 100 и т.д.)
+        if ($diff % 10 == 0 || $diff % 25 == 0 || $diff == 50 || $diff == 100) {
+        return " <span style='color: red;'>(юбилей $diff)</span>";
+        }
+
+        return "";
 	}
